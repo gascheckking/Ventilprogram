@@ -23,7 +23,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             padding: 12px 16px 20px 16px;
         }
-        /* Login bar - enkel knapp */
         .login-bar {
             background: #1e6f5c;
             color: white;
@@ -262,6 +261,21 @@
             background: rgba(0,0,0,0.5);
             z-index: 999;
         }
+        .extra-find-section {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 16px 0 8px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .extra-find-section h3 {
+            margin: 0 0 8px 0;
+            font-size: 0.8rem;
+            color: #b45f06;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
         footer {
             margin-top: 12px;
             text-align: center;
@@ -277,7 +291,7 @@
 </head>
 <body>
 <div class="app-container">
-    <!-- ENKEL INLOGGNING - knapp -->
+    <!-- ENKEL INLOGGNING -->
     <div class="login-bar">
         <div>
             <button id="showLoginBtn" class="login-btn">🔐 Logga in / Skapa konto</button>
@@ -297,7 +311,7 @@
 
     <!-- FLIK: AKTIVA -->
     <div id="activeTab" class="tab-content">
-        <!-- KARTA + KNAPP -->
+        <!-- KARTA -->
         <div class="map-control">
             <button id="setPinBtn" class="btn-sm" style="background:#ff9800; color:white;">📍 Sätt nål på kartan</button>
             <span style="font-size:0.65rem; color:#666;">Klicka på kartan → fyller adress</span>
@@ -318,8 +332,27 @@
             <div><button id="saveBtn">💾 Spara</button></div>
         </div>
 
-        <!-- EXTRA FYND - med nya koder VBP, VSP, VSV, Brunn -->
-        <div style="background:#fef7e0; border-radius:14px; padding:8px; margin:8px 0;">
+        <!-- SÖK -->
+        <div class="form-row">
+            <div class="form-group" style="flex:2;"><input type="text" id="searchInput" placeholder="🔍 Sök VAV, plats..."></div>
+            <div class="form-group" style="flex:0.8;"><select id="areaFilter"><option value="">Alla områden</option><option value="Tullinge">Tullinge</option><option value="Tumba">Tumba</option><option value="Vårsta">Vårsta</option><option value="Grödinge">Grödinge</option><option value="Fittja/Alby/Norsborg/Slagsta">Norra</option></select></div>
+            <button id="exportCsvBtn" class="btn-outline btn-sm">📎 CSV</button>
+            <button id="importExampleBtn" class="btn-outline btn-sm">📋 Exempel</button>
+        </div>
+
+        <div class="stats" id="statsCounter"></div>
+
+        <!-- TABELL (VENTILER) -->
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Extra fynd</th><th>Rapportör</th><th style="text-align:center;">✅</th><th></th></tr></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- EXTRA FYND - UNDER TABELLEN (proffessionellt) -->
+        <div class="extra-find-section">
+            <h3>🔍 Kompletterande iakttagelser</h3>
             <div class="form-row" style="margin-bottom:0;">
                 <div class="form-group" style="flex:0.8;">
                     <label>TYP</label>
@@ -332,38 +365,20 @@
                     </select>
                 </div>
                 <div class="form-group" style="flex:1.2;">
-                    <label>📍 PLATS (för extrafyndet)</label>
+                    <label>📍 PLATS</label>
                     <input type="text" id="extraLocation" placeholder="Gatuadress / korsning">
                 </div>
                 <div class="form-group" style="flex:1.5;">
                     <label>📝 BESKRIVNING</label>
-                    <input type="text" id="extraDesc" placeholder="Problem / åtgärd">
+                    <input type="text" id="extraDesc" placeholder="Problem / åtgärdsbehov">
                 </div>
                 <div><button id="addExtraBtn" class="btn-outline btn-sm">➕ Lägg till</button></div>
             </div>
-            <div style="font-size:0.6rem; color:#666; margin-top:5px;">💡 Tips: Klicka på kartan för att fylla platsadressen</div>
-        </div>
-
-        <!-- SÖK -->
-        <div class="form-row">
-            <div class="form-group" style="flex:2;"><input type="text" id="searchInput" placeholder="🔍 Sök VAV, plats..."></div>
-            <div class="form-group" style="flex:0.8;"><select id="areaFilter"><option value="">Alla områden</option><option value="Tullinge">Tullinge</option><option value="Tumba">Tumba</option><option value="Vårsta">Vårsta</option><option value="Grödinge">Grödinge</option><option value="Fittja/Alby/Norsborg/Slagsta">Norra</option></select></div>
-            <button id="exportCsvBtn" class="btn-outline btn-sm">📎 CSV</button>
-            <button id="importExampleBtn" class="btn-outline btn-sm">📋 Exempel</button>
-        </div>
-
-        <div class="stats" id="statsCounter"></div>
-
-        <!-- TABELL -->
-        <div class="table-wrapper">
-            <table>
-                <thead><tr><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Extra fynd</th><th>Rapportör</th><th style="text-align:center;">✅</th><th></th></thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+            <div style="font-size:0.6rem; color:#666; margin-top:6px;">💡 Iakttagelser kopplas till vald ventil (VAV-nummer). Klicka på kartan för att fylla platsadress.</div>
         </div>
     </div>
 
-    <!-- FLIK: KATEGORIER (förenklad) -->
+    <!-- FLIK: KATEGORIER -->
     <div id="categoriesTab" class="tab-content" style="display:none;">
         <div style="background:#f5f5f5; border-radius:14px; padding:10px; margin-bottom:10px;">
             <div class="form-row">
@@ -393,7 +408,7 @@
         <div class="stats" id="categoryStats"></div>
         <div class="table-wrapper">
             <table>
-                <thead><th style="width:25px"><input type="checkbox" id="selectAllCategory"></th><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Extra</th><th>Rapportör</th></thead>
+                <thead><tr><th style="width:25px"><input type="checkbox" id="selectAllCategory"></th><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Extra</th><th>Rapportör</th></tr></thead>
                 <tbody id="categoryTableBody"></tbody>
             </table>
         </div>
@@ -402,7 +417,7 @@
     <!-- FLIK: RAPPORT -->
     <div id="mailTab" class="tab-content" style="display:none;"></div>
 
-    <footer>📍 Klicka på "Sätt nål" sen på kartan → fyller adress | All data sparas offline</footer>
+    <footer>📍 Klicka på "Sätt nål" sen på kartan → fyller adress | Kompletterande iakttagelser kopplas till ventil</footer>
 </div>
 
 <script>
@@ -418,7 +433,6 @@
     let map, markersLayer;
     let isMapPinMode = false;
 
-    // Botkyrka kommun gränser
     const BOTKYRKA_BOUNDS = [[59.1, 17.7], [59.3, 17.95]];
     const BOTKYRKA_CENTER = [59.2, 17.82];
 
@@ -432,7 +446,6 @@
         "OK": []
     };
 
-    // Initiera karta
     function initMap() {
         map = L.map('map').setView(BOTKYRKA_CENTER, 12);
         map.setMaxBounds(BOTKYRKA_BOUNDS);
@@ -446,7 +459,6 @@
         
         markersLayer = L.layerGroup().addTo(map);
         
-        // Klick på kartan - fyll adress om pin-mode är aktiverat
         map.on('click', async function(e) {
             if(!isMapPinMode) return;
             const lat = e.latlng.lat;
@@ -460,19 +472,17 @@
                     const suburb = data.address.suburb || data.address.city_district || "";
                     address = road ? `${road}, ${suburb}` : data.display_name?.split(',')[0] || "";
                 }
-                // Fyll i gatuadress-fältet (för ventil)
                 document.getElementById("location").value = address;
-                // Fyll även extra fynd plats om det är aktivt
                 const extraLocationField = document.getElementById("extraLocation");
                 if(extraLocationField && document.activeElement === extraLocationField) {
                     extraLocationField.value = address;
                 }
-                // Sätt nål på kartan
                 if(window.currentMarker) markersLayer.removeLayer(window.currentMarker);
                 window.currentMarker = L.marker([lat, lng]).bindPopup(`📍 ${address}`).addTo(markersLayer);
                 map.setView([lat, lng], 15);
                 isMapPinMode = false;
                 document.getElementById("setPinBtn").style.background = "#ff9800";
+                document.getElementById("setPinBtn").innerHTML = "📍 Sätt nål på kartan";
                 alert(`Adress ifylld: ${address || "Okänd adress"}`);
             } catch(e) { console.log("Adressfel"); }
         });
@@ -485,9 +495,12 @@
         document.getElementById("setPinBtn").style.background = "#1e6f5c";
         document.getElementById("setPinBtn").innerHTML = "📍 Klicka på kartan...";
         setTimeout(() => {
-            document.getElementById("setPinBtn").innerHTML = "📍 Sätt nål på kartan";
-            document.getElementById("setPinBtn").style.background = "#ff9800";
-        }, 3000);
+            if(isMapPinMode) {
+                document.getElementById("setPinBtn").innerHTML = "📍 Sätt nål på kartan";
+                document.getElementById("setPinBtn").style.background = "#ff9800";
+                isMapPinMode = false;
+            }
+        }, 10000);
     }
 
     async function searchAddressAndSetMarker(address) {
@@ -614,7 +627,7 @@
         
         const active = ventilData.filter(v => !v.completed).length;
         const completed = ventilData.filter(v => v.completed).length;
-        document.getElementById("statsCounter").innerHTML = `📊 Aktiva: ${active} | ✅ Utförda: ${completed} | 🪣 Extra: ${extraFinds.length}`;
+        document.getElementById("statsCounter").innerHTML = `📊 Aktiva: ${active} | ✅ Utförda: ${completed} | 🪣 Kompletterande iakttagelser: ${extraFinds.length}`;
         updateAllMapMarkers();
     }
 
@@ -699,7 +712,7 @@
         const category = document.getElementById("extraCategory").value;
         const location = document.getElementById("extraLocation").value.trim();
         const desc = document.getElementById("extraDesc").value.trim();
-        if(!desc) { alert("Skriv beskrivning"); return; }
+        if(!desc) { alert("Skriv beskrivning av iakttagelsen"); return; }
         if(!currentUser) { alert("Logga in först!"); return; }
         const editId = document.getElementById("saveBtn").getAttribute("data-edit-id");
         if(editId) {
@@ -707,9 +720,10 @@
             saveToStorage();
             renderActiveTable();
             document.getElementById("extraDesc").value = ""; document.getElementById("extraLocation").value = "";
-            alert("Extra fynd sparat!"); return;
+            alert("Kompletterande iakttagelse sparad!");
+            return;
         }
-        const vnr = prompt("Ange VAV-nummer för extra fyndet:", "");
+        const vnr = prompt("Ange VAV-nummer för iakttagelsen:", "");
         if(vnr) {
             const vent = ventilData.find(v => v.ventilNr.toLowerCase() === vnr.toLowerCase());
             if(vent) {
@@ -717,7 +731,7 @@
                 saveToStorage();
                 renderActiveTable();
                 document.getElementById("extraDesc").value = ""; document.getElementById("extraLocation").value = "";
-                alert(`Extra fynd sparat på ${vent.ventilNr}`);
+                alert(`Iakttagelse sparat på ${vent.ventilNr}`);
             } else alert(`Hittar ingen VAV med nr ${vnr}`);
         }
     }
@@ -741,7 +755,7 @@
     }
 
     function deleteVentil(id) {
-        if(confirm("Ta bort?")) {
+        if(confirm("Ta bort ventil och alla kopplade iakttagelser?")) {
             ventilData = ventilData.filter(v => v.id !== id);
             extraFinds = extraFinds.filter(ef => ef.ventilId !== id);
             saveToStorage();
@@ -762,7 +776,6 @@
         document.getElementById("saveBtn").innerHTML = "💾 Spara";
     }
 
-    // LOGGA IN - popup
     function showLoginPopup() {
         const overlay = document.createElement('div');
         overlay.className = 'overlay';
@@ -794,7 +807,6 @@
         };
     }
 
-    // MAIL FUNKTIONER
     function loadRecipients() {
         const stored = localStorage.getItem("ventil_recipients");
         if(stored) recipients = JSON.parse(stored);
@@ -839,7 +851,7 @@
         
         selectedVents.forEach(v => {
             const extras = getExtraForVentil(v.id).map(ef => `${ef.category}: ${ef.description} (${ef.location})`).join("; ");
-            report += `\n${v.ventilNr} | ${v.area} | ${v.location}\n   Status: ${v.fullStatus}\n   Notering: ${v.defectDesc || '-'}\n   Extra: ${extras || '-'}\n   Rapportör: ${v.reportedBy}\n----------------------------------------\n`;
+            report += `\n${v.ventilNr} | ${v.area} | ${v.location}\n   Status: ${v.fullStatus}\n   Notering: ${v.defectDesc || '-'}\n   Iakttagelser: ${extras || '-'}\n   Rapportör: ${v.reportedBy}\n----------------------------------------\n`;
         });
         
         if(message) report += `\n📝 MEDDELANDE:\n${message}\n`;
@@ -864,7 +876,7 @@
             const extras = getExtraForVentil(v.id).map(ef => `${ef.category}: ${ef.description}`).join("; ");
             return [`"${v.ventilNr}"`,`"${v.area}"`,`"${v.location||''}"`,`"${v.fullStatus}"`,`"${v.defectDesc||''}"`,`"${extras}"`,`"${v.reportedBy||''}"`,`"${v.completed?'Ja':'Nej'}"`];
         });
-        const csv = ["VAV,Område,Plats,Status,Notering,Extra fynd,Rapportör,Utförd", ...rows.map(r=>r.join(","))].join("\n");
+        const csv = ["VAV,Område,Plats,Status,Notering,Kompletterande iakttagelser,Rapportör,Utförd", ...rows.map(r=>r.join(","))].join("\n");
         const blob = new Blob(["\uFEFF" + csv], {type:"text/csv"});
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
@@ -874,7 +886,7 @@
     }
 
     function loadExample() {
-        if(confirm("Lägg till exempel?")) {
+        if(confirm("Lägg till exempeldata?")) {
             const newId = Date.now()+"ex1";
             ventilData.push({ id: newId, completed: false, ventilNr: "VAV98765", area: "Vårsta", location: "Vårstavägen 5", fullStatus: "Överasfalterad (utmärkt blå spray)", defectDesc: "Sprejat blått", reportedBy: currentUser || "Admin", completedBy: "", lastUpdated: new Date().toISOString() });
             extraFinds.push({ id: Date.now()+"ef1", ventilId: newId, category: "VBP - Brandpost", location: "Vårstavägen 5", description: "Behöver höjas 5 cm" });
@@ -908,10 +920,10 @@
     function handleSearch() { currentSearch = document.getElementById("searchInput").value.toLowerCase(); renderActiveTable(); }
     function handleAreaFilter() { currentAreaFilter = document.getElementById("areaFilter").value; renderActiveTable(); }
 
-    function saveToStorage() { localStorage.setItem("ventil2026_v8", JSON.stringify({ ventilData, extraFinds })); }
+    function saveToStorage() { localStorage.setItem("ventil2026_v9", JSON.stringify({ ventilData, extraFinds })); }
     
     function loadData() {
-        const stored = localStorage.getItem("ventil2026_v8");
+        const stored = localStorage.getItem("ventil2026_v9");
         if(stored) try { const d = JSON.parse(stored); ventilData = d.ventilData || []; extraFinds = d.extraFinds || []; } catch(e) {}
         const savedUser = localStorage.getItem("ventil_current_user");
         if(savedUser) { currentUser = savedUser; document.getElementById("userDisplay").innerHTML = `👤 ${savedUser}`; }
