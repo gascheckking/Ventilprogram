@@ -76,7 +76,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            flex: 1 1 150px;
+            flex: 1 1 160px;
             position: relative;
         }
         .input-group label {
@@ -94,26 +94,28 @@
             background: white;
             transition: 0.15s;
         }
-        .suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .suggestion-item {
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 8px;
             padding: 8px 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
+            background: #f9f9f9;
+            border-radius: 16px;
         }
-        .suggestion-item:hover {
-            background: #e9f0f5;
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: normal;
+            text-transform: none;
+            cursor: pointer;
+        }
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
         }
         button {
             background: #1e6f5c;
@@ -160,7 +162,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.8rem;
-            min-width: 1100px;
+            min-width: 1200px;
         }
         th {
             text-align: left;
@@ -173,22 +175,24 @@
             border-bottom: 2px solid #cfdfed;
             cursor: pointer;
         }
-        th:hover {
-            background-color: #e2eefa;
-        }
         td {
             padding: 10px 10px;
             border-bottom: 1px solid #e9edf2;
             vertical-align: top;
         }
+        .area-divider {
+            background: #e9ecef;
+            font-weight: bold;
+            border-top: 2px solid #adb5bd;
+        }
+        .area-divider td {
+            background: #dee2e6;
+            font-weight: bold;
+            padding: 8px 12px;
+        }
         .completed-row {
             background-color: #e8f5e9;
-            opacity: 0.8;
-        }
-        .checkbox-complete {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
+            opacity: 0.85;
         }
         .ventil-nr {
             font-weight: 700;
@@ -221,7 +225,7 @@
             background: #e1d5e7;
             color: #4a2c6d;
             font-size: 0.7rem;
-            padding: 2px 8px;
+            padding: 4px 10px;
             border-radius: 16px;
             display: inline-block;
             margin: 2px;
@@ -241,11 +245,27 @@
             padding: 4px 6px;
             border-radius: 20px;
         }
+        .complete-checkbox {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
         .empty-row td {
             text-align: center;
             padding: 40px;
             color: #6c86a3;
             font-style: italic;
+        }
+        .extra-form {
+            background: #fef7e0;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .extra-form h3 {
+            margin: 0 0 12px 0;
+            font-size: 1rem;
+            color: #b45f06;
         }
         footer {
             margin-top: 20px;
@@ -264,7 +284,7 @@
 <div class="app-container">
     <h1>
         🧰 Ventilprogram 2026 · Botkyrka VA
-        <span class="year-badge">📍 GPS-stöd | Aktiv inventering</span>
+        <span class="year-badge">📍 Aktiv inventering</span>
     </h1>
     
     <!-- Tabs för Aktiva / Åtgärdade -->
@@ -273,16 +293,16 @@
         <button class="tab-btn" id="tabCompleted">✅ Åtgärdade (<span id="completedCount">0</span>)</button>
     </div>
 
-    <!-- FORMULÄR -->
+    <!-- HUVUDFORMULÄR - Ventil -->
     <div class="toolbar" id="formPanel">
         <div class="input-group">
-            <label>📍 Område (först)</label>
+            <label>📍 Område</label>
             <select id="area">
-                <option value="Tullinge">Tullinge</option>
-                <option value="Tumba">Tumba</option>
-                <option value="Vårsta">Vårsta</option>
-                <option value="Grödinge">Grödinge</option>
-                <option value="Fittja/Alby/Norsborg/Slagsta">Fittja/Alby/Norsborg/Slagsta</option>
+                <option value="Tullinge">🏠 Tullinge</option>
+                <option value="Tumba">🏠 Tumba</option>
+                <option value="Vårsta">🏠 Vårsta</option>
+                <option value="Grödinge">🏠 Grödinge</option>
+                <option value="Fittja/Alby/Norsborg/Slagsta">🏠 Fittja/Alby/Norsborg/Slagsta</option>
             </select>
         </div>
         <div class="input-group">
@@ -290,67 +310,91 @@
             <input type="text" id="ventilId" placeholder="VAV92323" autocomplete="off">
         </div>
         <div class="input-group" style="flex:2;">
-            <label>📍 Gatuadress (GPS-förslag)</label>
-            <input type="text" id="location" placeholder="Börja skriv, t.ex. Oxelvägen..." autocomplete="off">
-            <div id="suggestions" class="suggestions" style="display:none;"></div>
+            <label>📍 Gatuadress / Plats</label>
+            <input type="text" id="location" placeholder="Korsning Oxelvägen / Askvägen" autocomplete="off">
         </div>
-        <div class="input-group">
-            <label>⚠️ Status</label>
-            <select id="statusSelect">
-                <option value="Trasig - snurrar bara">🔴 Trasig - snurrar bara</option>
-                <option value="Trasig - stum, kan ej rubba (2 gubbar)">🔴 Trasig - stum, 2 gubbar</option>
-                <option value="Väldigt trög, måste vara 2 gubbar">🟠 Väldigt trög, 2 gubbar</option>
-                <option value="Måste asfalteras om">🟡 Måste asfalteras om</option>
-                <option value="Betäckning trasig - Byta lock">🟡 Betäckning trasig - Byta lock</option>
-                <option value="Betäckning trasig - Höja hela betäckning">🟡 Höja hela betäckning</option>
-                <option value="Måste grävas - Skapad insats: JA">🟠 Grävas - Insats JA</option>
-                <option value="Måste grävas - Skapad insats: NEJ">🟠 Grävas - Insats NEJ</option>
-                <option value="Överasfalterad - Utmärkt: JA (blå spray)">🔵 Överasfalterad - Utmärkt JA</option>
-                <option value="Överasfalterad - Utmärkt: NEJ">🔵 Överasfalterad - Utmärkt NEJ</option>
-                <option value="Hittar ej ventil">⚪ Hittar ej ventil</option>
-                <option value="Funktionskontroll OK">🟢 OK</option>
-                <option value="(Egen text)">✏️ Egen text</option>
-            </select>
-        </div>
-        <div class="input-group" id="manualStatusGroup" style="display:none;">
-            <label>✏️ Egen status</label>
-            <input type="text" id="manualStatus" placeholder="Skriv egen status...">
-        </div>
-        <div class="input-group" style="flex:2;">
-            <label>📝 Övrig notering</label>
-            <textarea id="defectDesc" rows="1" placeholder="Extra info..."></textarea>
-        </div>
-        <button id="saveBtn">💾 Spara</button>
-        <button id="clearFormBtn" class="btn-outline">🗑️ Rensa</button>
     </div>
 
-    <!-- EXTRA FYND med kategorier -->
-    <div class="toolbar" style="background: #fef7e0;">
+    <!-- STATUS med checkboxar för underalternativ -->
+    <div class="toolbar" style="flex-direction: column; align-items: stretch;">
         <div class="input-group">
-            <label>🪣 Extra fynd kategori</label>
-            <select id="extraCategory">
-                <option value="Brandpost">🚒 Brandpost</option>
-                <option value="Brunn">🕳️ Brunn</option>
-                <option value="Övrigt">📌 Övrigt (skriv kommentar)</option>
+            <label>⚠️ HUVUDSTATUS</label>
+            <select id="mainStatus">
+                <option value="Trasig">🔴 Trasig</option>
+                <option value="Trög">🟠 Trög</option>
+                <option value="Överasfalterad">🟡 Överasfalterad</option>
+                <option value="Måste grävas">🟠 Måste grävas</option>
+                <option value="Betäckningsproblem">🟡 Betäckningsproblem</option>
+                <option value="Hittar ej ventil">⚪ Hittar ej ventil</option>
+                <option value="Funktionskontroll OK">🟢 Funktionskontroll OK</option>
             </select>
         </div>
-        <div class="input-group" style="flex:2;">
-            <label>📝 Beskrivning</label>
-            <input type="text" id="extraFind" placeholder="Ex: Behöver höjas / Asfaltskada / Lock trasigt">
+        
+        <!-- Underalternativ - visas beroende på vald huvudstatus -->
+        <div id="suboptions" class="checkbox-group">
+            <!-- Dynamiskt innehåll -->
         </div>
-        <button id="addExtraBtn" class="btn-outline">➕ Lägg till extrafynd</button>
+        
+        <div class="input-group">
+            <label>📝 Övrig notering / detaljer</label>
+            <textarea id="defectDesc" rows="2" placeholder="Fler detaljer om ventilen..."></textarea>
+        </div>
+        
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button id="saveBtn">💾 Spara ventil</button>
+            <button id="clearFormBtn" class="btn-outline">🗑️ Rensa</button>
+        </div>
+    </div>
+
+    <!-- EXTRA FYND - separat med eget område och adress -->
+    <div class="extra-form">
+        <h3>🪣 EXTRA FYND (brandpost, brunn, asfalt, kantsten etc)</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <div class="input-group" style="flex:1;">
+                <label>🏷️ Typ av fynd</label>
+                <select id="extraCategory">
+                    <option value="Brandpost">🚒 Brandpost</option>
+                    <option value="Brunn">🕳️ Brunn</option>
+                    <option value="Asfalt">🛣️ Asfalt</option>
+                    <option value="Kantsten">🪨 Kantsten</option>
+                    <option value="Övrigt">📌 Övrigt</option>
+                </select>
+            </div>
+            <div class="input-group" style="flex:1;">
+                <label>📍 Område för extrafynd</label>
+                <select id="extraArea">
+                    <option value="">Samma som ventil</option>
+                    <option value="Tullinge">Tullinge</option>
+                    <option value="Tumba">Tumba</option>
+                    <option value="Vårsta">Vårsta</option>
+                    <option value="Grödinge">Grödinge</option>
+                    <option value="Fittja/Alby/Norsborg/Slagsta">Norra Botkyrka</option>
+                </select>
+            </div>
+            <div class="input-group" style="flex:2;">
+                <label>📍 Adress / Plats för extrafynd</label>
+                <input type="text" id="extraLocation" placeholder="Korsning / gatuadress">
+            </div>
+            <div class="input-group" style="flex:2;">
+                <label>📝 Beskrivning / Problem</label>
+                <input type="text" id="extraDesc" placeholder="Behöver höjas / Lock trasigt / Asfaltskada">
+            </div>
+            <div style="display: flex; align-items: flex-end;">
+                <button id="addExtraBtn" class="btn-outline">➕ Lägg till extrafynd</button>
+            </div>
+        </div>
     </div>
 
     <!-- SÖK & FILTER -->
     <div class="toolbar" style="background: white; padding: 8px 0;">
         <div class="input-group" style="flex:2;">
             <label>🔍 Sök</label>
-            <input type="text" id="searchInput" placeholder="Sök på allt...">
+            <input type="text" id="searchInput" placeholder="Sök på ventil, plats, status...">
         </div>
         <div class="input-group">
             <label>📌 Filtrera område</label>
             <select id="areaFilter">
-                <option value="">Alla</option>
+                <option value="">Alla områden</option>
                 <option value="Tullinge">Tullinge</option>
                 <option value="Tumba">Tumba</option>
                 <option value="Vårsta">Vårsta</option>
@@ -358,20 +402,20 @@
                 <option value="Fittja/Alby/Norsborg/Slagsta">Norra Botkyrka</option>
             </select>
         </div>
-        <button id="exportCsvBtn" class="btn-outline">📎 Exportera</button>
+        <button id="exportCsvBtn" class="btn-outline">📎 Exportera CSV</button>
         <button id="importExampleBtn" class="btn-outline">📋 Exempeldata</button>
     </div>
 
     <div class="stats" id="statsCounter">Laddar...</div>
 
-    <!-- TABELL -->
+    <!-- TABELL med områdesindelning och mellanrum -->
     <div class="table-wrapper">
         <table id="ventilTable">
             <thead>
                 <tr>
-                    <th style="width:40px">✅</th>
-                    <th>Ventilnr ↕️</th>
-                    <th>Område ↕️</th>
+                    <th style="width:50px">✅ Åtgärdat</th>
+                    <th>Ventilnummer</th>
+                    <th>Område</th>
                     <th>Plats</th>
                     <th>Status</th>
                     <th>Extra fynd</th>
@@ -383,29 +427,88 @@
             </tbody>
         </table>
     </div>
-    <footer>💾 Auto-sparas | GPS-förslag från OpenStreetMap | Kryssa i ✅ för att flytta till Åtgärdade</footer>
+    <footer>💾 Auto-sparas | Kryssa i ✅ Åtgärdat för att flytta till Åtgärdade-listan | Områden grupperas med mellanrum</footer>
 </div>
 
 <script>
     let ventilData = [];
-    let currentTab = "active"; // "active" eller "completed"
+    let extraFindsList = []; // Extra fynd kopplas till ventil via ventilId
+    let currentTab = "active";
     let currentSearch = "";
     let currentAreaFilter = "";
-    let currentSort = { column: "ventilNr", order: "asc" };
 
-    // Ladda från storage
+    // Status underalternativ konfiguration
+    const subOptionsConfig = {
+        "Trasig": [
+            { id: "snurrar", label: "Snurrar bara", value: "snurrar bara" },
+            { id: "stum", label: "Stum - kan ej rubba (provat med 2 gubbar)", value: "stum, kan ej rubba (2 gubbar)" }
+        ],
+        "Trög": [
+            { id: "tvaGubbar", label: "Väldigt trög - måste vara 2 gubbar", value: "väldigt trög, måste vara 2 gubbar" }
+        ],
+        "Överasfalterad": [
+            { id: "markerad", label: "Utmärkt med blå spray på asfalten", value: "Utmärkt med blå spray JA" },
+            { id: "ejMarkerad", label: "Ej utmärkt ännu", value: "Ej utmärkt" }
+        ],
+        "Måste grävas": [
+            { id: "insatsSkapad", label: "Insats skapad (JA)", value: "Insats skapad JA" },
+            { id: "ingenInsats", label: "Insats ej skapad (NEJ)", value: "Insats ej skapad NEJ" },
+            { id: "planFinns", label: "TA-plan finns", value: "TA-plan finns" }
+        ],
+        "Betäckningsproblem": [
+            { id: "bytaLock", label: "Byta lock", value: "Byta lock" },
+            { id: "hojaBetackning", label: "Höja hela betäckning", value: "Höja hela betäckning" }
+        ],
+        "Hittar ej ventil": [],
+        "Funktionskontroll OK": []
+    };
+
+    function updateSubOptions() {
+        const mainStatus = document.getElementById("mainStatus").value;
+        const container = document.getElementById("suboptions");
+        const options = subOptionsConfig[mainStatus] || [];
+        
+        if(options.length === 0) {
+            container.innerHTML = '<span style="color:#888; font-size:0.8rem;">✓ Inga ytterligare alternativ för denna status</span>';
+            return;
+        }
+        
+        container.innerHTML = options.map(opt => `
+            <label>
+                <input type="checkbox" class="sub-checkbox" data-opt-id="${opt.id}" value="${opt.value}">
+                ${opt.label}
+            </label>
+        `).join('');
+    }
+
+    function getFullStatus() {
+        const mainStatus = document.getElementById("mainStatus").value;
+        const checkboxes = document.querySelectorAll(".sub-checkbox:checked");
+        const subValues = Array.from(checkboxes).map(cb => cb.value);
+        
+        if(subValues.length === 0) {
+            return mainStatus;
+        }
+        return `${mainStatus} - ${subValues.join(", ")}`;
+    }
+
     function loadFromStorage() {
-        const stored = localStorage.getItem("ventilprogram2026_v3");
+        const stored = localStorage.getItem("ventilprogram2026_v4");
         if(stored) {
             try {
-                ventilData = JSON.parse(stored);
-            } catch(e) { ventilData = []; }
+                const data = JSON.parse(stored);
+                ventilData = data.ventilData || [];
+                extraFindsList = data.extraFindsList || [];
+            } catch(e) { ventilData = []; extraFindsList = []; }
         }
         if(ventilData.length === 0) {
             ventilData = [
-                { id: "1", completed: false, ventilNr: "VAV92323", area: "Tullinge", location: "Oxelvägen / Askvägen", status: "Trasig - snurrar bara", defectDesc: "Spindeln roterar fritt", extraFinds: [{cat:"Brandpost", text:"Behöver höjas"}], lastUpdated: new Date().toISOString() },
-                { id: "2", completed: false, ventilNr: "VAV87112", area: "Tumba", location: "Granitvägen 12", status: "Väldigt trög, måste vara 2 gubbar", defectDesc: "", extraFinds: [], lastUpdated: new Date().toISOString() },
-                { id: "3", completed: true, ventilNr: "VAV44509", area: "Grödinge", location: "Björkhagsleden", status: "Funktionskontroll OK", defectDesc: "Åtgärdad", extraFinds: [], lastUpdated: new Date().toISOString() }
+                { id: "1", completed: false, ventilNr: "VAV92323", area: "Tullinge", location: "Oxelvägen / Askvägen", mainStatus: "Trasig", subStatus: "snurrar bara", fullStatus: "Trasig - snurrar bara", defectDesc: "Spindeln roterar fritt", lastUpdated: new Date().toISOString() },
+                { id: "2", completed: false, ventilNr: "VAV87112", area: "Tumba", location: "Granitvägen 12", mainStatus: "Trög", subStatus: "väldigt trög, måste vara 2 gubbar", fullStatus: "Trög - väldigt trög, måste vara 2 gubbar", defectDesc: "", lastUpdated: new Date().toISOString() },
+                { id: "3", completed: true, ventilNr: "VAV44509", area: "Grödinge", location: "Björkhagsleden", mainStatus: "Funktionskontroll OK", subStatus: "", fullStatus: "Funktionskontroll OK", defectDesc: "", lastUpdated: new Date().toISOString() }
+            ];
+            extraFindsList = [
+                { id: "ef1", ventilId: "1", category: "Brandpost", area: "Tullinge", location: "Oxelvägen 12", description: "Behöver höjas 5 cm" }
             ];
         }
         saveToStorage();
@@ -413,7 +516,10 @@
     }
 
     function saveToStorage() {
-        localStorage.setItem("ventilprogram2026_v3", JSON.stringify(ventilData));
+        localStorage.setItem("ventilprogram2026_v4", JSON.stringify({
+            ventilData: ventilData,
+            extraFindsList: extraFindsList
+        }));
     }
 
     function toggleComplete(id) {
@@ -437,9 +543,8 @@
             filtered = filtered.filter(v => 
                 v.ventilNr.toLowerCase().includes(s) ||
                 (v.location && v.location.toLowerCase().includes(s)) ||
-                v.status.toLowerCase().includes(s) ||
-                (v.defectDesc && v.defectDesc.toLowerCase().includes(s)) ||
-                (v.extraFinds && v.extraFinds.some(ef => ef.text.toLowerCase().includes(s)))
+                (v.fullStatus && v.fullStatus.toLowerCase().includes(s)) ||
+                (v.defectDesc && v.defectDesc.toLowerCase().includes(s))
             );
         }
         
@@ -447,15 +552,18 @@
             filtered = filtered.filter(v => v.area === currentAreaFilter);
         }
         
+        // Sortera efter område först, sedan ventilnummer
+        const areaOrder = { "Tullinge": 1, "Tumba": 2, "Vårsta": 3, "Grödinge": 4, "Fittja/Alby/Norsborg/Slagsta": 5 };
         filtered.sort((a,b) => {
-            let valA, valB;
-            if(currentSort.column === "ventilNr") { valA = a.ventilNr; valB = b.ventilNr; }
-            else if(currentSort.column === "area") { valA = a.area; valB = b.area; }
-            else { valA = a.status; valB = b.status; }
-            if(currentSort.order === "asc") return valA.localeCompare(valB, 'sv');
-            else return valB.localeCompare(valA, 'sv');
+            const areaDiff = (areaOrder[a.area] || 99) - (areaOrder[b.area] || 99);
+            if(areaDiff !== 0) return areaDiff;
+            return a.ventilNr.localeCompare(b.ventilNr);
         });
         return filtered;
+    }
+
+    function getExtraFindsForVentil(ventilId) {
+        return extraFindsList.filter(ef => ef.ventilId === ventilId);
     }
 
     function renderTable() {
@@ -468,12 +576,27 @@
         }
         
         tbody.innerHTML = "";
+        let lastArea = "";
+        
         for(let vent of filtered) {
+            // Lägg till mellanrum/områdesrubrik när område ändras
+            if(vent.area !== lastArea) {
+                const areaRow = tbody.insertRow();
+                areaRow.className = "area-divider";
+                areaRow.insertCell(0).colSpan = 7;
+                areaRow.cells[0].innerHTML = `📍 ${vent.area}`;
+                areaRow.cells[0].style.fontWeight = "bold";
+                areaRow.cells[0].style.backgroundColor = "#dee2e6";
+                lastArea = vent.area;
+            }
+            
             const row = tbody.insertRow();
             if(vent.completed) row.classList.add("completed-row");
             
+            // Åtgärdat-kryss längst till höger
             const checkCell = row.insertCell(0);
-            checkCell.innerHTML = `<input type="checkbox" class="checkbox-complete" data-id="${vent.id}" ${vent.completed ? "checked" : ""}>`;
+            checkCell.style.textAlign = "center";
+            checkCell.innerHTML = `<input type="checkbox" class="complete-checkbox" data-id="${vent.id}" ${vent.completed ? "checked" : ""} title="Markera som åtgärdad">`;
             
             row.insertCell(1).innerHTML = `<span class="ventil-nr">${escapeHtml(vent.ventilNr)}</span>`;
             
@@ -481,13 +604,15 @@
             row.insertCell(2).innerHTML = `<span class="area-badge ${areaClass}">${escapeHtml(vent.area)}</span>`;
             row.insertCell(3).innerHTML = escapeHtml(vent.location || '—');
             
-            row.insertCell(4).innerHTML = `<span class="status-badge" style="background:${getStatusColor(vent.status)}">${escapeHtml(vent.status)}</span>`;
+            const statusColor = getStatusColor(vent.fullStatus);
+            row.insertCell(4).innerHTML = `<span class="status-badge" style="background:${statusColor}">${escapeHtml(vent.fullStatus)}</span>`;
             
             const extraCell = row.insertCell(5);
-            if(vent.extraFinds && vent.extraFinds.length > 0) {
-                extraCell.innerHTML = vent.extraFinds.map(ef => {
-                    let catClass = ef.cat === "Brandpost" ? "extra-brandpost" : (ef.cat === "Brunn" ? "extra-brunn" : "");
-                    return `<span class="extra-badge ${catClass}">${escapeHtml(ef.cat)}: ${escapeHtml(ef.text)}</span>`;
+            const ventExtras = getExtraFindsForVentil(vent.id);
+            if(ventExtras.length > 0) {
+                extraCell.innerHTML = ventExtras.map(ef => {
+                    let catClass = ef.category === "Brandpost" ? "extra-brandpost" : (ef.category === "Brunn" ? "extra-brunn" : "");
+                    return `<div class="extra-badge ${catClass}">${escapeHtml(ef.category)}: ${escapeHtml(ef.description)}<br><small>📍 ${escapeHtml(ef.location || ef.area)}</small></div>`;
                 }).join('');
             } else { extraCell.innerHTML = '—'; }
             
@@ -499,7 +624,7 @@
             `;
         }
         
-        document.querySelectorAll('.checkbox-complete').forEach(cb => {
+        document.querySelectorAll('.complete-checkbox').forEach(cb => {
             cb.addEventListener('change', (e) => toggleComplete(cb.getAttribute('data-id')));
         });
         document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', (e) => editVentilById(btn.getAttribute('data-id'))));
@@ -508,8 +633,8 @@
     
     function getStatusColor(status) {
         if(status.includes("Trasig")) return "#ffcdd2";
-        if(status.includes("trög") || status.includes("Trög")) return "#ffecb3";
-        if(status.includes("asfaltera") || status.includes("Betäckning") || status.includes("Överasfalterad")) return "#ffe0b2";
+        if(status.includes("Trög")) return "#ffecb3";
+        if(status.includes("Överasfalterad")) return "#ffe0b2";
         if(status.includes("grävas")) return "#ffccbc";
         if(status.includes("Hittar ej")) return "#e0e0e0";
         if(status.includes("OK")) return "#c8e6d9";
@@ -521,21 +646,12 @@
         const completed = ventilData.filter(v => v.completed).length;
         document.getElementById("activeCount").innerText = active;
         document.getElementById("completedCount").innerText = completed;
-        document.getElementById("statsCounter").innerHTML = `📊 Aktiva: ${active} | ✅ Åtgärdade: ${completed} | Totalt: ${ventilData.length}`;
+        document.getElementById("statsCounter").innerHTML = `📊 Aktiva: ${active} | ✅ Åtgärdade: ${completed} | 🪣 Extra fynd: ${extraFindsList.length}`;
     }
     
     function renderUI() {
         renderTable();
         updateStats();
-    }
-    
-    function getSelectedStatus() {
-        const select = document.getElementById("statusSelect");
-        if(select.value === "(Egen text)") {
-            const manual = document.getElementById("manualStatus").value.trim();
-            return manual || "(Egen text ej ifylld)";
-        }
-        return select.value;
     }
     
     function saveVentil() {
@@ -544,7 +660,8 @@
         
         const area = document.getElementById("area").value;
         const location = document.getElementById("location").value.trim();
-        const status = getSelectedStatus();
+        const mainStatus = document.getElementById("mainStatus").value;
+        const fullStatus = getFullStatus();
         const defectDesc = document.getElementById("defectDesc").value.trim();
         
         const editId = document.getElementById("saveBtn").getAttribute("data-edit-id");
@@ -552,7 +669,12 @@
         if(editId) {
             const idx = ventilData.findIndex(v => v.id === editId);
             if(idx !== -1) {
-                ventilData[idx] = { ...ventilData[idx], ventilNr, area, location, status, defectDesc, lastUpdated: new Date().toISOString() };
+                ventilData[idx] = { 
+                    ...ventilData[idx], 
+                    ventilNr, area, location, 
+                    mainStatus, fullStatus, defectDesc, 
+                    lastUpdated: new Date().toISOString() 
+                };
             }
             document.getElementById("saveBtn").removeAttribute("data-edit-id");
             document.getElementById("saveBtn").innerHTML = "💾 Spara ventil";
@@ -560,7 +682,7 @@
             const newVentil = {
                 id: Date.now() + '-' + Math.random().toString(36).substr(2, 6),
                 completed: false,
-                ventilNr, area, location, status, defectDesc, extraFinds: [], 
+                ventilNr, area, location, mainStatus, fullStatus, defectDesc,
                 lastUpdated: new Date().toISOString()
             };
             ventilData.push(newVentil);
@@ -571,33 +693,50 @@
     }
     
     function addExtraFind() {
-        const extraText = document.getElementById("extraFind").value.trim();
-        if(!extraText) { alert("Skriv in beskrivning av extrafyndet"); return; }
         const category = document.getElementById("extraCategory").value;
+        const extraArea = document.getElementById("extraArea").value;
+        const extraLocation = document.getElementById("extraLocation").value.trim();
+        const description = document.getElementById("extraDesc").value.trim();
+        
+        if(!description) { alert("Skriv in en beskrivning av extrafyndet"); return; }
         
         const editId = document.getElementById("saveBtn").getAttribute("data-edit-id");
+        
         if(editId) {
-            const vent = ventilData.find(v => v.id === editId);
-            if(vent) {
-                if(!vent.extraFinds) vent.extraFinds = [];
-                vent.extraFinds.push({ cat: category, text: extraText });
-                saveToStorage();
-                renderUI();
-                document.getElementById("extraFind").value = "";
-                alert(`Extra fynd sparat på ${vent.ventilNr}`);
-                return;
-            }
+            // Lägg till på ventilen som redigeras
+            extraFindsList.push({
+                id: Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                ventilId: editId,
+                category: category,
+                area: extraArea || ventilData.find(v => v.id === editId)?.area || "",
+                location: extraLocation,
+                description: description
+            });
+            saveToStorage();
+            renderUI();
+            document.getElementById("extraDesc").value = "";
+            document.getElementById("extraLocation").value = "";
+            alert("Extra fynd sparat på ventilen");
+            return;
         }
         
-        const ventilNr = prompt("Ange ventilnummer för extra fyndet:", "");
+        // Annars fråga vilken ventil
+        const ventilNr = prompt("Ange ventilnummer för extra fyndet (t.ex. VAV92323):", "");
         if(ventilNr) {
             const vent = ventilData.find(v => v.ventilNr.toLowerCase() === ventilNr.toLowerCase());
             if(vent) {
-                if(!vent.extraFinds) vent.extraFinds = [];
-                vent.extraFinds.push({ cat: category, text: extraText });
+                extraFindsList.push({
+                    id: Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                    ventilId: vent.id,
+                    category: category,
+                    area: extraArea || vent.area,
+                    location: extraLocation,
+                    description: description
+                });
                 saveToStorage();
                 renderUI();
-                document.getElementById("extraFind").value = "";
+                document.getElementById("extraDesc").value = "";
+                document.getElementById("extraLocation").value = "";
                 alert(`Extra fynd sparat på ${vent.ventilNr}`);
             } else { alert(`Hittar ingen ventil med nr ${ventilNr}`); }
         }
@@ -606,28 +745,40 @@
     function editVentilById(id) {
         const vent = ventilData.find(v => v.id === id);
         if(!vent) return;
+        
         document.getElementById("ventilId").value = vent.ventilNr;
         document.getElementById("area").value = vent.area;
         document.getElementById("location").value = vent.location || "";
-        const statusSelect = document.getElementById("statusSelect");
-        const isCustom = ![...statusSelect.options].some(opt => opt.value === vent.status);
-        if(isCustom) {
-            statusSelect.value = "(Egen text)";
-            document.getElementById("manualStatusGroup").style.display = "flex";
-            document.getElementById("manualStatus").value = vent.status;
-        } else {
-            statusSelect.value = vent.status;
-            document.getElementById("manualStatusGroup").style.display = "none";
-        }
         document.getElementById("defectDesc").value = vent.defectDesc || "";
+        
+        // Sätt huvudstatus
+        const mainStatusSelect = document.getElementById("mainStatus");
+        const mainStatusMatch = vent.fullStatus.split(" - ")[0];
+        mainStatusSelect.value = mainStatusMatch;
+        updateSubOptions();
+        
+        // Sätt checkboxes baserat på subStatus
+        setTimeout(() => {
+            const subPart = vent.fullStatus.includes(" - ") ? vent.fullStatus.split(" - ")[1] : "";
+            if(subPart) {
+                const checkboxes = document.querySelectorAll(".sub-checkbox");
+                checkboxes.forEach(cb => {
+                    if(subPart.includes(cb.value)) {
+                        cb.checked = true;
+                    }
+                });
+            }
+        }, 50);
+        
         document.getElementById("saveBtn").setAttribute("data-edit-id", id);
         document.getElementById("saveBtn").innerHTML = "✏️ Uppdatera ventil";
         document.getElementById("formPanel").scrollIntoView({ behavior: "smooth" });
     }
     
     function deleteVentilById(id) {
-        if(confirm("Ta bort denna ventil permanent?")) {
+        if(confirm("Ta bort denna ventil permanent? Alla extra fynd försvinner också.")) {
             ventilData = ventilData.filter(v => v.id !== id);
+            extraFindsList = extraFindsList.filter(ef => ef.ventilId !== id);
             saveToStorage();
             renderUI();
             const editId = document.getElementById("saveBtn").getAttribute("data-edit-id");
@@ -639,77 +790,25 @@
         document.getElementById("ventilId").value = "";
         document.getElementById("area").value = "Tullinge";
         document.getElementById("location").value = "";
-        document.getElementById("statusSelect").value = "Trasig - snurrar bara";
-        document.getElementById("manualStatusGroup").style.display = "none";
-        document.getElementById("manualStatus").value = "";
+        document.getElementById("mainStatus").value = "Trasig";
         document.getElementById("defectDesc").value = "";
+        document.getElementById("extraDesc").value = "";
+        document.getElementById("extraLocation").value = "";
+        document.getElementById("extraArea").value = "";
+        updateSubOptions();
         document.getElementById("saveBtn").removeAttribute("data-edit-id");
         document.getElementById("saveBtn").innerHTML = "💾 Spara ventil";
     }
     
-    // GPS-förslag från OpenStreetMap Nominatim
-    let debounceTimer;
-    document.getElementById("location").addEventListener("input", function() {
-        clearTimeout(debounceTimer);
-        const query = this.value;
-        if(query.length < 3) {
-            document.getElementById("suggestions").style.display = "none";
-            return;
-        }
-        debounceTimer = setTimeout(() => {
-            fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)} Botkyrka Sverige&format=json&limit=5&addressdetails=1`)
-                .then(res => res.json())
-                .then(data => {
-                    const suggestionsDiv = document.getElementById("suggestions");
-                    if(data.length === 0) { suggestionsDiv.style.display = "none"; return; }
-                    suggestionsDiv.innerHTML = data.map(place => 
-                        `<div class="suggestion-item" data-address="${escapeHtml(place.display_name)}">📍 ${escapeHtml(place.display_name)}</div>`
-                    ).join('');
-                    suggestionsDiv.style.display = "block";
-                    document.querySelectorAll(".suggestion-item").forEach(el => {
-                        el.addEventListener("click", function() {
-                            document.getElementById("location").value = this.getAttribute("data-address");
-                            suggestionsDiv.style.display = "none";
-                        });
-                    });
-                })
-                .catch(() => {});
-        }, 500);
-    });
-    document.addEventListener("click", function(e) {
-        if(!document.getElementById("location").contains(e.target)) {
-            document.getElementById("suggestions").style.display = "none";
-        }
-    });
-    
-    document.getElementById("statusSelect").addEventListener("change", function() {
-        document.getElementById("manualStatusGroup").style.display = this.value === "(Egen text)" ? "flex" : "none";
-    });
-    
-    function sortTable(column) {
-        if(currentSort.column === column) {
-            currentSort.order = currentSort.order === "asc" ? "desc" : "asc";
-        } else {
-            currentSort.column = column;
-            currentSort.order = "asc";
-        }
-        renderUI();
-    }
-    
-    document.querySelectorAll("th").forEach((th, idx) => {
-        if(idx === 1) th.addEventListener("click", () => sortTable("ventilNr"));
-        if(idx === 2) th.addEventListener("click", () => sortTable("area"));
-        if(idx === 4) th.addEventListener("click", () => sortTable("status"));
-    });
-    
     function exportToCSV() {
         const headers = ["Ventilnummer","Område","Plats","Status","Notering","Extra fynd","Åtgärdad","Senast uppdaterad"];
-        const rows = ventilData.map(v => [
-            v.ventilNr, v.area, v.location || "", v.status, v.defectDesc || "",
-            (v.extraFinds || []).map(ef => `${ef.cat}: ${ef.text}`).join("; "),
-            v.completed ? "Ja" : "Nej",
-            new Date(v.lastUpdated).toLocaleString()
-        ]);
+        const rows = ventilData.map(v => {
+            const extras = getExtraFindsForVentil(v.id).map(ef => `${ef.category}: ${ef.description} (${ef.location || ef.area})`).join("; ");
+            return [
+                v.ventilNr, v.area, v.location || "", v.fullStatus, v.defectDesc || "",
+                extras, v.completed ? "Ja" : "Nej", new Date(v.lastUpdated).toLocaleString()
+            ];
+        });
         const csv = [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
         const blob = new Blob(["\uFEFF" + csv], { type: "text/csv" });
         const link = document.createElement("a");
@@ -721,11 +820,17 @@
     
     function loadExampleData() {
         if(confirm("Lägg till fler exempelventiler?")) {
-            const extras = [
-                { id: Date.now()+"ex1", completed: false, ventilNr: "VAV55555", area: "Vårsta", location: "Vårstavägen 5", status: "Överasfalterad - Utmärkt: JA (blå spray)", defectDesc: "Sprejat blått", extraFinds: [{cat:"Brunn", text:"Behöver rensas"}], lastUpdated: new Date().toISOString() },
-                { id: Date.now()+"ex2", completed: false, ventilNr: "VAV77777", area: "Tullinge", location: "Malmsjövägen", status: "Hittar ej ventil", defectDesc: "", extraFinds: [], lastUpdated: new Date().toISOString() }
-            ];
-            ventilData.push(...extras);
+            const newId = Date.now() + "ex1";
+            ventilData.push({
+                id: newId, completed: false, ventilNr: "VAV55555", area: "Vårsta", 
+                location: "Vårstavägen 5", mainStatus: "Överasfalterad", 
+                fullStatus: "Överasfalterad - Utmärkt med blå spray JA", defectDesc: "Sprejat blått på asfalten", 
+                lastUpdated: new Date().toISOString()
+            });
+            extraFindsList.push({
+                id: Date.now() + "ef1", ventilId: newId, category: "Brunn", 
+                area: "Vårsta", location: "Vårstavägen 5", description: "Brunnslock behöver tätas"
+            });
             saveToStorage();
             renderUI();
         }
@@ -734,11 +839,13 @@
     function handleSearch() { currentSearch = document.getElementById("searchInput").value.toLowerCase(); renderUI(); }
     function handleAreaFilter() { currentAreaFilter = document.getElementById("areaFilter").value; renderUI(); }
     
+    document.getElementById("mainStatus").addEventListener("change", updateSubOptions);
     document.getElementById("tabActive").addEventListener("click", () => { currentTab = "active"; document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active")); document.getElementById("tabActive").classList.add("active"); renderUI(); });
     document.getElementById("tabCompleted").addEventListener("click", () => { currentTab = "completed"; document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active")); document.getElementById("tabCompleted").classList.add("active"); renderUI(); });
     
     window.onload = () => {
         loadFromStorage();
+        updateSubOptions();
         document.getElementById("saveBtn").addEventListener("click", saveVentil);
         document.getElementById("clearFormBtn").addEventListener("click", clearForm);
         document.getElementById("addExtraBtn").addEventListener("click", addExtraFind);
