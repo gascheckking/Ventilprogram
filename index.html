@@ -166,8 +166,8 @@
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            padding: 10px 12px;
+            gap: 16px;
+            padding: 8px 12px;
             background: #f8f9fa;
             border-radius: 12px;
             margin-top: 4px;
@@ -175,10 +175,22 @@
         .checkbox-group label {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.7rem;
+            gap: 6px;
+            font-size: 0.75rem;
             font-weight: normal;
             cursor: pointer;
+        }
+        .status-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.65rem;
         }
         .stats {
             background: #eef3f0;
@@ -233,11 +245,6 @@
         .area-Vårsta { background: #d1ecf1; color: #0c5460; }
         .area-Grödinge { background: #e2d5f1; color: #4a2c6d; }
         .area-Fittja { background: #f8d7da; color: #721c24; }
-        .status-badge {
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-        }
         .complete-label {
             display: flex;
             align-items: center;
@@ -311,6 +318,7 @@
         @media (max-width: 700px) {
             .app-container { padding: 10px; }
             .form-row { flex-direction: column; }
+            .checkbox-group { flex-direction: column; gap: 8px; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
@@ -335,7 +343,7 @@
         <button id="fullModeBtn" class="mode-btn">📊 Översikt</button>
     </div>
 
-    <!-- FÖRENKLAD FÄLTVY (SIMPLE MODE) -->
+    <!-- FÖRENKLAD FÄLTVY -->
     <div id="simpleMode" class="simple-mode">
         <h3>⚡ Fältvy - snabbregistrering</h3>
         <div class="form-row">
@@ -344,24 +352,23 @@
             <div class="form-group" style="flex:1.5;"><label>📍 PLATS</label><div style="display:flex; gap:4px;"><input type="text" id="simpleLocation" placeholder="Klicka på kartan" style="flex:1;"><button id="simplePinBtn" class="btn-pin">📍 NÅL</button><button id="simpleGpsBtn" class="btn-gps">📍 GPS</button></div></div>
         </div>
         
-        <!-- STATUS - ENKLA KRYSSRUTOR (ingen Ctrl) -->
+        <!-- STATUS - ENKLA KRYSSRUTOR (förenklade) -->
         <div class="form-group">
             <label>🔧 STATUS / DEFEKTER (klicka i de som gäller)</label>
             <div class="checkbox-group" id="statusCheckboxes">
-                <label><input type="checkbox" class="status-cb" value="Trasig - snurrar bara"> 🔴 Trasig - snurrar bara</label>
-                <label><input type="checkbox" class="status-cb" value="Trasig - stum (kräver 2 gubbar)"> 🔴 Trasig - stum (2 gubbar)</label>
-                <label><input type="checkbox" class="status-cb" value="Trasig - saknar nyckelstång"> 🔴 Saknar nyckelstång</label>
-                <label><input type="checkbox" class="status-cb" value="Trög - kräver 2 gubbar"> 🟠 Trög - kräver 2 gubbar</label>
-                <label><input type="checkbox" class="status-cb" value="Överasfalterad - sprayad JA"> 🟡 Överasfalterad - sprayad JA</label>
-                <label><input type="checkbox" class="status-cb" value="Överasfalterad - sprayad NEJ"> 🟡 Överasfalterad - sprayad NEJ</label>
-                <label><input type="checkbox" class="status-cb" value="Betäckning defekt"> 🟡 Betäckning defekt</label>
-                <label><input type="checkbox" class="status-cb" value="Måste grävas - insats JA"> 🟠 Måste grävas - insats JA</label>
-                <label><input type="checkbox" class="status-cb" value="Måste grävas - insats NEJ"> 🟠 Måste grävas - insats NEJ</label>
-                <label><input type="checkbox" class="status-cb" value="Läckljud"> 💧 Läckljud</label>
-                <label><input type="checkbox" class="status-cb" value="Distansering saknas"> 📏 Distansering saknas</label>
-                <label><input type="checkbox" class="status-cb" value="Stängd"> 🚪 Stängd</label>
+                <label><input type="checkbox" class="status-cb" value="Trasig - snurrar bara"> 🔴 1. Trasig - snurrar bara</label>
+                <label><input type="checkbox" class="status-cb" value="Trög - kräver 2 gubbar"> 🟠 2. Trög - kräver 2 gubbar</label>
+                <label><input type="checkbox" class="status-cb" value="Överasfalterad"> 🟡 3. Överasfalterad</label>
+            </div>
+            <div class="checkbox-group" style="margin-top:4px;">
+                <label><strong>Betäckning:</strong></label>
+                <label><input type="checkbox" class="status-cb" value="Betäckning - behöver höjas"> ⬆️ Höjas</label>
+                <label><input type="checkbox" class="status-cb" value="Betäckning - behöver bytas"> 🔄 Byta lock</label>
                 <label><input type="checkbox" class="status-cb" value="Hittar ej ventil"> ⚪ Hittar ej ventil</label>
                 <label><input type="checkbox" class="status-cb" value="OK - fungerar"> 🟢 OK - fungerar</label>
+            </div>
+            <div class="form-row" style="margin-top:6px;">
+                <div class="form-group" style="flex:2;"><label>✏️ Ej kontrollerad / fritext</label><input type="text" id="freeTextStatus" placeholder="Skriv egen status här..."></div>
             </div>
         </div>
         
@@ -370,23 +377,23 @@
             <div><button id="simpleSaveBtn" style="background:#ff9800;">💾 Spara VAV</button></div>
         </div>
         
-        <!-- EXTRA FYND INBAKAT -->
+        <!-- EXTRA FYND - RULLGARDIN FÖR DEFEKTER -->
         <div style="margin-top:16px; padding-top:12px; border-top:1px dashed #ccc;">
             <h4 style="margin:0 0 8px 0; font-size:0.8rem;">🪣 Kompletterande iakttagelser (VBP, VSP, VSV, Brunn)</h4>
             <div class="form-row">
                 <div class="form-group" style="flex:0.8;"><label>TYP</label><select id="simpleExtraType"><option value="VBP">🚒 VBP - Brandpost</option><option value="VSP">💧 VSP - Spolpost</option><option value="VSV">🚰 VSV - Vattenservis</option><option value="Brunn">🕳️ Brunn</option><option value="Övrigt">📌 Övrigt</option></select></div>
                 <div class="form-group" style="flex:0.7;"><label>NUMMER</label><input type="text" id="simpleExtraNumber" placeholder="VBP293"></div>
                 <div class="form-group" style="flex:1.2;"><label>📍 PLATS</label><input type="text" id="simpleExtraLocation" placeholder="Gatuadress"></div>
-                <div class="form-group" style="flex:1.2;"><label>📝 DEFEKT</label><select id="simpleExtraAction"></select></div>
+                <div class="form-group" style="flex:1.2;"><label>📝 DEFEKT (rullgardin)</label><select id="simpleExtraAction"></select></div>
                 <div><button id="simpleSaveExtraBtn" class="btn-outline">➕ Spara extra</button></div>
             </div>
         </div>
     </div>
 
-    <!-- KARTA (visas i båda lägena) -->
+    <!-- KARTA -->
     <div id="map" class="map-container"></div>
 
-    <!-- ÖVERSIKT (FULL MODE) - FLIKAR -->
+    <!-- ÖVERSIKT (FULL MODE) -->
     <div id="fullMode" style="display:none;">
         <div class="tab-buttons">
             <button class="tab-btn active" id="tabActive">⚠️ Ventiler (VAV)</button>
@@ -396,7 +403,7 @@
             <button class="tab-btn" id="tabMail">📧 Rapport</button>
         </div>
 
-        <!-- FLIK: VENTILER (FULL) -->
+        <!-- FLIK: VENTILER -->
         <div id="activeTab" class="tab-content">
             <div class="form-row">
                 <div class="form-group" style="flex:2;"><input type="text" id="searchInput" placeholder="🔍 Sök VAV, plats..."></div>
@@ -407,17 +414,17 @@
             <div class="stats" id="statsCounter"></div>
             <div class="table-wrapper">
                 <table id="ventilTable"><thead><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Notering</th><th>Rapportör</th><th>✅</th><th></th></thead>
-                <tbody id="tableBody"></tbody></table>
+                <tbody id="tableBody"></tbody>+
             </div>
         </div>
 
         <!-- FLIK: ÅTGÄRDADE -->
         <div id="completedTab" class="tab-content" style="display:none;">
             <div class="table-wrapper"><table id="completedTable"><thead><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Åtgärdad av</th><th>Datum</th></thead>
-            <tbody id="completedTableBody"></tbody></table></div>
+            <tbody id="completedTableBody"></tbody>+
         </div>
 
-        <!-- FLIK: EXTRA FYND (FULL) -->
+        <!-- FLIK: EXTRA FYND -->
         <div id="extraFullTab" class="tab-content" style="display:none;">
             <div class="extra-find-section">
                 <h3>🔍 Kompletterande iakttagelser</h3>
@@ -432,19 +439,17 @@
             </div>
             <div class="stats" id="extraStats"></div>
             <div class="table-wrapper"><table id="extraTable"><thead><th>Typ</th><th>Nummer</th><th>Plats</th><th>Beskrivning</th><th>Område</th><th>Rapportör</th><th>Status</th><th>✅</th><th></th></thead>
-            <tbody id="extraTableBody"></tbody></table></div>
+            <tbody id="extraTableBody"></tbody>+
         </div>
 
         <!-- FLIK: SORTERA EFTER -->
         <div id="categoriesTab" class="tab-content" style="display:none;">
             <div style="background:#f5f5f5; border-radius:14px; padding:10px;">
                 <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
-                    <div class="filter-chip" data-cat="gravas">🟠 Grävas</div>
+                    <div class="filter-chip" data-cat="trasig">🔴 Trasig</div>
                     <div class="filter-chip" data-cat="trog">🟠 Trög</div>
                     <div class="filter-chip" data-cat="overasf">🟡 Överasfalterad</div>
-                    <div class="filter-chip" data-cat="betackning">🟡 Betäckning defekt</div>
-                    <div class="filter-chip" data-cat="lackljud">💧 Läckljud</div>
-                    <div class="filter-chip" data-cat="distansering">📏 Distansering saknas</div>
+                    <div class="filter-chip" data-cat="betackning">🟡 Betäckningsproblem</div>
                     <div class="filter-chip" data-cat="hittar">⚪ Hittar ej</div>
                     <div class="filter-chip active" data-cat="all">📋 Alla ventiler</div>
                 </div>
@@ -464,14 +469,14 @@
             </div>
             <div class="stats" id="categoryStats"></div>
             <div class="table-wrapper"><table id="categoryTable"><thead><th><input type="checkbox" id="selectAllCategory"></th><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Rapportör</th></thead>
-            <tbody id="categoryTableBody"></tbody></table></div>
+            <tbody id="categoryTableBody"></tbody>+
         </div>
 
         <!-- FLIK: RAPPORT -->
         <div id="mailTab" class="tab-content" style="display:none;"></div>
     </div>
 
-    <footer>📍 Nål: klicka på knappen → klicka på kartan → fyller adress | Färgade flaggor på kartan: 🔴=Trasig 🟡=Överasfalterad 🟠=Trög/Grävas 🟢=OK/Åtgärdad</footer>
+    <footer>📍 Nål: klicka på knappen → klicka på kartan → fyller adress | Färgade flaggor på kartan: 🔴=Trasig 🟡=Överasfalterad/Betäckning 🟠=Trög 🟢=OK</footer>
 </div>
 
 <script>
@@ -493,12 +498,18 @@
     const BOTKYRKA_BOUNDS = [[59.1, 17.7], [59.3, 17.95]];
     const BOTKYRKA_CENTER = [59.2, 17.82];
 
-    const vbpDefects = ["Sned/trasig ram", "Otät", "Proppad", "Läckljud", "Sparhylsa trasig", "Grusfylld trumma", "Flagga saknas", "Betäckning behöver höjas", "Trasigt lock"];
+    // Defekter för extra fynd (rullgardin)
+    const vbpDefects = [
+        "Sned/trasig ram", "Otät", "Proppad", "Läckljud", 
+        "Sparhylsa trasig", "Grusfylld trumma", "Flagga saknas", 
+        "Betäckning behöver höjas", "Trasigt lock", "Saknas helt"
+    ];
+    
     const actionSuggestions = {
         "VBP": vbpDefects,
-        "VSP": ["Spolpost saknas", "Trasig spolpost", "Läcker", "Skylt saknas"],
-        "VSV": ["Vattenservis läcker", "Trasig ventil", "Skylt saknas"],
-        "Brunn": ["Lock trasigt", "Brunnskant skadad", "Behöver rensas", "Sättningar"],
+        "VSP": ["Spolpost saknas", "Trasig spolpost", "Läcker", "Skylt saknas", "Behöver rengöras"],
+        "VSV": ["Vattenservis läcker", "Trasig ventil", "Skylt saknas", "Behöver markeras"],
+        "Brunn": ["Lock trasigt", "Brunnskant skadad", "Behöver rensas", "Sättningar", "Dålig tätning"],
         "Övrigt": ["Annan iakttagelse"]
     };
 
@@ -527,15 +538,17 @@
     function getSelectedStatus() {
         const checkboxes = document.querySelectorAll("#statusCheckboxes .status-cb:checked");
         const selected = Array.from(checkboxes).map(cb => cb.value);
+        const freeText = document.getElementById("freeTextStatus").value.trim();
+        if(freeText) selected.push(`Ej kontrollerad: ${freeText}`);
         if(selected.length === 0) return "Ingen status vald";
         return selected.join(", ");
     }
 
     function getMarkerColor(status) {
         const s = status.toLowerCase();
-        if(s.includes("trasig") || s.includes("snurrar") || s.includes("stum")) return "red";
+        if(s.includes("trasig") || s.includes("snurrar")) return "red";
         if(s.includes("överasfalterad") || s.includes("betäckning")) return "gold";
-        if(s.includes("trög") || s.includes("grävas")) return "orange";
+        if(s.includes("trög")) return "orange";
         if(s.includes("ok") || s.includes("fungerar")) return "green";
         return "blue";
     }
@@ -662,9 +675,7 @@
         if(s.includes("Trasig")) return "#ffcdd2";
         if(s.includes("Trög")) return "#ffecb3";
         if(s.includes("Överasfalterad")) return "#ffe0b2";
-        if(s.includes("grävas")) return "#ffccbc";
         if(s.includes("Betäckning")) return "#ffe0b2";
-        if(s.includes("Läckljud")) return "#fff9c4";
         if(s.includes("OK")) return "#c8e6d9";
         return "#e3f2fd";
     }
@@ -690,6 +701,7 @@
         document.getElementById("simpleVavNumber").value = "";
         document.getElementById("simpleLocation").value = "";
         document.getElementById("simpleNote").value = "";
+        document.getElementById("freeTextStatus").value = "";
         document.querySelectorAll("#statusCheckboxes .status-cb").forEach(cb => cb.checked = false);
         saveToStorage();
         renderAll();
@@ -803,12 +815,10 @@
 
     function renderCategoryTable() {
         let filtered = ventilData.filter(v => !v.completed);
-        if(currentCategoryFilter === "gravas") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("grävas"));
+        if(currentCategoryFilter === "trasig") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("trasig"));
         else if(currentCategoryFilter === "trog") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("trög"));
         else if(currentCategoryFilter === "overasf") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("överasfalterad"));
         else if(currentCategoryFilter === "betackning") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("betäckning"));
-        else if(currentCategoryFilter === "lackljud") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("läckljud"));
-        else if(currentCategoryFilter === "distansering") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("distansering"));
         else if(currentCategoryFilter === "hittar") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("hittar ej"));
         
         const order = { "Tullinge":1, "Tumba":2, "Vårsta":3, "Grödinge":4, "Fittja/Alby/Norsborg/Slagsta":5 };
@@ -864,6 +874,8 @@
         document.querySelectorAll("#statusCheckboxes .status-cb").forEach(cb => {
             cb.checked = statuses.includes(cb.value);
         });
+        const freeTextMatch = v.fullStatus.match(/Ej kontrollerad: (.*)/);
+        if(freeTextMatch) document.getElementById("freeTextStatus").value = freeTextMatch[1];
         document.getElementById("simpleModeBtn").click();
         if(v.location) {
             fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v.location)} Botkyrka&format=json&limit=1`)
@@ -991,12 +1003,10 @@
 
     function selectAllCategory() {
         let filtered = ventilData.filter(v => !v.completed);
-        if(currentCategoryFilter === "gravas") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("grävas"));
+        if(currentCategoryFilter === "trasig") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("trasig"));
         else if(currentCategoryFilter === "trog") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("trög"));
         else if(currentCategoryFilter === "overasf") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("överasfalterad"));
         else if(currentCategoryFilter === "betackning") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("betäckning"));
-        else if(currentCategoryFilter === "lackljud") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("läckljud"));
-        else if(currentCategoryFilter === "distansering") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("distansering"));
         else if(currentCategoryFilter === "hittar") filtered = filtered.filter(v => v.fullStatus.toLowerCase().includes("hittar ej"));
         filtered.forEach(v => selectedVentils.add(v.id));
         renderCategoryTable();
@@ -1027,7 +1037,7 @@
 
     function loadExample() {
         if(confirm("Lägg till exempeldata?")) {
-            ventilData.push({ id: Date.now()+"ex1", completed: false, ventilNr: "VAV98765", area: "Vårsta", location: "Vårstavägen 5", fullStatus: "Överasfalterad - sprayad JA, Läckljud", defectDesc: "Sprejat blått", reportedBy: currentUser || "Admin", completedBy: "", lastUpdated: new Date().toISOString() });
+            ventilData.push({ id: Date.now()+"ex1", completed: false, ventilNr: "VAV98765", area: "Vårsta", location: "Vårstavägen 5", fullStatus: "Överasfalterad, Betäckning - behöver höjas", defectDesc: "Sprejat blått", reportedBy: currentUser || "Admin", completedBy: "", lastUpdated: new Date().toISOString() });
             extraData.push({ id: Date.now()+"ef1", completed: false, type: "VBP", number: "VBP293", location: "Oxelvägen 12", description: "Flagga saknas", area: "Tullinge", reportedBy: currentUser || "Admin", completedBy: "", lastUpdated: new Date().toISOString() });
             saveToStorage();
             renderAll();
@@ -1037,7 +1047,11 @@
     function switchTab(tab) {
         currentTab = tab;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`tab${tab === "extraFull" ? "ExtraFull" : tab.charAt(0).toUpperCase()+tab.slice(1)}`)?.classList.add('active');
+        if(tab === 'active') document.getElementById("tabActive").classList.add('active');
+        else if(tab === 'completed') document.getElementById("tabCompleted").classList.add('active');
+        else if(tab === 'extraFull') document.getElementById("tabExtraFull").classList.add('active');
+        else if(tab === 'categories') document.getElementById("tabCategories").classList.add('active');
+        else if(tab === 'mail') document.getElementById("tabMail").classList.add('active');
         document.getElementById("activeTab").style.display = tab === 'active' ? 'block' : 'none';
         document.getElementById("completedTab").style.display = tab === 'completed' ? 'block' : 'none';
         document.getElementById("extraFullTab").style.display = tab === 'extraFull' ? 'block' : 'none';
@@ -1066,15 +1080,15 @@
         updateAllMapMarkers();
     }
 
-    function saveToStorage() { localStorage.setItem("ventil2026_v17", JSON.stringify({ ventilData, extraData })); }
+    function saveToStorage() { localStorage.setItem("ventil2026_v18", JSON.stringify({ ventilData, extraData })); }
     
     function loadData() {
-        const stored = localStorage.getItem("ventil2026_v17");
+        const stored = localStorage.getItem("ventil2026_v18");
         if(stored) try { const d = JSON.parse(stored); ventilData = d.ventilData || []; extraData = d.extraData || []; } catch(e) {}
         const savedUser = localStorage.getItem("ventil_current_user");
         if(savedUser) { currentUser = savedUser; document.getElementById("userDisplay").innerHTML = `👤 ${savedUser}`; document.getElementById("userNameInput").value = savedUser; }
         if(ventilData.length === 0) {
-            ventilData = [{ id: "1", completed: false, ventilNr: "VAV92323", area: "Tullinge", location: "Oxelvägen / Askvägen", fullStatus: "Trasig - snurrar bara, Läckljud", defectDesc: "Spindeln roterar", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() }];
+            ventilData = [{ id: "1", completed: false, ventilNr: "VAV92323", area: "Tullinge", location: "Oxelvägen / Askvägen", fullStatus: "Trasig - snurrar bara", defectDesc: "Spindeln roterar", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() }];
         }
         saveToStorage();
         renderAll();
