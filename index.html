@@ -166,7 +166,7 @@
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 12px;
             padding: 8px 12px;
             background: #f8f9fa;
             border-radius: 12px;
@@ -175,17 +175,10 @@
         .checkbox-group label {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             font-size: 0.75rem;
             font-weight: normal;
             cursor: pointer;
-        }
-        .status-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
-            margin: 8px 0;
         }
         .status-badge {
             padding: 2px 8px;
@@ -210,7 +203,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.7rem;
-            min-width: 600px;
+            min-width: 650px;
         }
         th {
             text-align: left;
@@ -251,18 +244,6 @@
             gap: 5px;
             cursor: pointer;
         }
-        .extra-find-section {
-            background: #fef7e0;
-            border-radius: 16px;
-            padding: 12px;
-            margin: 12px 0;
-            border-left: 4px solid #ff9800;
-        }
-        .extra-find-section h3 {
-            margin: 0 0 10px 0;
-            font-size: 0.85rem;
-            color: #b45f06;
-        }
         .extra-badge {
             background: #e1d5e7;
             font-size: 0.6rem;
@@ -271,7 +252,6 @@
             display: inline-block;
             margin: 2px;
         }
-        .type-VBP { background: #c8e6f5; }
         .filter-chip {
             background: white;
             border: 1px solid #ddd;
@@ -309,6 +289,13 @@
             font-size: 0.9rem;
             color: #b45f06;
         }
+        .extra-find-section {
+            background: #fef7e0;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 12px 0;
+            border-left: 4px solid #ff9800;
+        }
         footer {
             margin-top: 12px;
             text-align: center;
@@ -318,7 +305,7 @@
         @media (max-width: 700px) {
             .app-container { padding: 10px; }
             .form-row { flex-direction: column; }
-            .checkbox-group { flex-direction: column; gap: 8px; }
+            .checkbox-group { flex-direction: column; gap: 6px; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
@@ -329,46 +316,43 @@
     <div class="login-bar">
         <div class="login-simple">
             <span style="font-size:0.7rem;">👤</span>
-            <input type="text" id="userNameInput" placeholder="Ditt namn" value="">
+            <input type="text" id="userNameInput" placeholder="Ditt namn" value="Fredrik Kornelind">
             <button id="saveUserNameBtn">Logga in</button>
         </div>
-        <div id="userDisplay" class="user-name-display">👤 Inte inloggad</div>
+        <div id="userDisplay" class="user-name-display">👤 Fredrik Kornelind</div>
     </div>
 
     <h1 style="font-size:1.2rem; margin:0 0 5px 0;">🧰 Ventilprogram 2026 · Botkyrka VA</h1>
     
     <!-- MODE SWITCH -->
     <div class="mode-switch">
-        <button id="simpleModeBtn" class="mode-btn active">📱 Fältvy (enkel)</button>
+        <button id="simpleModeBtn" class="mode-btn active">📱 Fältvy</button>
         <button id="fullModeBtn" class="mode-btn">📊 Översikt</button>
     </div>
 
-    <!-- FÖRENKLAD FÄLTVY -->
+    <!-- FÄLTVY -->
     <div id="simpleMode" class="simple-mode">
-        <h3>⚡ Fältvy - snabbregistrering</h3>
+        <h3>⚡ Snabbregistrering</h3>
         <div class="form-row">
             <div class="form-group" style="flex:0.8;"><label>VAV-NUMMER</label><input type="text" id="simpleVavNumber" placeholder="VAV92323"></div>
             <div class="form-group" style="flex:1;"><label>OMRÅDE</label><select id="simpleArea"><option value="Tullinge">Tullinge</option><option value="Tumba">Tumba</option><option value="Vårsta">Vårsta</option><option value="Grödinge">Grödinge</option><option value="Fittja/Alby/Norsborg/Slagsta">Norra Botkyrka</option></select></div>
             <div class="form-group" style="flex:1.5;"><label>📍 PLATS</label><div style="display:flex; gap:4px;"><input type="text" id="simpleLocation" placeholder="Klicka på kartan" style="flex:1;"><button id="simplePinBtn" class="btn-pin">📍 NÅL</button><button id="simpleGpsBtn" class="btn-gps">📍 GPS</button></div></div>
         </div>
         
-        <!-- STATUS - ENKLA KRYSSRUTOR (förenklade) -->
+        <!-- STATUS - ENKLA KRYSSRUTOR -->
         <div class="form-group">
-            <label>🔧 STATUS / DEFEKTER (klicka i de som gäller)</label>
-            <div class="checkbox-group" id="statusCheckboxes">
-                <label><input type="checkbox" class="status-cb" value="Trasig - snurrar bara"> 🔴 1. Trasig - snurrar bara</label>
-                <label><input type="checkbox" class="status-cb" value="Trög - kräver 2 gubbar"> 🟠 2. Trög - kräver 2 gubbar</label>
-                <label><input type="checkbox" class="status-cb" value="Överasfalterad"> 🟡 3. Överasfalterad</label>
-            </div>
-            <div class="checkbox-group" style="margin-top:4px;">
-                <label><strong>Betäckning:</strong></label>
-                <label><input type="checkbox" class="status-cb" value="Betäckning - behöver höjas"> ⬆️ Höjas</label>
-                <label><input type="checkbox" class="status-cb" value="Betäckning - behöver bytas"> 🔄 Byta lock</label>
-                <label><input type="checkbox" class="status-cb" value="Hittar ej ventil"> ⚪ Hittar ej ventil</label>
-                <label><input type="checkbox" class="status-cb" value="OK - fungerar"> 🟢 OK - fungerar</label>
+            <label>🔧 STATUS (klicka i de som gäller)</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" class="status-cb" value="Trasig - snurrar bara"> 🔴 Trasig - snurrar bara</label>
+                <label><input type="checkbox" class="status-cb" value="Trög - kräver 2 gubbar"> 🟠 Trög - kräver 2 gubbar</label>
+                <label><input type="checkbox" class="status-cb" value="Överasfalterad"> 🟡 Överasfalterad</label>
+                <label><input type="checkbox" class="status-cb" value="Betäckning - behöver höjas"> ⬆️ Betäckning - höjas</label>
+                <label><input type="checkbox" class="status-cb" value="Betäckning - behöver bytas"> 🔄 Betäckning - byta lock</label>
+                <label><input type="checkbox" class="status-cb" value="Hittar ej ventil"> ⚪ Hittar ej</label>
+                <label><input type="checkbox" class="status-cb" value="OK - fungerar"> 🟢 OK</label>
             </div>
             <div class="form-row" style="margin-top:6px;">
-                <div class="form-group" style="flex:2;"><label>✏️ Ej kontrollerad / fritext</label><input type="text" id="freeTextStatus" placeholder="Skriv egen status här..."></div>
+                <div class="form-group" style="flex:2;"><label>✏️ Övrig notering</label><input type="text" id="freeTextStatus" placeholder="Skriv egen notering här..."></div>
             </div>
         </div>
         
@@ -377,15 +361,15 @@
             <div><button id="simpleSaveBtn" style="background:#ff9800;">💾 Spara VAV</button></div>
         </div>
         
-        <!-- EXTRA FYND - RULLGARDIN FÖR DEFEKTER -->
+        <!-- EXTRA FYND -->
         <div style="margin-top:16px; padding-top:12px; border-top:1px dashed #ccc;">
-            <h4 style="margin:0 0 8px 0; font-size:0.8rem;">🪣 Kompletterande iakttagelser (VBP, VSP, VSV, Brunn)</h4>
+            <h4 style="margin:0 0 8px 0; font-size:0.8rem;">🪣 Extra iakttagelser (VBP, VSP, VSV, Brunn)</h4>
             <div class="form-row">
                 <div class="form-group" style="flex:0.8;"><label>TYP</label><select id="simpleExtraType"><option value="VBP">🚒 VBP - Brandpost</option><option value="VSP">💧 VSP - Spolpost</option><option value="VSV">🚰 VSV - Vattenservis</option><option value="Brunn">🕳️ Brunn</option><option value="Övrigt">📌 Övrigt</option></select></div>
                 <div class="form-group" style="flex:0.7;"><label>NUMMER</label><input type="text" id="simpleExtraNumber" placeholder="VBP293"></div>
                 <div class="form-group" style="flex:1.2;"><label>📍 PLATS</label><input type="text" id="simpleExtraLocation" placeholder="Gatuadress"></div>
-                <div class="form-group" style="flex:1.2;"><label>📝 DEFEKT (rullgardin)</label><select id="simpleExtraAction"></select></div>
-                <div><button id="simpleSaveExtraBtn" class="btn-outline">➕ Spara extra</button></div>
+                <div class="form-group" style="flex:1.2;"><label>📝 DEFEKT</label><select id="simpleExtraAction"></select></div>
+                <div><button id="simpleSaveExtraBtn" class="btn-outline">➕ Spara</button></div>
             </div>
         </div>
     </div>
@@ -393,41 +377,38 @@
     <!-- KARTA -->
     <div id="map" class="map-container"></div>
 
-    <!-- ÖVERSIKT (FULL MODE) -->
+    <!-- ÖVERSIKT -->
     <div id="fullMode" style="display:none;">
         <div class="tab-buttons">
-            <button class="tab-btn active" id="tabActive">⚠️ Ventiler (VAV)</button>
-            <button class="tab-btn" id="tabCompleted">✅ Åtgärdade ventiler</button>
-            <button class="tab-btn" id="tabExtraFull">🔍 EXTRA FYND</button>
-            <button class="tab-btn" id="tabCategories">📂 Sortera efter</button>
+            <button class="tab-btn active" id="tabActive">⚠️ Ventiler</button>
+            <button class="tab-btn" id="tabCompleted">✅ Åtgärdade</button>
+            <button class="tab-btn" id="tabExtraFull">🔍 Extra fynd</button>
+            <button class="tab-btn" id="tabCategories">📂 Sortera</button>
             <button class="tab-btn" id="tabMail">📧 Rapport</button>
         </div>
 
-        <!-- FLIK: VENTILER -->
         <div id="activeTab" class="tab-content">
             <div class="form-row">
                 <div class="form-group" style="flex:2;"><input type="text" id="searchInput" placeholder="🔍 Sök VAV, plats..."></div>
                 <div class="form-group" style="flex:0.8;"><select id="areaFilter"><option value="">Alla områden</option><option value="Tullinge">Tullinge</option><option value="Tumba">Tumba</option><option value="Vårsta">Vårsta</option><option value="Grödinge">Grödinge</option><option value="Fittja/Alby/Norsborg/Slagsta">Norra</option></select></div>
                 <button id="exportCsvBtn" class="btn-outline btn-sm">📎 CSV</button>
-                <button id="importExampleBtn" class="btn-outline btn-sm">📋 Exempel</button>
+                <button id="importExampleBtn" class="btn-outline btn-sm">📋 Ladda dina data</button>
             </div>
             <div class="stats" id="statsCounter"></div>
             <div class="table-wrapper">
                 <table id="ventilTable"><thead><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Notering</th><th>Rapportör</th><th>✅</th><th></th></thead>
-                <tbody id="tableBody"></tbody>+
+                <tbody id="tableBody"></tbody>
             </div>
         </div>
 
-        <!-- FLIK: ÅTGÄRDADE -->
         <div id="completedTab" class="tab-content" style="display:none;">
             <div class="table-wrapper"><table id="completedTable"><thead><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Åtgärdad av</th><th>Datum</th></thead>
-            <tbody id="completedTableBody"></tbody>+
+            <tbody id="completedTableBody"></tbody></table></div>
         </div>
 
-        <!-- FLIK: EXTRA FYND -->
         <div id="extraFullTab" class="tab-content" style="display:none;">
             <div class="extra-find-section">
-                <h3>🔍 Kompletterande iakttagelser</h3>
+                <h3>🔍 Extra iakttagelser</h3>
                 <div class="form-row">
                     <div class="form-group" style="flex:0.8;"><label>TYP</label><select id="extraType"><option value="VBP">🚒 VBP - Brandpost</option><option value="VSP">💧 VSP - Spolpost</option><option value="VSV">🚰 VSV - Vattenservis</option><option value="Brunn">🕳️ Brunn</option><option value="Övrigt">📌 Övrigt</option></select></div>
                     <div class="form-group" style="flex:0.7;"><label>NUMMER</label><input type="text" id="extraNumber" placeholder="VBP293"></div>
@@ -435,23 +416,21 @@
                     <div class="form-group" style="flex:1.2;"><label>📝 DEFEKT</label><select id="extraActionSelect"></select></div>
                     <div><button id="saveExtraBtn">💾 Spara</button></div>
                 </div>
-                <div class="form-row" id="customActionRow" style="display:none;"><div class="form-group"><label>✏️ Egen åtgärd</label><input type="text" id="customAction" placeholder="Skriv egen..."></div></div>
             </div>
             <div class="stats" id="extraStats"></div>
             <div class="table-wrapper"><table id="extraTable"><thead><th>Typ</th><th>Nummer</th><th>Plats</th><th>Beskrivning</th><th>Område</th><th>Rapportör</th><th>Status</th><th>✅</th><th></th></thead>
-            <tbody id="extraTableBody"></tbody>+
+            <tbody id="extraTableBody"></tbody></table></div>
         </div>
 
-        <!-- FLIK: SORTERA EFTER -->
         <div id="categoriesTab" class="tab-content" style="display:none;">
             <div style="background:#f5f5f5; border-radius:14px; padding:10px;">
                 <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
                     <div class="filter-chip" data-cat="trasig">🔴 Trasig</div>
                     <div class="filter-chip" data-cat="trog">🟠 Trög</div>
                     <div class="filter-chip" data-cat="overasf">🟡 Överasfalterad</div>
-                    <div class="filter-chip" data-cat="betackning">🟡 Betäckningsproblem</div>
+                    <div class="filter-chip" data-cat="betackning">🟡 Betäckning</div>
                     <div class="filter-chip" data-cat="hittar">⚪ Hittar ej</div>
-                    <div class="filter-chip active" data-cat="all">📋 Alla ventiler</div>
+                    <div class="filter-chip active" data-cat="all">📋 Alla</div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>📧 Mottagare</label>
@@ -469,21 +448,21 @@
             </div>
             <div class="stats" id="categoryStats"></div>
             <div class="table-wrapper"><table id="categoryTable"><thead><th><input type="checkbox" id="selectAllCategory"></th><th>VAV</th><th>Område</th><th>Plats</th><th>Status</th><th>Rapportör</th></thead>
-            <tbody id="categoryTableBody"></tbody>+
+            <tbody id="categoryTableBody"></tbody></table></div>
         </div>
 
-        <!-- FLIK: RAPPORT -->
         <div id="mailTab" class="tab-content" style="display:none;"></div>
     </div>
 
-    <footer>📍 Nål: klicka på knappen → klicka på kartan → fyller adress | Färgade flaggor på kartan: 🔴=Trasig 🟡=Överasfalterad/Betäckning 🟠=Trög 🟢=OK</footer>
+    <footer>📍 Klicka NÅL → klicka på kartan → fyller adress | Färgade flaggor: 🔴=Trasig 🟡=Överasfalterad 🟠=Trög 🟢=OK</footer>
 </div>
 
 <script>
+    // ALLA DINA ANTECKNINGAR INLADDADE SOM EXEMPELDATA
     let ventilData = [];
     let extraData = [];
     let recipients = [];
-    let currentUser = "";
+    let currentUser = "Fredrik Kornelind";
     let currentMode = "simple";
     let currentTab = "active";
     let currentCategoryFilter = "all";
@@ -498,13 +477,7 @@
     const BOTKYRKA_BOUNDS = [[59.1, 17.7], [59.3, 17.95]];
     const BOTKYRKA_CENTER = [59.2, 17.82];
 
-    // Defekter för extra fynd (rullgardin)
-    const vbpDefects = [
-        "Sned/trasig ram", "Otät", "Proppad", "Läckljud", 
-        "Sparhylsa trasig", "Grusfylld trumma", "Flagga saknas", 
-        "Betäckning behöver höjas", "Trasigt lock", "Saknas helt"
-    ];
-    
+    const vbpDefects = ["Sned/trasig ram", "Otät", "Proppad", "Läckljud", "Sparhylsa trasig", "Grusfylld trumma", "Flagga saknas", "Betäckning behöver höjas", "Trasigt lock", "Saknas helt", "Måste höjas och asfalteras", "Vatten och skit"];
     const actionSuggestions = {
         "VBP": vbpDefects,
         "VSP": ["Spolpost saknas", "Trasig spolpost", "Läcker", "Skylt saknas", "Behöver rengöras"],
@@ -522,16 +495,11 @@
         actionSelect.innerHTML = '<option value="">-- Välj defekt --</option>';
         suggestions.forEach(s => actionSelect.innerHTML += `<option value="${s}">${s}</option>`);
         actionSelect.innerHTML += `<option value="__custom__">✏️ Annan (skriv eget)</option>`;
-        actionSelect.onchange = function() {
-            const customRow = document.getElementById("customActionRow");
-            if(customRow) customRow.style.display = this.value === "__custom__" ? "flex" : "none";
-        };
     }
 
     function getExtraDescription(prefix = "") {
         const actionSelect = prefix === "simple" ? document.getElementById("simpleExtraAction") : document.getElementById("extraActionSelect");
-        const customInput = document.getElementById("customAction");
-        if(actionSelect.value === "__custom__") return customInput?.value.trim() || "(egen)";
+        if(actionSelect.value === "__custom__") return prompt("Skriv din egen beskrivning:", "") || "(egen)";
         return actionSelect.value;
     }
 
@@ -539,7 +507,7 @@
         const checkboxes = document.querySelectorAll("#statusCheckboxes .status-cb:checked");
         const selected = Array.from(checkboxes).map(cb => cb.value);
         const freeText = document.getElementById("freeTextStatus").value.trim();
-        if(freeText) selected.push(`Ej kontrollerad: ${freeText}`);
+        if(freeText) selected.push(freeText);
         if(selected.length === 0) return "Ingen status vald";
         return selected.join(", ");
     }
@@ -586,8 +554,6 @@
                     document.getElementById("extraLocation").value = address;
                     document.getElementById("simpleExtraLocation").value = address;
                     isExtraPinMode = false;
-                    const btn = document.getElementById("extraPinBtn");
-                    if(btn) btn.classList.remove("active");
                 }
                 if(currentMarker) markersLayer.removeLayer(currentMarker);
                 currentMarker = L.marker([lat, lng]).bindPopup(`📍 ${address}`).addTo(markersLayer);
@@ -601,36 +567,12 @@
         isSimplePinMode = !isSimplePinMode;
         isExtraPinMode = false;
         const btn = document.getElementById("simplePinBtn");
-        const extraBtn = document.getElementById("extraPinBtn");
-        if(extraBtn) extraBtn.classList.remove("active");
         if(isSimplePinMode) {
             btn.classList.add("active");
             btn.innerHTML = "📍 Klicka på kartan...";
         } else {
             btn.classList.remove("active");
             btn.innerHTML = "📍 NÅL";
-        }
-    }
-
-    function enableExtraPin() {
-        isExtraPinMode = !isExtraPinMode;
-        isSimplePinMode = false;
-        const btn = document.getElementById("simplePinBtn");
-        const extraBtn = document.getElementById("extraPinBtn");
-        if(btn) btn.classList.remove("active");
-        if(isExtraPinMode) {
-            extraBtn.classList.add("active");
-            extraBtn.innerHTML = "📍 Klicka på kartan...";
-            setTimeout(() => {
-                if(isExtraPinMode) {
-                    extraBtn.classList.remove("active");
-                    extraBtn.innerHTML = "📍 NÅL";
-                    isExtraPinMode = false;
-                }
-            }, 10000);
-        } else {
-            extraBtn.classList.remove("active");
-            extraBtn.innerHTML = "📍 NÅL";
         }
     }
 
@@ -680,7 +622,6 @@
         return "#e3f2fd";
     }
 
-    // SPARA FRÅN FÄLTVY
     function saveSimpleVentil() {
         const ventilNr = document.getElementById("simpleVavNumber").value.trim();
         if(!ventilNr) { alert("Ange VAV-nummer"); return; }
@@ -705,10 +646,9 @@
         document.querySelectorAll("#statusCheckboxes .status-cb").forEach(cb => cb.checked = false);
         saveToStorage();
         renderAll();
-        alert(`VAV ${ventilNr} sparad!`);
+        alert(`✅ VAV ${ventilNr} sparad!`);
     }
 
-    // SPARA EXTRA FYND FRÅN FÄLTVY
     function saveSimpleExtra() {
         const type = document.getElementById("simpleExtraType").value;
         const number = document.getElementById("simpleExtraNumber").value.trim();
@@ -719,7 +659,7 @@
         extraData.push({
             id: Date.now()+'-'+Math.random().toString(36).substr(2,4),
             completed: false,
-            type, number, location, description, area: "Tullinge",
+            type, number, location, description, area: document.getElementById("simpleArea").value,
             reportedBy: currentUser, completedBy: "",
             lastUpdated: new Date().toISOString()
         });
@@ -728,15 +668,90 @@
         document.getElementById("simpleExtraAction").value = "";
         saveToStorage();
         renderExtraTableFull();
-        alert("Extra fynd sparat!");
+        alert(`✅ Extra fynd sparat!`);
     }
 
-    // FULL MODE RENDER FUNCTIONS
+    // ALL DATA FRÅN DINA ANTECKNINGAR
+    function loadExampleData() {
+        ventilData = [
+            { id: "1", completed: false, ventilNr: "VAV71923", area: "Tullinge", location: "Vårbäcksvägen 9", fullStatus: "Borttagen av misstag", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "2", completed: false, ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "3", completed: false, ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning - behöver bytas", defectDesc: "Fel lock", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "4", completed: false, ventilNr: "VAV81517", area: "Tullinge", location: "Skogshemsvägen", fullStatus: "Ej kontrollerad", defectDesc: "Snö", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "5", completed: false, ventilNr: "VAV82003", area: "Tullinge", location: "Bergmovägen 1", fullStatus: "Ej kontrollerad", defectDesc: "Snö", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "6", completed: false, ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "7", completed: false, ventilNr: "VAV82149", area: "Tullinge", location: "Korsning Flottiljvägen/Bergmovägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "8", completed: false, ventilNr: "VAV71821", area: "Tullinge", location: "Korsning Adler Salvius väg/Liselundsvägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "9", completed: false, ventilNr: "VAV11", area: "Tullinge", location: "Solskensvägen 19", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "10", completed: false, ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej ventil", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "11", completed: false, ventilNr: "VAV94485", area: "Tullinge", location: "Korsning Skogsmulles väg/Strövarvägen", fullStatus: "Hittar ej ventil", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "12", completed: false, ventilNr: "VAV97388", area: "Tullinge", location: "Friluftsvägen 101", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "13", completed: false, ventilNr: "VAV97646", area: "Tullinge", location: "Hanvedens alle 58", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "14", completed: false, ventilNr: "VAV81438", area: "Tullinge", location: "Korsning Dalkärrsvägen/Skogshemsvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "15", completed: false, ventilNr: "VAV82456", area: "Tullinge", location: "Korsning Plåtslagarvägen/smedvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "16", completed: false, ventilNr: "VAV81307", area: "Tullinge", location: "Skogshemsvägen 7", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            // TUMBA
+            { id: "17", completed: false, ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "18", completed: false, ventilNr: "VAV83972", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "19", completed: false, ventilNr: "VAV3016", area: "Tumba", location: "Korsning Kärrvägen/Kärrtuvevägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "20", completed: false, ventilNr: "VAV92506", area: "Tumba", location: "Björkvägen 24", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "21", completed: false, ventilNr: "VAV91658", area: "Tumba", location: "Björkvägen 40", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "22", completed: false, ventilNr: "VAV93497", area: "Tumba", location: "Bäckvägen 21", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "23", completed: false, ventilNr: "VAV91806", area: "Tumba", location: "Korsning Skäcklingegårdsväg/bäverstigen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "24", completed: false, ventilNr: "VAV93062", area: "Tumba", location: "Korpvägen 9", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "25", completed: false, ventilNr: "VAV93028", area: "Tumba", location: "Duvhöksvägen 7", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "26", completed: false, ventilNr: "VAV92081", area: "Tumba", location: "Grytstigen 79", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "27", completed: false, ventilNr: "VAV91437", area: "Tumba", location: "Bryggarvägen 9C", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "28", completed: false, ventilNr: "VAV93486", area: "Tumba", location: "Korsning Svedjevägen/grytstigen", fullStatus: "Trasig - snurrar bara", defectDesc: "en ventil nära, ej inritad, ser ny ut", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "29", completed: false, ventilNr: "VAV1481", area: "Tumba", location: "Parkbacken 9", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "30", completed: false, ventilNr: "VAV92231", area: "Tumba", location: "Odlingsvägen Lekpark", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "31", completed: false, ventilNr: "VAV91921", area: "Tumba", location: "Harbrovägen 42Y vid övergångsstället busshållsplats", fullStatus: "Betäckning - behöver höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "32", completed: false, ventilNr: "VAV94384", area: "Tumba", location: "Engwallsväg 20", fullStatus: "Betäckning - behöver höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "33", completed: false, ventilNr: "VAV91763", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning - behöver höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "34", completed: false, ventilNr: "VAV91762", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning - behöver höjas, Betäckning - behöver bytas", defectDesc: "saknar lock", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "35", completed: false, ventilNr: "VAV62105", area: "Tumba", location: "Korsning Tunavägen/Prästgårdsvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "36", completed: false, ventilNr: "VAV2371", area: "Tumba", location: "Skrävstavägen 37", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "37", completed: false, ventilNr: "VAV61893", area: "Tumba", location: "Trädgårdsvägen 10", fullStatus: "Hittar ej ventil", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "38", completed: false, ventilNr: "VAV61717", area: "Tumba", location: "Trädgårdsvägen 15", fullStatus: "Hittar ej ventil", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "39", completed: false, ventilNr: "VAV1470", area: "Tumba", location: "Korsning Parkbacken/Strandvägen", fullStatus: "Hittar ej ventil", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "40", completed: false, ventilNr: "VAV94302", area: "Tumba", location: "Enbacken 21", fullStatus: "Betäckning - behöver bytas", defectDesc: "nytt AV-Lock", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            // VÅRSTA
+            { id: "41", completed: false, ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning - behöver bytas", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "42", completed: false, ventilNr: "VAV31604", area: "Vårsta", location: "Ringvägen 30", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "43", completed: false, ventilNr: "VAV31080", area: "Vårsta", location: "Bremoravägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "44", completed: false, ventilNr: "VAV94338", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "45", completed: false, ventilNr: "VAV32283", area: "Vårsta", location: "Ringvägen", fullStatus: "Borttagen", defectDesc: "SKA TAS BORT FRÅN KARTAN", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            // GRÖDINGE
+            { id: "46", completed: false, ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - behöver höjas", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "47", completed: false, ventilNr: "VAV97534", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - behöver höjas", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "48", completed: false, ventilNr: "VAV97515", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - behöver höjas", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "49", completed: false, ventilNr: "VAV97650", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - behöver höjas", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            // NORRA BOTKYRKA
+            { id: "50", completed: false, ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "51", completed: false, ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "52", completed: false, ventilNr: "VAV56781", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittjavägen rondell", fullStatus: "Betäckning - behöver höjas", defectDesc: "OK", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() }
+        ];
+        
+        extraData = [
+            { id: "e1", completed: false, type: "VBP", number: "VBP93823", location: "Mekanikervägen 1", description: "Vatten och skit, måste höjas och asfalteras", area: "Tullinge", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "e2", completed: false, type: "Övrigt", number: "", location: "Hökbursvägen 48", description: "Fixa asfalt", area: "Tumba", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "e3", completed: false, type: "VAV", number: "VAV93113", location: "Storvretsvägen 91B", description: "Byta betäckning", area: "Tumba", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "e4", completed: false, type: "VSV", number: "", location: "Olvonvägen 10", description: "Trasig", area: "Tumba", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "e5", completed: false, type: "VAV", number: "VAV97463", location: "Fittja torg", description: "Saknar lock och behöver justera betäckning", area: "Fittja/Alby/Norsborg/Slagsta", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "e6", completed: false, type: "VAV", number: "VAV56181", location: "Fittjastråket 29", description: "Sitter kork 'FÅR EJ RÖRAS'", area: "Fittja/Alby/Norsborg/Slagsta", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() },
+            { id: "e7", completed: false, type: "VAV", number: "VAV31643", location: "Brosjöstråket", description: "STUM kan ej rubba", area: "Vårsta", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() }
+        ];
+        
+        saveToStorage();
+        renderAll();
+        alert(`✅ Dina ${ventilData.length} ventiler och ${extraData.length} extra fynd är inladdade!`);
+    }
+
     function renderActiveTable() {
         let filtered = ventilData.filter(v => !v.completed);
         if(currentSearch) {
             const s = currentSearch.toLowerCase();
-            filtered = filtered.filter(v => v.ventilNr.toLowerCase().includes(s) || (v.location && v.location.toLowerCase().includes(s)));
+            filtered = filtered.filter(v => v.ventilNr.toLowerCase().includes(s) || (v.location && v.location.toLowerCase().includes(s)) || v.fullStatus.toLowerCase().includes(s));
         }
         if(currentAreaFilter) filtered = filtered.filter(v => v.area === currentAreaFilter);
         const order = { "Tullinge":1, "Tumba":2, "Vårsta":3, "Grödinge":4, "Fittja/Alby/Norsborg/Slagsta":5 };
@@ -796,7 +811,7 @@
         tbody.innerHTML = "";
         extraData.forEach(ex => {
             const row = tbody.insertRow();
-            row.insertCell(0).innerHTML = `<span class="extra-badge type-${ex.type}">${escapeHtml(ex.type)}</span>`;
+            row.insertCell(0).innerHTML = `<span class="extra-badge">${escapeHtml(ex.type)}</span>`;
             row.insertCell(1).innerHTML = `<span class="ventil-nr">${escapeHtml(ex.number || '—')}</span>`;
             row.insertCell(2).innerHTML = escapeHtml(ex.location || '—');
             row.insertCell(3).innerHTML = escapeHtml(ex.description || '—');
@@ -874,8 +889,6 @@
         document.querySelectorAll("#statusCheckboxes .status-cb").forEach(cb => {
             cb.checked = statuses.includes(cb.value);
         });
-        const freeTextMatch = v.fullStatus.match(/Ej kontrollerad: (.*)/);
-        if(freeTextMatch) document.getElementById("freeTextStatus").value = freeTextMatch[1];
         document.getElementById("simpleModeBtn").click();
         if(v.location) {
             fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v.location)} Botkyrka&format=json&limit=1`)
@@ -888,7 +901,7 @@
                     }
                 });
         }
-        alert(`Redigerar ${v.ventilNr}. Spara i fältvyn.`);
+        alert(`✏️ Redigerar ${v.ventilNr}. Spara i fältvyn.`);
     }
 
     function deleteVentil(id) {
@@ -931,11 +944,9 @@
         const isCustom = !actionSuggestions[ex.type]?.includes(ex.description);
         if(isCustom && ex.description) {
             select.value = "__custom__";
-            document.getElementById("customActionRow").style.display = "flex";
             document.getElementById("customAction").value = ex.description;
         } else {
             select.value = ex.description || "";
-            document.getElementById("customActionRow").style.display = "none";
         }
         document.getElementById("saveExtraBtn").setAttribute("data-edit-id", id);
         document.getElementById("saveExtraBtn").innerHTML = "✏️ Uppdatera";
@@ -960,7 +971,6 @@
         }
     }
 
-    // MAIL FUNKTIONER
     function loadRecipients() {
         const stored = localStorage.getItem("ventil_recipients");
         recipients = stored ? JSON.parse(stored) : [{ email: "henrik.singh@botkyrka.se", name: "Henrik Singh" }];
@@ -1035,15 +1045,6 @@
         URL.revokeObjectURL(a.href);
     }
 
-    function loadExample() {
-        if(confirm("Lägg till exempeldata?")) {
-            ventilData.push({ id: Date.now()+"ex1", completed: false, ventilNr: "VAV98765", area: "Vårsta", location: "Vårstavägen 5", fullStatus: "Överasfalterad, Betäckning - behöver höjas", defectDesc: "Sprejat blått", reportedBy: currentUser || "Admin", completedBy: "", lastUpdated: new Date().toISOString() });
-            extraData.push({ id: Date.now()+"ef1", completed: false, type: "VBP", number: "VBP293", location: "Oxelvägen 12", description: "Flagga saknas", area: "Tullinge", reportedBy: currentUser || "Admin", completedBy: "", lastUpdated: new Date().toISOString() });
-            saveToStorage();
-            renderAll();
-        }
-    }
-
     function switchTab(tab) {
         currentTab = tab;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -1080,17 +1081,12 @@
         updateAllMapMarkers();
     }
 
-    function saveToStorage() { localStorage.setItem("ventil2026_v18", JSON.stringify({ ventilData, extraData })); }
+    function saveToStorage() { localStorage.setItem("ventilprogram2026", JSON.stringify({ ventilData, extraData })); }
     
     function loadData() {
-        const stored = localStorage.getItem("ventil2026_v18");
+        const stored = localStorage.getItem("ventilprogram2026");
         if(stored) try { const d = JSON.parse(stored); ventilData = d.ventilData || []; extraData = d.extraData || []; } catch(e) {}
-        const savedUser = localStorage.getItem("ventil_current_user");
-        if(savedUser) { currentUser = savedUser; document.getElementById("userDisplay").innerHTML = `👤 ${savedUser}`; document.getElementById("userNameInput").value = savedUser; }
-        if(ventilData.length === 0) {
-            ventilData = [{ id: "1", completed: false, ventilNr: "VAV92323", area: "Tullinge", location: "Oxelvägen / Askvägen", fullStatus: "Trasig - snurrar bara", defectDesc: "Spindeln roterar", reportedBy: "Fredrik", completedBy: "", lastUpdated: new Date().toISOString() }];
-        }
-        saveToStorage();
+        if(ventilData.length === 0) loadExampleData();
         renderAll();
     }
 
@@ -1105,10 +1101,9 @@
     document.getElementById("simpleSaveExtraBtn")?.addEventListener("click", saveSimpleExtra);
     document.getElementById("simplePinBtn")?.addEventListener("click", enableSimplePin);
     document.getElementById("simpleGpsBtn")?.addEventListener("click", getCurrentPosition);
-    document.getElementById("extraPinBtn")?.addEventListener("click", enableExtraPin);
     document.getElementById("saveExtraBtn")?.addEventListener("click", saveExtra);
     document.getElementById("exportCsvBtn")?.addEventListener("click", exportCSV);
-    document.getElementById("importExampleBtn")?.addEventListener("click", loadExample);
+    document.getElementById("importExampleBtn")?.addEventListener("click", loadExampleData);
     document.getElementById("searchInput")?.addEventListener("input", handleSearch);
     document.getElementById("areaFilter")?.addEventListener("change", handleAreaFilter);
     document.getElementById("tabActive")?.addEventListener("click", () => switchTab("active"));
