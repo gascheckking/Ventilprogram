@@ -316,6 +316,17 @@
             border-radius: 20px;
         }
         .action-btn:hover { background: #f0f0f0; }
+        .change-status-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            margin-left: 6px;
+        }
+        .change-status-btn:hover { background: #e67e22; }
         footer {
             padding: 12px 20px;
             text-align: center;
@@ -323,6 +334,48 @@
             color: #8aa0b5;
             border-top: 1px solid #e9ecef;
         }
+        /* Modal för statusändring */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .modal-content h3 { margin-bottom: 16px; font-size: 1.1rem; }
+        .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .modal-buttons button {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+        }
+        .modal-buttons button:first-child { background: #e9ecef; color: #495057; }
+        .modal-buttons button:last-child { background: #ff9800; color: white; }
         @media (max-width: 700px) {
             .content { padding: 14px; }
             .form-row { flex-direction: column; }
@@ -463,7 +516,7 @@
             <table id="ventilTable">
                 <thead>
                     <th style="width:28px"><input type="checkbox" id="selectAllCheckbox"></th>
-                    <th>VAV</th><th>Plats</th><th>Status</th><th>Notering</th><th>Rapportör</th><th style="width:35px">✅</th><th style="width:50px"></th>
+                    <th>VAV</th><th>Plats</th><th>Status</th><th>Notering</th><th>Rapportör</th><th style="width:35px">✅</th><th style="width:80px"></th>
                 </thead>
                 <tbody id="tableBody"></tbody>
             无人
@@ -493,7 +546,7 @@
         </div>
     </div>
 
-    <footer>📍 NÅL: klicka på knappen → klicka på kartan → fyller adress | Markera ventiler → skicka för att skapa insats</footer>
+    <footer>📍 NÅL: klicka på knappen → klicka på kartan → fyller adress | ✏️ Ändra status: klicka på knappen bredvid status | Markera → skicka insats</footer>
 </div>
 
 <script>
@@ -524,8 +577,7 @@
         { id: "13", completed: false, ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning - defekt", defectDesc: "", reportedBy: "Fredrik" },
         { id: "14", completed: false, ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - defekt", defectDesc: "", reportedBy: "Fredrik" },
         { id: "15", completed: false, ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "16", completed: false, ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "17", completed: false, ventilNr: "VAV12345", area: "Tullinge", location: "Testvägen 1", fullStatus: "Distans saknas", defectDesc: "Behöver distans", reportedBy: "Fredrik" }
+        { id: "16", completed: false, ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" }
     ];
 
     const defaultRecipients = [
@@ -591,6 +643,8 @@
         if(status.includes("Betäckning")) return "#ffe0b2";
         if(status.includes("Distans")) return "#e3f2fd";
         if(status.includes("Hittar")) return "#e0e0e0";
+        if(status.includes("Hittad")) return "#c8e6d9";
+        if(status.includes("Inmätt")) return "#c8e6d9";
         return "#e3f2fd";
     }
 
@@ -643,15 +697,79 @@
             row.insertCell(4).innerHTML = escapeHtml(v.defectDesc || '—');
             row.insertCell(5).innerHTML = `<span style="font-size:0.6rem;">👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
             row.insertCell(6).innerHTML = `<input type="checkbox" class="complete-checkbox" data-id="${v.id}" ${v.completed ? "checked" : ""}>`;
-            row.insertCell(7).innerHTML = `<button class="action-btn edit-btn" data-id="${v.id}">✏️</button> <button class="action-btn delete-btn" data-id="${v.id}">🗑️</button>`;
+            row.insertCell(7).innerHTML = `
+                <button class="action-btn edit-btn" data-id="${v.id}">✏️</button>
+                <button class="change-status-btn" data-id="${v.id}">🔄 Ändra status</button>
+                <button class="action-btn delete-btn" data-id="${v.id}">🗑️</button>
+            `;
         });
         
         document.querySelectorAll('.select-checkbox').forEach(cb => cb.addEventListener('change', e => toggleSelect(cb.getAttribute('data-id'), cb.checked)));
         document.querySelectorAll('.complete-checkbox').forEach(cb => cb.addEventListener('change', e => toggleComplete(cb.getAttribute('data-id'))));
         document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', e => editVentil(btn.getAttribute('data-id'))));
+        document.querySelectorAll('.change-status-btn').forEach(btn => btn.addEventListener('click', e => showChangeStatusModal(btn.getAttribute('data-id'))));
         document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', e => deleteVentil(btn.getAttribute('data-id'))));
         
         updateSelectedCount();
+    }
+
+    function showChangeStatusModal(id) {
+        const vent = ventilData.find(v => v.id === id);
+        if(!vent) return;
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>🔄 Ändra status för ${vent.ventilNr}</h3>
+                <p style="font-size:0.75rem; color:#666; margin-bottom:12px;">Nuvarande: ${vent.fullStatus}</p>
+                <label>Ny status (kan välja flera)</label>
+                <select id="newStatusSelect" multiple size="8" style="height:180px;">
+                    <option value="Trasig - snurrar">🔴 Trasig - snurrar</option>
+                    <option value="Trög - 2 gubbar">🟠 Trög - 2 gubbar</option>
+                    <option value="Överasfalterad">🟡 Överasfalterad</option>
+                    <option value="Betäckning - defekt">🟡 Betäckning - defekt</option>
+                    <option value="Distans saknas">📏 Distans saknas</option>
+                    <option value="Hittar ej ventil">⚪ Hittar ej ventil</option>
+                    <option value="Hittad - OK">🟢 Hittad - OK</option>
+                    <option value="Ej hittad - måste mätas in">📐 Ej hittad - måste mätas in</option>
+                    <option value="Åtgärdad - OK">✅ Åtgärdad - OK</option>
+                </select>
+                <label style="margin-top:10px;">📝 Notering (valfritt)</label>
+                <textarea id="statusChangeNote" rows="2" placeholder="Varför ändras status? t.ex. 'åtgärdad', 'ny info'"></textarea>
+                <div class="modal-buttons">
+                    <button id="cancelModal">Avbryt</button>
+                    <button id="confirmStatusChange">Spara ändring</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // Förvälj nuvarande statusar
+        const currentStatuses = vent.fullStatus.split(", ");
+        const selectEl = modal.querySelector('#newStatusSelect');
+        Array.from(selectEl.options).forEach(opt => {
+            if(currentStatuses.includes(opt.value)) opt.selected = true;
+        });
+        
+        modal.querySelector('#cancelModal').onclick = () => modal.remove();
+        modal.querySelector('#confirmStatusChange').onclick = () => {
+            const selected = Array.from(selectEl.selectedOptions).map(opt => opt.value);
+            if(selected.length === 0) { alert("Välj minst en status"); return; }
+            const newStatus = selected.join(", ");
+            const note = modal.querySelector('#statusChangeNote').value.trim();
+            
+            vent.fullStatus = newStatus;
+            if(note) vent.defectDesc = vent.defectDesc ? vent.defectDesc + " | " + note : note;
+            vent.lastUpdated = new Date().toISOString();
+            
+            saveToStorage();
+            renderTable();
+            updateStats();
+            updateMapMarkers();
+            modal.remove();
+            alert(`✅ Status ändrad för ${vent.ventilNr} till: ${newStatus}`);
+        };
     }
 
     function toggleSelect(id, checked) {
@@ -713,6 +831,7 @@
         if(v) {
             v.completed = !v.completed;
             if(v.completed) v.completedBy = currentUser;
+            else v.completedBy = "";
             v.lastUpdated = new Date().toISOString();
             saveToStorage();
             selectedIds.delete(id);
@@ -763,12 +882,12 @@
         document.querySelectorAll("#statusGroup input").forEach(cb => {
             cb.checked = statuses.includes(cb.value);
         });
-        alert(`✏️ Redigerar ${v.ventilNr}`);
+        alert(`✏️ Redigerar ${v.ventilNr}. Ändra och spara.`);
         if(v.location) searchAddress(v.location);
     }
 
     function deleteVentil(id) {
-        if(confirm("Ta bort ventilen?")) {
+        if(confirm("Ta bort ventilen permanent?")) {
             ventilData = ventilData.filter(v => v.id !== id);
             selectedIds.delete(id);
             saveToStorage();
@@ -778,7 +897,7 @@
         }
     }
 
-    // KARTA
+    // KARTA FUNKTIONER
     function initMap() {
         map = L.map('map').setView([59.2, 17.82], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
