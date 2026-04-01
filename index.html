@@ -398,6 +398,7 @@
                         <label><input type="checkbox" value="Trög - 2 gubbar"> 🟠 Trög - 2 gubbar</label>
                         <label><input type="checkbox" value="Överasfalterad"> 🟡 Överasfalterad</label>
                         <label><input type="checkbox" value="Betäckning - defekt"> 🟡 Betäckning - defekt</label>
+                        <label><input type="checkbox" value="Distans saknas"> 📏 Distans saknas</label>
                         <label><input type="checkbox" value="Hittar ej ventil"> ⚪ Hittar ej</label>
                     </div>
                 </div>
@@ -427,7 +428,7 @@
             <button id="sendSelectedBtn" class="btn-send">📧 Skicka / Skapa insats</button>
         </div>
 
-        <!-- VYBAR OCH FILTER (KOMPAKT) -->
+        <!-- VYBAR OCH FILTER -->
         <div class="action-bar">
             <div class="view-buttons">
                 <button id="showActiveBtn" class="view-btn active">⚠️ Aktiva</button>
@@ -440,6 +441,7 @@
                     <option value="trog">🟠 Trög</option>
                     <option value="overasf">🟡 Överasfalterad</option>
                     <option value="betackning">🟡 Betäckning</option>
+                    <option value="distans">📏 Distans saknas</option>
                     <option value="hittar">⚪ Hittar ej</option>
                 </select>
                 <select id="filterArea">
@@ -522,7 +524,8 @@
         { id: "13", completed: false, ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning - defekt", defectDesc: "", reportedBy: "Fredrik" },
         { id: "14", completed: false, ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - defekt", defectDesc: "", reportedBy: "Fredrik" },
         { id: "15", completed: false, ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "16", completed: false, ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" }
+        { id: "16", completed: false, ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
+        { id: "17", completed: false, ventilNr: "VAV12345", area: "Tullinge", location: "Testvägen 1", fullStatus: "Distans saknas", defectDesc: "Behöver distans", reportedBy: "Fredrik" }
     ];
 
     const defaultRecipients = [
@@ -586,6 +589,7 @@
         if(status.includes("Trög")) return "#ffecb3";
         if(status.includes("Överasfalterad")) return "#ffe0b2";
         if(status.includes("Betäckning")) return "#ffe0b2";
+        if(status.includes("Distans")) return "#e3f2fd";
         if(status.includes("Hittar")) return "#e0e0e0";
         return "#e3f2fd";
     }
@@ -595,6 +599,7 @@
         if(status.includes("Trög")) return "trog";
         if(status.includes("Överasfalterad")) return "overasf";
         if(status.includes("Betäckning")) return "betackning";
+        if(status.includes("Distans")) return "distans";
         if(status.includes("Hittar")) return "hittar";
         return "other";
     }
@@ -613,7 +618,7 @@
         const tbody = document.getElementById("tableBody");
         
         if(filtered.length === 0) {
-            tbody.innerHTML = '}<td colspan="8" style="text-align:center; padding:30px;">📭 Inga ventiler';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px;">📭 Inga ventiler</td></tr>';
             document.getElementById("selectAllCheckbox").checked = false;
             return;
         }
@@ -855,7 +860,12 @@
                 fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v.location)} Botkyrka&format=json&limit=1`)
                     .then(r => r.json()).then(data => {
                         if(data[0]) {
-                            const color = v.fullStatus.includes("Trasig") ? "#e74c3c" : v.fullStatus.includes("Trög") ? "#e67e22" : v.fullStatus.includes("Överasfalterad") ? "#f39c12" : v.fullStatus.includes("Betäckning") ? "#f39c12" : "#95a5a6";
+                            let color = "#95a5a6";
+                            if(v.fullStatus.includes("Trasig")) color = "#e74c3c";
+                            else if(v.fullStatus.includes("Trög")) color = "#e67e22";
+                            else if(v.fullStatus.includes("Överasfalterad")) color = "#f39c12";
+                            else if(v.fullStatus.includes("Betäckning")) color = "#f39c12";
+                            else if(v.fullStatus.includes("Distans")) color = "#3498db";
                             const markerHtml = L.divIcon({
                                 html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></div>`,
                                 iconSize: [12, 12],
