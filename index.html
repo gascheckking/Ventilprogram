@@ -180,6 +180,39 @@
             cursor: pointer;
         }
         .btn-save { background: #ff9800; padding: 8px 24px; }
+        .photo-section {
+            background: #e8f0fe;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+        .photo-section h4 {
+            font-size: 0.7rem;
+            margin-bottom: 8px;
+            color: #1e4663;
+        }
+        .photo-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .photo-buttons button {
+            background: #6c757d;
+            padding: 6px 12px;
+            font-size: 0.65rem;
+        }
+        .photo-preview {
+            margin-top: 8px;
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        .photo-preview img {
+            width: 100%;
+            height: auto;
+        }
         .action-bar {
             display: flex;
             flex-wrap: wrap;
@@ -302,6 +335,14 @@
             font-weight: 500;
             display: inline-block;
         }
+        .photo-thumb {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
         .select-checkbox, .complete-checkbox {
             width: 16px;
             height: 16px;
@@ -327,6 +368,15 @@
             margin-left: 6px;
         }
         .change-status-btn:hover { background: #e67e22; }
+        .photo-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.6rem;
+            cursor: pointer;
+        }
         footer {
             padding: 12px 20px;
             text-align: center;
@@ -334,14 +384,13 @@
             color: #8aa0b5;
             border-top: 1px solid #e9ecef;
         }
-        /* Modal för statusändring */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -352,7 +401,9 @@
             border-radius: 24px;
             padding: 20px;
             width: 90%;
-            max-width: 400px;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
         }
         .modal-content h3 { margin-bottom: 16px; font-size: 1.1rem; }
         .modal-content select, .modal-content textarea {
@@ -376,6 +427,10 @@
         }
         .modal-buttons button:first-child { background: #e9ecef; color: #495057; }
         .modal-buttons button:last-child { background: #ff9800; color: white; }
+        .fullsize-img {
+            max-width: 100%;
+            border-radius: 12px;
+        }
         @media (max-width: 700px) {
             .content { padding: 14px; }
             .form-row { flex-direction: column; }
@@ -405,7 +460,6 @@
         <div class="menu-item" data-menu="test3">⚙️ Test - Kommande</div>
     </div>
 
-    <!-- VENTILPROGRAM 2026 -->
     <div id="ventilContent" class="content">
         <!-- KARTA -->
         <div class="map-card">
@@ -415,7 +469,6 @@
                 <button id="gpsBtn" class="btn-gps">📍 MIN POSITION</button>
             </div>
             <div id="map" class="map-container"></div>
-            <div style="font-size:0.55rem; color:#666; margin-top:5px;">💡 Klicka på NÅL → klicka på kartan → adressen fylls i</div>
         </div>
 
         <!-- REGISTRERING -->
@@ -465,6 +518,17 @@
                     <button id="saveBtn" class="btn-save">💾 Spara</button>
                 </div>
             </div>
+            
+            <!-- FOTOGRAFERING -->
+            <div class="photo-section">
+                <h4>📸 FOTO (kopplas till ventilen)</h4>
+                <div class="photo-buttons">
+                    <button id="takePhotoBtn" class="btn-pin" style="background:#2196f3;">📷 Ta foto</button>
+                    <button id="uploadPhotoBtn" class="btn-pin" style="background:#6c757d;">📁 Ladda upp</button>
+                </div>
+                <input type="file" id="photoFileInput" accept="image/*" style="display:none;">
+                <div id="photoPreview" class="photo-preview"></div>
+            </div>
         </div>
 
         <!-- SÄNDBAR -->
@@ -481,7 +545,7 @@
             <button id="sendSelectedBtn" class="btn-send">📧 Skicka / Skapa insats</button>
         </div>
 
-        <!-- VYBAR OCH FILTER -->
+        <!-- FILTER -->
         <div class="action-bar">
             <div class="view-buttons">
                 <button id="showActiveBtn" class="view-btn active">⚠️ Aktiva</button>
@@ -516,14 +580,13 @@
             <table id="ventilTable">
                 <thead>
                     <th style="width:28px"><input type="checkbox" id="selectAllCheckbox"></th>
-                    <th>VAV</th><th>Plats</th><th>Status</th><th>Notering</th><th>Rapportör</th><th style="width:35px">✅</th><th style="width:80px"></th>
+                    <th>VAV</th><th>Plats</th><th>Status</th><th>Notering</th><th>Foto</th><th>Rapportör</th><th style="width:35px">✅</th><th style="width:100px"></th>
                 </thead>
                 <tbody id="tableBody"></tbody>
             无人
         </div>
     </div>
 
-    <!-- TEST-MENYER -->
     <div id="test1Content" class="content" style="display:none;">
         <div style="text-align:center; padding:50px 20px; background:#f8f9fa; border-radius:20px;">
             <div style="font-size:2.5rem; margin-bottom:12px;">🔧</div>
@@ -546,7 +609,7 @@
         </div>
     </div>
 
-    <footer>📍 NÅL: klicka på knappen → klicka på kartan → fyller adress | ✏️ Ändra status: klicka på knappen bredvid status | Markera → skicka insats</footer>
+    <footer>📍 NÅL → klicka på kartan | 📸 Ta foto / ladda upp bild | 🔄 Ändra status | Markera → skicka insats</footer>
 </div>
 
 <script>
@@ -557,27 +620,18 @@
     let currentFilterDefect = "all";
     let currentFilterArea = "all";
     let selectedIds = new Set();
+    let currentPhotoData = null; // För tillfällig foto lagring vid registrering
     
     let map, markersLayer, currentMarker;
     let isPinMode = false;
 
     const initialData = [
-        { id: "1", completed: false, ventilNr: "VAV71923", area: "Tullinge", location: "Vårbäcksvägen 9", fullStatus: "Borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik" },
-        { id: "2", completed: false, ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "3", completed: false, ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning - defekt", defectDesc: "Fel lock", reportedBy: "Fredrik" },
-        { id: "4", completed: false, ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "5", completed: false, ventilNr: "VAV82149", area: "Tullinge", location: "Korsning Flottiljvägen/Bergmovägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "6", completed: false, ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej ventil", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { id: "7", completed: false, ventilNr: "VAV97388", area: "Tullinge", location: "Friluftsvägen 101", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "8", completed: false, ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "9", completed: false, ventilNr: "VAV83972", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "10", completed: false, ventilNr: "VAV93486", area: "Tumba", location: "Korsning Svedjevägen/grytstigen", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "11", completed: false, ventilNr: "VAV91921", area: "Tumba", location: "Harbrovägen 42Y", fullStatus: "Betäckning - defekt", defectDesc: "Justera betäckning", reportedBy: "Fredrik" },
-        { id: "12", completed: false, ventilNr: "VAV62105", area: "Tumba", location: "Korsning Tunavägen/Prästgårdsvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "13", completed: false, ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning - defekt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "14", completed: false, ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - defekt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "15", completed: false, ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "16", completed: false, ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" }
+        { id: "1", completed: false, ventilNr: "VAV71923", area: "Tullinge", location: "Vårbäcksvägen 9", fullStatus: "Borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik", photo: null },
+        { id: "2", completed: false, ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
+        { id: "3", completed: false, ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning - defekt", defectDesc: "Fel lock", reportedBy: "Fredrik", photo: null },
+        { id: "4", completed: false, ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
+        { id: "5", completed: false, ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej ventil", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null },
+        { id: "6", completed: false, ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null }
     ];
 
     const defaultRecipients = [
@@ -587,7 +641,7 @@
     ];
 
     function loadData() {
-        const stored = localStorage.getItem("ventilprogram2026_send");
+        const stored = localStorage.getItem("ventilprogram2026_photo");
         if(stored) {
             try { ventilData = JSON.parse(stored); } catch(e) { ventilData = JSON.parse(JSON.stringify(initialData)); }
         } else {
@@ -612,7 +666,7 @@
     }
 
     function saveToStorage() {
-        localStorage.setItem("ventilprogram2026_send", JSON.stringify(ventilData));
+        localStorage.setItem("ventilprogram2026_photo", JSON.stringify(ventilData));
         localStorage.setItem("ventil_recipients", JSON.stringify(recipients));
         if(currentUser) localStorage.setItem("ventil_current_user", currentUser);
     }
@@ -636,6 +690,54 @@
         } else if(email) alert("Ogiltig mailadress");
     }
 
+    // FOTOFUNKTIONER
+    function takePhoto() {
+        const input = document.getElementById("photoFileInput");
+        input.setAttribute('capture', 'environment');
+        input.click();
+    }
+    
+    function uploadPhoto() {
+        const input = document.getElementById("photoFileInput");
+        input.removeAttribute('capture');
+        input.click();
+    }
+    
+    function handlePhotoFile(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentPhotoData = e.target.result;
+            const preview = document.getElementById("photoPreview");
+            preview.innerHTML = `<img src="${currentPhotoData}" style="max-width:100px; border-radius:8px;">`;
+        };
+        reader.readAsDataURL(file);
+        event.target.value = '';
+    }
+    
+    function clearPhotoPreview() {
+        currentPhotoData = null;
+        document.getElementById("photoPreview").innerHTML = '';
+    }
+    
+    function showFullPhoto(photoData) {
+        if(!photoData) return;
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:90%; text-align:center;">
+                <img src="${photoData}" style="max-width:100%; border-radius:16px;">
+                <div class="modal-buttons" style="margin-top:16px;">
+                    <button id="closePhotoModal">Stäng</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.querySelector('#closePhotoModal').onclick = () => modal.remove();
+    }
+
     function getStatusColor(status) {
         if(status.includes("Trasig")) return "#ffcdd2";
         if(status.includes("Trög")) return "#ffecb3";
@@ -643,8 +745,6 @@
         if(status.includes("Betäckning")) return "#ffe0b2";
         if(status.includes("Distans")) return "#e3f2fd";
         if(status.includes("Hittar")) return "#e0e0e0";
-        if(status.includes("Hittad")) return "#c8e6d9";
-        if(status.includes("Inmätt")) return "#c8e6d9";
         return "#e3f2fd";
     }
 
@@ -672,7 +772,7 @@
         const tbody = document.getElementById("tableBody");
         
         if(filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px;">📭 Inga ventiler</td></tr>';
+            tbody.innerHTML = '}<td colspan="9" style="text-align:center; padding:30px;">📭 Inga ventiler';
             document.getElementById("selectAllCheckbox").checked = false;
             return;
         }
@@ -684,7 +784,7 @@
             if(v.area !== lastArea) {
                 const row = tbody.insertRow();
                 row.className = "area-row";
-                row.insertCell(0).colSpan = 8;
+                row.insertCell(0).colSpan = 9;
                 row.cells[0].innerHTML = `📍 ${v.area}`;
                 lastArea = v.area;
             }
@@ -695,11 +795,12 @@
             row.insertCell(2).innerHTML = escapeHtml(v.location || '—');
             row.insertCell(3).innerHTML = `<span class="status-badge" style="background:${getStatusColor(v.fullStatus)}">${escapeHtml(v.fullStatus)}</span>`;
             row.insertCell(4).innerHTML = escapeHtml(v.defectDesc || '—');
-            row.insertCell(5).innerHTML = `<span style="font-size:0.6rem;">👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
-            row.insertCell(6).innerHTML = `<input type="checkbox" class="complete-checkbox" data-id="${v.id}" ${v.completed ? "checked" : ""}>`;
-            row.insertCell(7).innerHTML = `
+            row.insertCell(5).innerHTML = v.photo ? `<img src="${v.photo}" class="photo-thumb" onclick="showFullPhoto('${v.photo}')">` : '—';
+            row.insertCell(6).innerHTML = `<span style="font-size:0.6rem;">👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
+            row.insertCell(7).innerHTML = `<input type="checkbox" class="complete-checkbox" data-id="${v.id}" ${v.completed ? "checked" : ""}>`;
+            row.insertCell(8).innerHTML = `
                 <button class="action-btn edit-btn" data-id="${v.id}">✏️</button>
-                <button class="change-status-btn" data-id="${v.id}">🔄 Ändra status</button>
+                <button class="change-status-btn" data-id="${v.id}">🔄</button>
                 <button class="action-btn delete-btn" data-id="${v.id}">🗑️</button>
             `;
         });
@@ -736,7 +837,7 @@
                     <option value="Åtgärdad - OK">✅ Åtgärdad - OK</option>
                 </select>
                 <label style="margin-top:10px;">📝 Notering (valfritt)</label>
-                <textarea id="statusChangeNote" rows="2" placeholder="Varför ändras status? t.ex. 'åtgärdad', 'ny info'"></textarea>
+                <textarea id="statusChangeNote" rows="2" placeholder="Varför ändras status?"></textarea>
                 <div class="modal-buttons">
                     <button id="cancelModal">Avbryt</button>
                     <button id="confirmStatusChange">Spara ändring</button>
@@ -745,7 +846,6 @@
         `;
         document.body.appendChild(modal);
         
-        // Förvälj nuvarande statusar
         const currentStatuses = vent.fullStatus.split(", ");
         const selectEl = modal.querySelector('#newStatusSelect');
         Array.from(selectEl.options).forEach(opt => {
@@ -768,7 +868,7 @@
             updateStats();
             updateMapMarkers();
             modal.remove();
-            alert(`✅ Status ändrad för ${vent.ventilNr} till: ${newStatus}`);
+            alert(`✅ Status ändrad för ${vent.ventilNr}`);
         };
     }
 
@@ -812,6 +912,7 @@
             body += `   Status: ${v.fullStatus}\n`;
             body += `   Notering: ${v.defectDesc || '—'}\n`;
             body += `   Rapportör: ${v.reportedBy}\n`;
+            if(v.photo) body += `   📸 Foto: Finns bifogad i systemet\n`;
             body += `----------------------------------------\n\n`;
         });
         
@@ -823,7 +924,8 @@
     function updateStats() {
         const active = ventilData.filter(v => !v.completed).length;
         const completed = ventilData.filter(v => v.completed).length;
-        document.getElementById("stats").innerHTML = `📊 Aktiva: ${active} | ✅ Åtgärdade: ${completed} | 📝 Totalt: ${ventilData.length}`;
+        const withPhoto = ventilData.filter(v => v.photo).length;
+        document.getElementById("stats").innerHTML = `📊 Aktiva: ${active} | ✅ Åtgärdade: ${completed} | 📸 Med foto: ${withPhoto} | 📝 Totalt: ${ventilData.length}`;
     }
 
     function toggleComplete(id) {
@@ -852,10 +954,11 @@
         if(checkedStatus.length === 0) { alert("Välj minst en status"); return; }
         const fullStatus = checkedStatus.join(", ");
         const defectDesc = document.getElementById("ventilNote").value.trim();
+        const photo = currentPhotoData;
         
         ventilData.push({
             id: Date.now() + '-' + Math.random().toString(36).substr(2, 4),
-            completed: false, ventilNr: fullVav, area, location, fullStatus, defectDesc,
+            completed: false, ventilNr: fullVav, area, location, fullStatus, defectDesc, photo,
             reportedBy: currentUser || "Inloggad", completedBy: "",
             lastUpdated: new Date().toISOString()
         });
@@ -864,6 +967,7 @@
         document.getElementById("ventilLocation").value = "";
         document.getElementById("ventilNote").value = "";
         document.querySelectorAll("#statusGroup input").forEach(cb => cb.checked = false);
+        clearPhotoPreview();
         saveToStorage();
         renderTable();
         updateStats();
@@ -882,6 +986,12 @@
         document.querySelectorAll("#statusGroup input").forEach(cb => {
             cb.checked = statuses.includes(cb.value);
         });
+        if(v.photo) {
+            document.getElementById("photoPreview").innerHTML = `<img src="${v.photo}" style="max-width:100px; border-radius:8px;">`;
+            currentPhotoData = v.photo;
+        } else {
+            clearPhotoPreview();
+        }
         alert(`✏️ Redigerar ${v.ventilNr}. Ändra och spara.`);
         if(v.location) searchAddress(v.location);
     }
@@ -991,7 +1101,7 @@
                                 popupAnchor: [0, -6]
                             });
                             L.marker([parseFloat(data[0].lat), parseFloat(data[0].lon)], { icon: markerHtml })
-                                .bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}`)
+                                .bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}${v.photo ? '<br>📸 Foto finns' : ''}`)
                                 .addTo(markersLayer);
                         }
                     });
@@ -1001,8 +1111,8 @@
 
     function exportCSV() {
         const dataToExport = currentView === "active" ? ventilData.filter(v => !v.completed) : ventilData.filter(v => v.completed);
-        const rows = dataToExport.map(v => [`"${v.ventilNr}"`,`"${v.area}"`,`"${v.location||''}"`,`"${v.fullStatus}"`,`"${v.defectDesc||''}"`,`"${v.reportedBy||''}"`]);
-        const csv = ["VAV,Område,Plats,Status,Notering,Rapportör", ...rows.map(r=>r.join(","))].join("\n");
+        const rows = dataToExport.map(v => [`"${v.ventilNr}"`,`"${v.area}"`,`"${v.location||''}"`,`"${v.fullStatus}"`,`"${v.defectDesc||''}"`,`"${v.reportedBy||''}"`,`"${v.photo ? 'Ja' : 'Nej'}"`]);
+        const csv = ["VAV,Område,Plats,Status,Notering,Rapportör,Foto", ...rows.map(r=>r.join(","))].join("\n");
         const blob = new Blob(["\uFEFF" + csv], {type:"text/csv"});
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
@@ -1039,6 +1149,7 @@
 
     function escapeHtml(s) { if(!s) return ""; return s.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
 
+    // Event listeners
     document.getElementById("loginBtn")?.addEventListener("click", () => {
         const name = document.getElementById("userNameInput").value.trim();
         if(name) { currentUser = name; document.getElementById("userDisplay").innerHTML = name; saveToStorage(); }
@@ -1054,6 +1165,9 @@
     document.getElementById("sendSelectedBtn")?.addEventListener("click", sendSelected);
     document.getElementById("addRecipientBtn")?.addEventListener("click", addRecipient);
     document.getElementById("selectAllCheckbox")?.addEventListener("change", selectAll);
+    document.getElementById("takePhotoBtn")?.addEventListener("click", takePhoto);
+    document.getElementById("uploadPhotoBtn")?.addEventListener("click", uploadPhoto);
+    document.getElementById("photoFileInput")?.addEventListener("change", handlePhotoFile);
     document.getElementById("addressInput")?.addEventListener("change", (e) => {
         document.getElementById("ventilLocation").value = e.target.value;
         searchAddress(e.target.value);
@@ -1061,6 +1175,8 @@
     document.querySelectorAll('.menu-item').forEach(item => {
         item.addEventListener('click', () => switchMenu(item.getAttribute('data-menu')));
     });
+    
+    window.showFullPhoto = showFullPhoto;
 
     loadData();
     initMap();
