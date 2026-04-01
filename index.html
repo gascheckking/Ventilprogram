@@ -26,55 +26,55 @@
         .header {
             background: #1e4663;
             color: white;
-            padding: 20px 24px;
+            padding: 16px 24px;
         }
-        .header h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
-        .header p { font-size: 0.75rem; opacity: 0.8; }
+        .header h1 { font-size: 1.4rem; font-weight: 600; }
+        .header p { font-size: 0.7rem; opacity: 0.8; margin-top: 2px; }
         .login-bar {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 12px;
-            margin-top: 12px;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
         }
         .login-bar input {
             background: rgba(255,255,255,0.2);
             border: none;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
             color: white;
-            font-size: 0.75rem;
-            width: 150px;
+            font-size: 0.7rem;
+            width: 130px;
         }
         .login-bar input::placeholder { color: rgba(255,255,255,0.7); }
         .login-bar button {
             background: white;
             color: #1e4663;
             border: none;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             cursor: pointer;
         }
         .user-name {
             background: rgba(255,255,255,0.2);
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 500;
         }
         .main-menu {
             display: flex;
-            gap: 4px;
+            gap: 2px;
             background: white;
             padding: 0 20px;
             border-bottom: 1px solid #e9ecef;
             flex-wrap: wrap;
         }
         .menu-item {
-            padding: 14px 20px;
-            font-size: 0.85rem;
+            padding: 12px 18px;
+            font-size: 0.8rem;
             font-weight: 600;
             color: #4a5568;
             cursor: pointer;
@@ -90,172 +90,173 @@
             background: #f8f9fa;
             border-radius: 20px;
             padding: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             border: 1px solid #e9ecef;
         }
         .address-row {
             display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 8px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
         .address-row input {
             flex: 1;
-            padding: 10px 16px;
+            padding: 8px 14px;
             border: 1px solid #ddd;
             border-radius: 40px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         .btn-pin, .btn-gps {
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 40px;
             border: none;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: pointer;
-            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .btn-pin { background: #ff9800; color: white; }
         .btn-pin.active { background: #1e6f5c; box-shadow: 0 0 0 2px #ff9800; }
         .btn-gps { background: #2196f3; color: white; }
-        .map-container { height: 240px; border-radius: 16px; background: #e9ecef; }
+        .map-container { height: 220px; border-radius: 16px; background: #e9ecef; }
         .form-card {
             background: #f8f9fa;
             border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 14px;
+            margin-bottom: 16px;
             border: 1px solid #e9ecef;
         }
         .form-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .form-group {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
         .form-group label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             color: #2c5a74;
         }
         .form-group input, .form-group select {
-            padding: 8px 14px;
+            padding: 7px 12px;
             border: 1px solid #ddd;
             border-radius: 40px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             background: white;
         }
         .vav-input {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .vav-input span {
             background: #e9ecef;
-            padding: 8px 14px;
+            padding: 7px 12px;
             border-radius: 40px;
             font-weight: 600;
+            font-size: 0.8rem;
         }
         .vav-input input { flex: 1; }
         .status-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
-            padding: 6px 0;
+            gap: 14px;
+            padding: 5px 0;
         }
         .status-group label {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
+            gap: 5px;
+            font-size: 0.75rem;
             font-weight: normal;
             cursor: pointer;
         }
-        .btn-save { background: #ff9800; padding: 10px 28px; }
+        .btn-save { background: #ff9800; padding: 8px 24px; }
         .action-bar {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             align-items: center;
             justify-content: space-between;
         }
-        .view-buttons {
-            display: flex;
-            gap: 8px;
-        }
+        .view-buttons { display: flex; gap: 6px; }
         .view-btn {
-            padding: 8px 20px;
-            border-radius: 40px;
+            padding: 6px 16px;
+            border-radius: 30px;
             border: none;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: pointer;
             background: #e9ecef;
             color: #495057;
         }
-        .view-btn.active {
-            background: #1e6f5c;
-            color: white;
-        }
+        .view-btn.active { background: #1e6f5c; color: white; }
         .filter-group {
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: flex-end;
+            gap: 8px;
+            align-items: center;
         }
         .filter-group select {
-            padding: 8px 14px;
-            border-radius: 40px;
+            padding: 6px 12px;
+            border-radius: 30px;
             border: 1px solid #ddd;
             background: white;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
         .send-bar {
             background: #fff3e0;
-            border-radius: 16px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
+            border-radius: 14px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
         }
-        .send-bar .selected-count {
+        .send-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .selected-count {
             background: #ff9800;
             color: white;
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
         }
         .send-bar select {
-            padding: 8px 14px;
-            border-radius: 40px;
+            padding: 6px 12px;
+            border-radius: 30px;
             border: 1px solid #ff9800;
             background: white;
-            min-width: 200px;
+            min-width: 160px;
+            font-size: 0.7rem;
         }
         .btn-send {
             background: #ff9800;
-            padding: 8px 20px;
+            padding: 6px 16px;
+            font-size: 0.7rem;
         }
         .stats {
             background: #eef3f0;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             display: inline-block;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .table-wrapper {
             overflow-x: auto;
@@ -265,67 +266,69 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
         th {
             text-align: left;
-            padding: 10px 8px;
+            padding: 8px 6px;
             background: #f8f9fa;
             font-weight: 600;
             border-bottom: 1px solid #e9ecef;
         }
         td {
-            padding: 8px 8px;
+            padding: 6px 6px;
             border-bottom: 1px solid #f0f0f0;
             vertical-align: middle;
         }
         .area-row td {
             background: #e9ecef;
             font-weight: 600;
-            padding: 6px 12px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
         }
         .ventil-nr {
             font-family: monospace;
             font-weight: 700;
             background: #eef2fa;
-            padding: 2px 8px;
+            padding: 2px 6px;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             display: inline-block;
         }
         .status-badge {
-            padding: 3px 10px;
+            padding: 2px 8px;
             border-radius: 30px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 500;
             display: inline-block;
         }
-        .select-checkbox {
-            width: 18px;
-            height: 18px;
+        .select-checkbox, .complete-checkbox {
+            width: 16px;
+            height: 16px;
             cursor: pointer;
         }
         .action-btn {
             background: none;
             border: none;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            padding: 4px 6px;
+            padding: 2px 4px;
             border-radius: 20px;
         }
         .action-btn:hover { background: #f0f0f0; }
         footer {
-            padding: 16px 20px;
+            padding: 12px 20px;
             text-align: center;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #8aa0b5;
             border-top: 1px solid #e9ecef;
         }
         @media (max-width: 700px) {
-            .content { padding: 16px; }
+            .content { padding: 14px; }
             .form-row { flex-direction: column; }
             .action-bar { flex-direction: column; align-items: stretch; }
             .send-bar { flex-direction: column; align-items: stretch; }
+            .send-bar-left { justify-content: space-between; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
@@ -338,7 +341,7 @@
         <div class="login-bar">
             <input type="text" id="userNameInput" placeholder="Ditt namn" value="Fredrik">
             <button id="loginBtn">Logga in</button>
-            <div id="userDisplay" class="user-name">👤 Fredrik</div>
+            <div id="userDisplay" class="user-name"></div>
         </div>
     </div>
 
@@ -359,7 +362,7 @@
                 <button id="gpsBtn" class="btn-gps">📍 MIN POSITION</button>
             </div>
             <div id="map" class="map-container"></div>
-            <div style="font-size:0.6rem; color:#666; margin-top:6px;">💡 Klicka på NÅL → klicka på kartan → adressen fylls i</div>
+            <div style="font-size:0.55rem; color:#666; margin-top:5px;">💡 Klicka på NÅL → klicka på kartan → adressen fylls i</div>
         </div>
 
         <!-- REGISTRERING -->
@@ -383,7 +386,7 @@
                     </select>
                 </div>
                 <div class="form-group" style="flex:1.5;">
-                    <label>📍 PLATS / GATUADRESS</label>
+                    <label>📍 PLATS</label>
                     <input type="text" id="ventilLocation" placeholder="Fylls i från kartan">
                 </div>
             </div>
@@ -405,34 +408,34 @@
                     <input type="text" id="ventilNote" placeholder="Skriv vad som behöver åtgärdas...">
                 </div>
                 <div>
-                    <button id="saveBtn" class="btn-save">💾 Spara ventil</button>
+                    <button id="saveBtn" class="btn-save">💾 Spara</button>
                 </div>
             </div>
         </div>
 
-        <!-- ÅTGÄRDSBAR -->
-        <div class="send-bar" id="sendBar">
-            <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- SÄNDBAR -->
+        <div class="send-bar">
+            <div class="send-bar-left">
                 <span>📋 Markerade:</span>
                 <span id="selectedCount" class="selected-count">0 st</span>
-                <span>Skapa insats →</span>
+                <span>→ Skapa insats →</span>
                 <select id="recipientSelect">
                     <option value="">Välj mottagare</option>
                 </select>
-                <button id="addRecipientBtn" class="btn-pin" style="background:#6c757d; padding:6px 12px;">➕ Ny</button>
+                <button id="addRecipientBtn" class="btn-pin" style="background:#6c757d; padding:4px 10px;">➕ Ny</button>
             </div>
             <button id="sendSelectedBtn" class="btn-send">📧 Skicka / Skapa insats</button>
         </div>
 
-        <!-- VYBAR OCH FILTER -->
+        <!-- VYBAR OCH FILTER (KOMPAKT) -->
         <div class="action-bar">
             <div class="view-buttons">
-                <button id="showActiveBtn" class="view-btn active">⚠️ Aktiva defekter</button>
+                <button id="showActiveBtn" class="view-btn active">⚠️ Aktiva</button>
                 <button id="showCompletedBtn" class="view-btn">✅ Åtgärdade</button>
             </div>
             <div class="filter-group">
                 <select id="filterDefect">
-                    <option value="all">🔍 Alla defekter</option>
+                    <option value="all">Alla defekter</option>
                     <option value="trasig">🔴 Trasig</option>
                     <option value="trog">🟠 Trög</option>
                     <option value="overasf">🟡 Överasfalterad</option>
@@ -440,14 +443,14 @@
                     <option value="hittar">⚪ Hittar ej</option>
                 </select>
                 <select id="filterArea">
-                    <option value="all">📌 Alla områden</option>
+                    <option value="all">Alla områden</option>
                     <option value="Tullinge">Tullinge</option>
                     <option value="Tumba">Tumba</option>
                     <option value="Vårsta">Vårsta</option>
                     <option value="Grödinge">Grödinge</option>
-                    <option value="Fittja/Alby/Norsborg/Slagsta">Norra Botkyrka</option>
+                    <option value="Fittja/Alby/Norsborg/Slagsta">Norra</option>
                 </select>
-                <button id="exportBtn" class="btn-pin" style="background:#6c757d;">📎 CSV</button>
+                <button id="exportBtn" class="btn-pin" style="background:#6c757d; padding:6px 12px;">📎 CSV</button>
             </div>
         </div>
 
@@ -457,55 +460,52 @@
         <div class="table-wrapper">
             <table id="ventilTable">
                 <thead>
-                    <th style="width:30px"><input type="checkbox" id="selectAllCheckbox"></th>
-                    <th>VAV</th><th>Plats</th><th>Status</th><th>Notering</th><th>Rapportör</th><th style="text-align:center;">✅</th><th></th>
+                    <th style="width:28px"><input type="checkbox" id="selectAllCheckbox"></th>
+                    <th>VAV</th><th>Plats</th><th>Status</th><th>Notering</th><th>Rapportör</th><th style="width:35px">✅</th><th style="width:50px"></th>
                 </thead>
                 <tbody id="tableBody"></tbody>
-            </table>
+            无人
         </div>
     </div>
 
     <!-- TEST-MENYER -->
     <div id="test1Content" class="content" style="display:none;">
-        <div style="text-align:center; padding:60px 20px; background:#f8f9fa; border-radius:20px;">
-            <div style="font-size:3rem; margin-bottom:16px;">🔧</div>
+        <div style="text-align:center; padding:50px 20px; background:#f8f9fa; border-radius:20px;">
+            <div style="font-size:2.5rem; margin-bottom:12px;">🔧</div>
             <h3>Test - Kommande funktion</h3>
-            <p style="color:#6c757d; margin-top:8px;">Här kommer nästa underhållsprogram att läggas till</p>
+            <p style="color:#6c757d; margin-top:6px;">Här kommer nästa underhållsprogram att läggas till</p>
         </div>
     </div>
     <div id="test2Content" class="content" style="display:none;">
-        <div style="text-align:center; padding:60px 20px; background:#f8f9fa; border-radius:20px;">
-            <div style="font-size:3rem; margin-bottom:16px;">📋</div>
+        <div style="text-align:center; padding:50px 20px; background:#f8f9fa; border-radius:20px;">
+            <div style="font-size:2.5rem; margin-bottom:12px;">📋</div>
             <h3>Test - Kommande funktion</h3>
-            <p style="color:#6c757d; margin-top:8px;">Här kommer nästa underhållsprogram att läggas till</p>
+            <p style="color:#6c757d; margin-top:6px;">Här kommer nästa underhållsprogram att läggas till</p>
         </div>
     </div>
     <div id="test3Content" class="content" style="display:none;">
-        <div style="text-align:center; padding:60px 20px; background:#f8f9fa; border-radius:20px;">
-            <div style="font-size:3rem; margin-bottom:16px;">⚙️</div>
+        <div style="text-align:center; padding:50px 20px; background:#f8f9fa; border-radius:20px;">
+            <div style="font-size:2.5rem; margin-bottom:12px;">⚙️</div>
             <h3>Test - Kommande funktion</h3>
-            <p style="color:#6c757d; margin-top:8px;">Här kommer nästa underhållsprogram att läggas till</p>
+            <p style="color:#6c757d; margin-top:6px;">Här kommer nästa underhållsprogram att läggas till</p>
         </div>
     </div>
 
-    <footer>📍 NÅL: klicka på knappen → klicka på kartan → adressen fylls i | Markera ventiler → skicka för att skapa insats</footer>
+    <footer>📍 NÅL: klicka på knappen → klicka på kartan → fyller adress | Markera ventiler → skicka för att skapa insats</footer>
 </div>
 
 <script>
-    // DATA
     let ventilData = [];
     let recipients = [];
-    let currentUser = "Fredrik";
+    let currentUser = "";
     let currentView = "active";
     let currentFilterDefect = "all";
     let currentFilterArea = "all";
     let selectedIds = new Set();
     
-    // KARTVARIABLER
     let map, markersLayer, currentMarker;
     let isPinMode = false;
 
-    // INITIELLA DATA
     const initialData = [
         { id: "1", completed: false, ventilNr: "VAV71923", area: "Tullinge", location: "Vårbäcksvägen 9", fullStatus: "Borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik" },
         { id: "2", completed: false, ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
@@ -546,6 +546,10 @@
             recipients = [...defaultRecipients];
         }
         
+        const savedUser = localStorage.getItem("ventil_current_user");
+        if(savedUser) { currentUser = savedUser; document.getElementById("userDisplay").innerHTML = currentUser; document.getElementById("userNameInput").value = currentUser; }
+        else { document.getElementById("userDisplay").innerHTML = ""; }
+        
         renderRecipients();
         renderTable();
         updateStats();
@@ -555,6 +559,7 @@
     function saveToStorage() {
         localStorage.setItem("ventilprogram2026_send", JSON.stringify(ventilData));
         localStorage.setItem("ventil_recipients", JSON.stringify(recipients));
+        if(currentUser) localStorage.setItem("ventil_current_user", currentUser);
     }
 
     function renderRecipients() {
@@ -566,16 +571,14 @@
     }
 
     function addRecipient() {
-        const email = prompt("Ange mailadress för mottagare:", "");
+        const email = prompt("Ange mailadress:", "");
         if(email && email.includes('@')) {
-            const name = prompt("Ange namn (valfritt):", email.split('@')[0]);
+            const name = prompt("Ange namn:", email.split('@')[0]);
             recipients.push({ email: email, name: name || email.split('@')[0] });
             saveToStorage();
             renderRecipients();
-            alert(`✅ ${email} tillagd som mottagare`);
-        } else if(email) {
-            alert("Ogiltig mailadress");
-        }
+            alert(`✅ ${email} tillagd`);
+        } else if(email) alert("Ogiltig mailadress");
     }
 
     function getStatusColor(status) {
@@ -598,14 +601,8 @@
 
     function getFilteredData() {
         let filtered = ventilData.filter(v => currentView === "active" ? !v.completed : v.completed);
-        
-        if(currentFilterDefect !== "all") {
-            filtered = filtered.filter(v => getDefectType(v.fullStatus) === currentFilterDefect);
-        }
-        if(currentFilterArea !== "all") {
-            filtered = filtered.filter(v => v.area === currentFilterArea);
-        }
-        
+        if(currentFilterDefect !== "all") filtered = filtered.filter(v => getDefectType(v.fullStatus) === currentFilterDefect);
+        if(currentFilterArea !== "all") filtered = filtered.filter(v => v.area === currentFilterArea);
         const areaOrder = { "Tullinge":1, "Tumba":2, "Vårsta":3, "Grödinge":4, "Fittja/Alby/Norsborg/Slagsta":5 };
         filtered.sort((a,b) => (areaOrder[a.area]||99) - (areaOrder[b.area]||99) || a.ventilNr.localeCompare(b.ventilNr));
         return filtered;
@@ -616,7 +613,7 @@
         const tbody = document.getElementById("tableBody");
         
         if(filtered.length === 0) {
-            tbody.innerHTML = '}<td colspan="8" style="text-align:center; padding:40px;">📭 Inga ventiler i denna vy';
+            tbody.innerHTML = '}<td colspan="8" style="text-align:center; padding:30px;">📭 Inga ventiler';
             document.getElementById("selectAllCheckbox").checked = false;
             return;
         }
@@ -639,7 +636,7 @@
             row.insertCell(2).innerHTML = escapeHtml(v.location || '—');
             row.insertCell(3).innerHTML = `<span class="status-badge" style="background:${getStatusColor(v.fullStatus)}">${escapeHtml(v.fullStatus)}</span>`;
             row.insertCell(4).innerHTML = escapeHtml(v.defectDesc || '—');
-            row.insertCell(5).innerHTML = `<span style="font-size:0.65rem;">👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
+            row.insertCell(5).innerHTML = `<span style="font-size:0.6rem;">👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
             row.insertCell(6).innerHTML = `<input type="checkbox" class="complete-checkbox" data-id="${v.id}" ${v.completed ? "checked" : ""}>`;
             row.insertCell(7).innerHTML = `<button class="action-btn edit-btn" data-id="${v.id}">✏️</button> <button class="action-btn delete-btn" data-id="${v.id}">🗑️</button>`;
         });
@@ -662,39 +659,29 @@
         document.getElementById("selectedCount").innerHTML = `${selectedIds.size} st`;
         const selectAll = document.getElementById("selectAllCheckbox");
         const filtered = getFilteredData();
-        if(selectAll) {
-            const allSelected = filtered.length > 0 && filtered.every(v => selectedIds.has(v.id));
-            selectAll.checked = allSelected;
-        }
+        if(selectAll) selectAll.checked = filtered.length > 0 && filtered.every(v => selectedIds.has(v.id));
     }
 
     function selectAll() {
         const filtered = getFilteredData();
-        if(document.getElementById("selectAllCheckbox").checked) {
-            filtered.forEach(v => selectedIds.add(v.id));
-        } else {
-            filtered.forEach(v => selectedIds.delete(v.id));
-        }
+        if(document.getElementById("selectAllCheckbox").checked) filtered.forEach(v => selectedIds.add(v.id));
+        else filtered.forEach(v => selectedIds.delete(v.id));
         renderTable();
     }
 
     function sendSelected() {
         const recipientEmail = document.getElementById("recipientSelect").value;
-        if(!recipientEmail) { alert("Välj en mottagare först"); return; }
-        
+        if(!recipientEmail) { alert("Välj en mottagare"); return; }
         const selectedVentils = ventilData.filter(v => selectedIds.has(v.id) && (currentView === "active" ? !v.completed : v.completed));
         if(selectedVentils.length === 0) { alert("Inga ventiler markerade"); return; }
         
         const recipientName = recipients.find(r => r.email === recipientEmail)?.name || recipientEmail;
-        
         let subject = `Insatsunderlag - ${selectedVentils.length} ventil(er)`;
         let body = `Underhållsprogram Botkyrka Kommun\n\n`;
-        body += `Rapport från: ${currentUser}\n`;
+        body += `Rapport från: ${currentUser || "Inloggad"}\n`;
         body += `Datum: ${new Date().toLocaleString()}\n`;
-        body += `Status: ${currentView === "active" ? "Aktiva defekter" : "Åtgärdade ventiler"}\n`;
         body += `Antal markerade: ${selectedVentils.length}\n\n`;
-        body += `📋 MARKERADE VENTILER:\n`;
-        body += `----------------------------------------\n\n`;
+        body += `📋 MARKERADE VENTILER:\n----------------------------------------\n\n`;
         
         selectedVentils.forEach(v => {
             body += `${v.ventilNr} | ${v.area}\n`;
@@ -705,18 +692,15 @@
             body += `----------------------------------------\n\n`;
         });
         
-        body += `\n📌 Detta är ett underlag för insats. Åtgärder planeras i insatssystemet.\n`;
-        body += `\nSkickat från Ventilprogram 2026 - Botkyrka VA`;
-        
+        body += `\n📌 Detta är ett underlag för insats. Åtgärder planeras i insatssystemet.`;
         window.location.href = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        
-        alert(`📧 Rapport skickad till ${recipientName}\n\n${selectedVentils.length} ventiler markerade.\nKontrollera din mailklient.`);
+        alert(`📧 Rapport skickad till ${recipientName}\n${selectedVentils.length} ventiler markerade.`);
     }
 
     function updateStats() {
         const active = ventilData.filter(v => !v.completed).length;
         const completed = ventilData.filter(v => v.completed).length;
-        document.getElementById("stats").innerHTML = `📊 Aktiva defekter: ${active} | ✅ Åtgärdade: ${completed} | 📝 Totalt: ${ventilData.length}`;
+        document.getElementById("stats").innerHTML = `📊 Aktiva: ${active} | ✅ Åtgärdade: ${completed} | 📝 Totalt: ${ventilData.length}`;
     }
 
     function toggleComplete(id) {
@@ -735,7 +719,7 @@
 
     function saveVentil() {
         const number = document.getElementById("vavNumber").value.trim();
-        if(!number) { alert("Ange VAV-nummer (siffrorna efter VAV)"); return; }
+        if(!number) { alert("Ange VAV-nummer"); return; }
         const fullVav = "VAV" + number;
         const area = document.getElementById("areaSelect").value;
         const location = document.getElementById("ventilLocation").value.trim();
@@ -747,9 +731,8 @@
         
         ventilData.push({
             id: Date.now() + '-' + Math.random().toString(36).substr(2, 4),
-            completed: false,
-            ventilNr: fullVav, area, location, fullStatus, defectDesc,
-            reportedBy: currentUser, completedBy: "",
+            completed: false, ventilNr: fullVav, area, location, fullStatus, defectDesc,
+            reportedBy: currentUser || "Inloggad", completedBy: "",
             lastUpdated: new Date().toISOString()
         });
         
@@ -757,7 +740,6 @@
         document.getElementById("ventilLocation").value = "";
         document.getElementById("ventilNote").value = "";
         document.querySelectorAll("#statusGroup input").forEach(cb => cb.checked = false);
-        
         saveToStorage();
         renderTable();
         updateStats();
@@ -776,12 +758,12 @@
         document.querySelectorAll("#statusGroup input").forEach(cb => {
             cb.checked = statuses.includes(cb.value);
         });
-        alert(`✏️ Redigerar ${v.ventilNr}. Ändra och spara.`);
+        alert(`✏️ Redigerar ${v.ventilNr}`);
         if(v.location) searchAddress(v.location);
     }
 
     function deleteVentil(id) {
-        if(confirm("Ta bort ventilen permanent?")) {
+        if(confirm("Ta bort ventilen?")) {
             ventilData = ventilData.filter(v => v.id !== id);
             selectedIds.delete(id);
             saveToStorage();
@@ -791,7 +773,7 @@
         }
     }
 
-    // KARTA FUNKTIONER
+    // KARTA
     function initMap() {
         map = L.map('map').setView([59.2, 17.82], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
@@ -823,7 +805,7 @@
         const btn = document.getElementById("pinBtn");
         if(isPinMode) {
             btn.classList.add("active");
-            btn.innerHTML = "📍 AKTIV - klicka på kartan";
+            btn.innerHTML = "📍 AKTIV";
         } else {
             btn.classList.remove("active");
             btn.innerHTML = "📍 NÅL";
@@ -875,9 +857,9 @@
                         if(data[0]) {
                             const color = v.fullStatus.includes("Trasig") ? "#e74c3c" : v.fullStatus.includes("Trög") ? "#e67e22" : v.fullStatus.includes("Överasfalterad") ? "#f39c12" : v.fullStatus.includes("Betäckning") ? "#f39c12" : "#95a5a6";
                             const markerHtml = L.divIcon({
-                                html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.3);"></div>`,
-                                iconSize: [14, 14],
-                                popupAnchor: [0, -7]
+                                html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></div>`,
+                                iconSize: [12, 12],
+                                popupAnchor: [0, -6]
                             });
                             L.marker([parseFloat(data[0].lat), parseFloat(data[0].lon)], { icon: markerHtml })
                                 .bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}`)
@@ -914,27 +896,23 @@
         document.getElementById("showCompletedBtn").classList.toggle("active", view === "completed");
         renderTable();
         updateStats();
-        updateMapMarkers();
     }
 
     function switchMenu(menu) {
         document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
         document.querySelector(`.menu-item[data-menu="${menu}"]`).classList.add('active');
-        
         document.getElementById("ventilContent").style.display = menu === "ventil" ? "block" : "none";
         document.getElementById("test1Content").style.display = menu === "test1" ? "block" : "none";
         document.getElementById("test2Content").style.display = menu === "test2" ? "block" : "none";
         document.getElementById("test3Content").style.display = menu === "test3" ? "block" : "none";
-        
         if(menu === "ventil") setTimeout(() => map?.invalidateSize(), 100);
     }
 
     function escapeHtml(s) { if(!s) return ""; return s.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
 
-    // Event listeners
     document.getElementById("loginBtn")?.addEventListener("click", () => {
         const name = document.getElementById("userNameInput").value.trim();
-        if(name) { currentUser = name; document.getElementById("userDisplay").innerHTML = `👤 ${name}`; }
+        if(name) { currentUser = name; document.getElementById("userDisplay").innerHTML = name; saveToStorage(); }
     });
     document.getElementById("saveBtn")?.addEventListener("click", saveVentil);
     document.getElementById("pinBtn")?.addEventListener("click", enablePinMode);
@@ -951,7 +929,6 @@
         document.getElementById("ventilLocation").value = e.target.value;
         searchAddress(e.target.value);
     });
-    
     document.querySelectorAll('.menu-item').forEach(item => {
         item.addEventListener('click', () => switchMenu(item.getAttribute('data-menu')));
     });
