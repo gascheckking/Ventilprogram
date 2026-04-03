@@ -20,7 +20,6 @@
             min-height: 100vh;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
-        /* Header */
         .header {
             background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
             color: white;
@@ -61,7 +60,6 @@
             font-size: 0.7rem;
             font-weight: 500;
         }
-        /* Main meny */
         .main-menu {
             display: flex;
             gap: 4px;
@@ -80,7 +78,6 @@
         }
         .menu-item.active { color: #1e6f5c; border-bottom-color: #1e6f5c; }
         .content { padding: 20px; background: #fafcfd; }
-        /* Karta */
         .map-card {
             background: white;
             border-radius: 20px;
@@ -119,7 +116,6 @@
         .btn-pin.active { background: #1e6f5c; box-shadow: 0 0 0 2px #ff9800; }
         .btn-gps { background: #2196f3; color: white; }
         .map-container { height: 260px; border-radius: 16px; background: #e9ecef; }
-        /* Formulär */
         .form-card {
             background: white;
             border-radius: 20px;
@@ -231,7 +227,18 @@
             font-weight: 700;
             color: #2c5a74;
             border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
         }
+        th:hover { background: #eef2f5; }
+        th .sort-icon {
+            display: inline-block;
+            margin-left: 6px;
+            font-size: 0.65rem;
+            opacity: 0.5;
+        }
+        th .sort-icon.active { opacity: 1; color: #ff9800; }
         td {
             padding: 8px 8px;
             border-bottom: 1px solid #f0f0f0;
@@ -437,12 +444,18 @@
             </select>
         </div>
 
-        <!-- TABELL VENTILER -->
+        <!-- TABELL VENTILER MED SORTERING -->
         <div class="table-wrapper">
             <table id="ventilTable">
                 <thead>
                     <th style="width:30px"><input type="checkbox" id="selectAllCheckbox"></th>
-                    <th>VAV</th><th>Status</th><th>Plats</th><th>Notering</th><th>Rapportör</th><th style="width:100px">Åtgärdad</th><th style="width:60px"></th>
+                    <th id="sortVav" style="cursor:pointer;">VAV <span class="sort-icon">↕️</span></th>
+                    <th id="sortStatus" style="cursor:pointer;">Status <span class="sort-icon">↕️</span></th>
+                    <th id="sortPlats" style="cursor:pointer;">Plats <span class="sort-icon">↕️</span></th>
+                    <th>Notering</th>
+                    <th id="sortRapportör" style="cursor:pointer;">Rapportör <span class="sort-icon">↕️</span></th>
+                    <th style="width:100px">Åtgärdad</th>
+                    <th style="width:60px"></th>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
@@ -474,7 +487,7 @@
         </div>
     </div>
 
-    <footer>📍 Klicka "Sätt nål" → klicka på kartan → fyller adress | ✅ Åtgärdad med JA/NEJ | Filtrera på Aktiva/Åtgärdade/Alla</footer>
+    <footer>📍 Klicka "Sätt nål" → klicka på kartan → fyller adress | 🔽 Klicka på kolumnrubriker för att sortera | ✅ Åtgärdad med JA/NEJ</footer>
 </div>
 
 <script>
@@ -483,12 +496,27 @@
     let recipients = [];
     let currentUser = "Fredrik";
     let selectedIds = new Set();
-    let currentView = "active"; // active, completed, all
+    let currentView = "active";
     let currentAreaFilter = "all";
+    let sortColumn = "status";
+    let sortOrder = "asc";
     let map, markersLayer, currentMarker;
     let isPinMode = false;
 
-    // ALLA 67 VENTILER
+    // Status sorteringsordning (prioritet)
+    const statusOrder = {
+        "Trög - 2 gubbar": 1,
+        "Trasig - snurrar": 2,
+        "Trasig - stum": 3,
+        "Överasfalterad": 4,
+        "Betäckning - höjas": 5,
+        "Betäckning - byta lock": 6,
+        "Ej kontrollerad": 7,
+        "Hittar ej": 8,
+        "Borttagen": 9
+    };
+
+    // ALLA VENTILER
     const allVentils = [
         // TULLINGE (15)
         { ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
@@ -580,11 +608,11 @@
     ];
 
     function loadData() {
-        const stored = localStorage.getItem("ventilprogram2026_final_v2");
+        const stored = localStorage.getItem("ventilprogram2026_final_v3");
         if(stored) { try { ventilData = JSON.parse(stored); } catch(e) { ventilData = allVentils.map((v,i) => ({ ...v, id: i+1, completed: false })); } }
         else { ventilData = allVentils.map((v,i) => ({ ...v, id: i+1, completed: false, lastUpdated: new Date().toISOString() })); }
         
-        const storedExtra = localStorage.getItem("ventilprogram2026_extra_v2");
+        const storedExtra = localStorage.getItem("ventilprogram2026_extra_v3");
         if(storedExtra) { try { extraData = JSON.parse(storedExtra); } catch(e) { extraData = allExtras.map((ex,i) => ({ ...ex, id: "e"+i, completed: false })); } }
         else { extraData = allExtras.map((ex,i) => ({ ...ex, id: "e"+i, completed: false })); }
         
@@ -603,8 +631,8 @@
     }
 
     function saveToStorage() {
-        localStorage.setItem("ventilprogram2026_final_v2", JSON.stringify(ventilData));
-        localStorage.setItem("ventilprogram2026_extra_v2", JSON.stringify(extraData));
+        localStorage.setItem("ventilprogram2026_final_v3", JSON.stringify(ventilData));
+        localStorage.setItem("ventilprogram2026_extra_v3", JSON.stringify(extraData));
         localStorage.setItem("ventil_recipients", JSON.stringify(recipients));
         if(currentUser) localStorage.setItem("ventil_current_user", currentUser);
     }
@@ -620,9 +648,52 @@
         if(currentView === "active") filtered = ventilData.filter(v => !v.completed);
         else if(currentView === "completed") filtered = ventilData.filter(v => v.completed);
         if(currentAreaFilter !== "all") filtered = filtered.filter(v => v.area === currentAreaFilter);
-        const areaOrder = { "Tullinge":1, "Tumba":2, "Vårsta":3, "Grödinge":4, "Fittja/Alby/Norsborg/Slagsta":5 };
-        filtered.sort((a,b) => (areaOrder[a.area]||99) - (areaOrder[b.area]||99) || a.ventilNr.localeCompare(b.ventilNr));
+        
+        // SORTERING
+        filtered.sort((a, b) => {
+            let valA, valB;
+            if(sortColumn === "vav") { valA = a.ventilNr; valB = b.ventilNr; }
+            else if(sortColumn === "status") { 
+                valA = statusOrder[a.fullStatus] || 99;
+                valB = statusOrder[b.fullStatus] || 99;
+                if(valA === valB) return a.ventilNr.localeCompare(b.ventilNr);
+                return sortOrder === "asc" ? valA - valB : valB - valA;
+            }
+            else if(sortColumn === "plats") { valA = a.location || ""; valB = b.location || ""; }
+            else if(sortColumn === "rapportör") { valA = a.reportedBy || ""; valB = b.reportedBy || ""; }
+            else { return 0; }
+            
+            if(typeof valA === "string") {
+                return sortOrder === "asc" ? valA.localeCompare(valB, 'sv') : valB.localeCompare(valA, 'sv');
+            }
+            return sortOrder === "asc" ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+        });
+        
         return filtered;
+    }
+
+    function updateSortIcons() {
+        document.querySelectorAll('th .sort-icon').forEach(icon => icon.classList.remove('active'));
+        let iconMap = { vav: "sortVav", status: "sortStatus", plats: "sortPlats", rapportör: "sortRapportör" };
+        let iconId = iconMap[sortColumn];
+        if(iconId) {
+            let icon = document.querySelector(`#${iconId} .sort-icon`);
+            if(icon) {
+                icon.classList.add('active');
+                icon.innerHTML = sortOrder === "asc" ? "↑" : "↓";
+            }
+        }
+    }
+
+    function setSort(column) {
+        if(sortColumn === column) {
+            sortOrder = sortOrder === "asc" ? "desc" : "asc";
+        } else {
+            sortColumn = column;
+            sortOrder = "asc";
+        }
+        updateSortIcons();
+        renderTable();
     }
 
     function getStatusColor(status) {
@@ -691,7 +762,6 @@
             renderTable();
             updateStats();
             updateMapMarkers();
-            if(currentView !== "all") renderTable();
         }
     }
 
@@ -938,6 +1008,7 @@
 
     function escapeHtml(s) { if(!s) return ""; return s.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
 
+    // Event listeners
     document.getElementById("loginBtn")?.addEventListener("click", () => {
         const name = document.getElementById("userNameInput").value.trim();
         if(name) { currentUser = name; document.getElementById("userDisplay").innerHTML = name; saveToStorage(); }
@@ -953,6 +1024,10 @@
     document.getElementById("showCompletedBtn")?.addEventListener("click", () => setView("completed"));
     document.getElementById("showAllBtn")?.addEventListener("click", () => setView("all"));
     document.getElementById("filterAreaSelect")?.addEventListener("change", setAreaFilter);
+    document.getElementById("sortVav")?.addEventListener("click", () => setSort("vav"));
+    document.getElementById("sortStatus")?.addEventListener("click", () => setSort("status"));
+    document.getElementById("sortPlats")?.addEventListener("click", () => setSort("plats"));
+    document.getElementById("sortRapportör")?.addEventListener("click", () => setSort("rapportör"));
     document.querySelectorAll('.menu-item').forEach(item => item.addEventListener('click', () => switchMenu(item.getAttribute('data-menu'))));
 
     loadData();
