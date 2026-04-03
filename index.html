@@ -23,85 +23,78 @@
             min-height: 100vh;
             box-shadow: 0 0 20px rgba(0,0,0,0.05);
         }
-        /* Header */
         .header {
             background: #1e4663;
             color: white;
-            padding: 20px 24px;
+            padding: 16px 24px;
         }
-        .header h1 { font-size: 1.5rem; font-weight: 600; }
-        .header p { font-size: 0.75rem; opacity: 0.8; margin-top: 4px; }
+        .header h1 { font-size: 1.3rem; font-weight: 600; }
+        .header p { font-size: 0.7rem; opacity: 0.8; margin-top: 2px; }
         .login-row {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 12px;
-            margin-top: 12px;
+            gap: 10px;
+            margin-top: 10px;
         }
         .login-row input {
             background: rgba(255,255,255,0.2);
             border: none;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
             color: white;
-            font-size: 0.75rem;
-            width: 150px;
+            font-size: 0.7rem;
+            width: 140px;
         }
-        .login-row input::placeholder { color: rgba(255,255,255,0.7); }
         .login-row button {
             background: white;
             color: #1e4663;
             border: none;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             cursor: pointer;
         }
         .user-name {
             background: rgba(255,255,255,0.2);
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
-        /* Main meny */
         .main-menu {
             display: flex;
-            gap: 4px;
+            gap: 2px;
             background: white;
-            padding: 0 24px;
+            padding: 0 20px;
             border-bottom: 1px solid #e9ecef;
             flex-wrap: wrap;
         }
         .menu-item {
-            padding: 14px 20px;
-            font-size: 0.85rem;
+            padding: 12px 18px;
+            font-size: 0.8rem;
             font-weight: 600;
             color: #4a5568;
             cursor: pointer;
             border-bottom: 3px solid transparent;
-            transition: all 0.2s;
         }
         .menu-item.active {
             color: #1e6f5c;
             border-bottom-color: #1e6f5c;
         }
-        .content { padding: 24px; }
-        /* Karta */
+        .content { padding: 20px; }
         .map-card {
             background: #f8f9fa;
             border-radius: 20px;
             padding: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             border: 1px solid #e9ecef;
         }
         .map-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 8px;
             margin-bottom: 10px;
             flex-wrap: wrap;
-            gap: 10px;
         }
         .map-header input {
             flex: 1;
@@ -111,7 +104,7 @@
             font-size: 0.8rem;
         }
         .btn-pin, .btn-gps {
-            padding: 8px 18px;
+            padding: 8px 16px;
             border-radius: 40px;
             border: none;
             font-weight: 600;
@@ -121,97 +114,33 @@
         .btn-pin { background: #ff9800; color: white; }
         .btn-pin.active { background: #1e6f5c; box-shadow: 0 0 0 2px #ff9800; }
         .btn-gps { background: #2196f3; color: white; }
-        .map-container { height: 280px; border-radius: 16px; background: #e9ecef; }
-        /* Tabell */
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 20px;
-            border: 1px solid #e9ecef;
-            margin-top: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.75rem;
-        }
-        th {
-            text-align: left;
-            padding: 12px 10px;
-            background: #f8f9fa;
-            font-weight: 600;
-            border-bottom: 1px solid #e9ecef;
-        }
-        td {
-            padding: 10px 10px;
-            border-bottom: 1px solid #f0f0f0;
-            vertical-align: middle;
-        }
-        .area-row td {
-            background: #e9ecef;
-            font-weight: 600;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-        }
-        .ventil-nr {
-            font-family: monospace;
-            font-weight: 700;
-            background: #eef2fa;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            display: inline-block;
-        }
-        .status-badge {
-            padding: 3px 10px;
-            border-radius: 30px;
-            font-size: 0.65rem;
-            font-weight: 500;
-            display: inline-block;
-        }
-        .photo-thumb {
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 1px solid #ddd;
-        }
-        .action-btn {
-            background: none;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 20px;
-        }
-        .action-btn:hover { background: #f0f0f0; }
-        /* Formulär */
+        .map-container { height: 240px; border-radius: 16px; background: #e9ecef; }
         .form-card {
             background: #f8f9fa;
             border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 24px;
+            padding: 16px;
+            margin-bottom: 20px;
             border: 1px solid #e9ecef;
         }
         .form-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .form-group {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
         .form-group label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             color: #2c5a74;
         }
         .form-group input, .form-group select {
-            padding: 8px 12px;
+            padding: 7px 12px;
             border: 1px solid #ddd;
             border-radius: 40px;
             font-size: 0.8rem;
@@ -220,45 +149,30 @@
         .vav-input {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .vav-input span {
             background: #e9ecef;
-            padding: 8px 14px;
+            padding: 7px 12px;
             border-radius: 40px;
             font-weight: 600;
+            font-size: 0.8rem;
         }
         .vav-input input { flex: 1; }
-        .btn-save {
-            background: #ff9800;
-            padding: 10px 28px;
-            margin-top: 20px;
-        }
-        /* Extra iakttagelser */
+        .btn-save { background: #ff9800; padding: 8px 24px; margin-top: 8px; }
         .extra-section {
             background: #fef7e0;
             border-radius: 20px;
             padding: 16px;
-            margin-top: 20px;
+            margin: 20px 0;
             border-left: 4px solid #ff9800;
         }
-        .extra-section h3 {
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            color: #b45f06;
-        }
-        .extra-badge {
-            background: #e1d5e7;
-            font-size: 0.65rem;
-            padding: 3px 8px;
-            border-radius: 20px;
-            display: inline-block;
-        }
+        .extra-section h3 { font-size: 0.85rem; margin-bottom: 12px; color: #b45f06; }
         .send-bar {
             background: #fff3e0;
             border-radius: 16px;
-            padding: 12px 16px;
-            margin: 20px 0;
+            padding: 10px 16px;
+            margin: 16px 0;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -268,23 +182,82 @@
         .selected-count {
             background: #ff9800;
             color: white;
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
         }
         .stats {
             background: #eef3f0;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             display: inline-block;
             margin: 10px 0;
         }
-        footer {
-            padding: 16px 24px;
-            text-align: center;
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid #e9ecef;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.7rem;
+        }
+        th {
+            text-align: left;
+            padding: 10px 8px;
+            background: #f8f9fa;
+            font-weight: 600;
+            border-bottom: 1px solid #e9ecef;
+        }
+        td {
+            padding: 8px 8px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        .area-row td {
+            background: #e9ecef;
+            font-weight: 600;
+            padding: 5px 10px;
+        }
+        .ventil-nr {
+            font-family: monospace;
+            font-weight: 700;
+            background: #eef2fa;
+            padding: 2px 6px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            display: inline-block;
+        }
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 30px;
             font-size: 0.6rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .extra-badge {
+            background: #e1d5e7;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 20px;
+        }
+        .action-btn:hover { background: #f0f0f0; }
+        footer {
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 0.55rem;
             color: #8aa0b5;
             border-top: 1px solid #e9ecef;
         }
@@ -305,7 +278,7 @@
             border-radius: 24px;
             padding: 20px;
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
         }
         @media (max-width: 800px) {
             .content { padding: 16px; }
@@ -328,12 +301,11 @@
 
     <div class="main-menu">
         <div class="menu-item active" data-menu="ventil">🚰 VENTILPROGRAM</div>
-        <div class="menu-item" data-menu="brandpost">🔥 BRANDPOSTRONDERING</div>
+        <div class="menu-item" data-menu="brandpost">🔥 BRANDPOST</div>
         <div class="menu-item" data-menu="test">📋 KOMMANDE</div>
     </div>
 
     <div id="ventilContent" class="content">
-        <!-- KARTA -->
         <div class="map-card">
             <div class="map-header">
                 <input type="text" id="addressInput" placeholder="Sök adress eller klicka på kartan...">
@@ -343,7 +315,7 @@
             <div id="map" class="map-container"></div>
         </div>
 
-        <!-- REGISTRERING -->
+        <!-- Registrering -->
         <div class="form-card">
             <div class="form-row">
                 <div class="form-group" style="flex:0.6;">
@@ -368,81 +340,59 @@
                     <input type="text" id="ventilLocation" placeholder="Fylls i från kartan">
                 </div>
             </div>
-            
-            <!-- STATUS MED RULLGARDIN -->
             <div class="form-row">
                 <div class="form-group">
-                    <label>🔧 STATUS & DEFEKT</label>
+                    <label>🔧 STATUS</label>
                     <select id="mainStatusSelect">
-                        <option value="">-- Välj huvudstatus --</option>
-                        <option value="Trasig">🔴 Ventil Trasig</option>
+                        <option value="">-- Välj status --</option>
+                        <option value="Trasig - snurrar">🔴 Trasig - snurrar</option>
+                        <option value="Trasig - stum">🔴 Trasig - stum</option>
                         <option value="Ej kontrollerad">⚪ Ej kontrollerad</option>
-                        <option value="Trög">🟠 Ventil trög</option>
-                        <option value="Övertäckt">🟡 Övertäckt</option>
-                        <option value="Betäckning defekt">🟡 Betäckning Defekt</option>
+                        <option value="Trög - 2 gubbar">🟠 Trög - 2 gubbar</option>
+                        <option value="Överasfalterad">🟡 Överasfalterad</option>
+                        <option value="Betäckning - höjas">🟡 Betäckning - höjas</option>
+                        <option value="Betäckning - byta lock">🟡 Betäckning - byta lock</option>
+                        <option value="Betäckning - saknar lock">🟡 Betäckning - saknar lock</option>
                         <option value="Hittar ej">⚪ Hittar ej</option>
-                        <option value="Distanserad">🔵 Distanserad</option>
+                        <option value="Borttagen">⚫ Borttagen</option>
                     </select>
                 </div>
-                <div class="form-group" id="subStatusGroup" style="display:none;">
-                    <label>DETAILJ (välj)</label>
-                    <select id="subStatusSelect"></select>
-                </div>
-                <div class="form-group" id="freeTextField" style="display:none;">
-                    <label>📝 NOTERING</label>
-                    <input type="text" id="freeTextNote" placeholder="Skriv egen notering...">
-                </div>
-            </div>
-
-            <!-- FOTO -->
-            <div class="form-row">
                 <div class="form-group">
-                    <label>📸 FOTO</label>
-                    <div style="display: flex; gap: 8px;">
-                        <button id="takePhotoBtn" style="background:#2196f3;">📷 Ta foto</button>
-                        <button id="uploadPhotoBtn" style="background:#6c757d;">📁 Ladda upp</button>
-                    </div>
-                    <input type="file" id="photoFileInput" accept="image/*" style="display:none;">
-                    <div id="photoPreview" style="margin-top:8px;"></div>
+                    <label>📝 NOTERING</label>
+                    <input type="text" id="ventilNote" placeholder="Extra info...">
                 </div>
             </div>
-            
             <button id="saveBtn" class="btn-save">💾 Spara ventil</button>
         </div>
 
-        <!-- EXTRA IAKTTAGELSER -->
+        <!-- Extra iakttagelser -->
         <div class="extra-section">
             <h3>🪣 EXTRA IAKTTAGELSER (VBP, VSP, SV, Brunn)</h3>
             <div class="form-row">
                 <div class="form-group" style="flex:0.6;">
-                    <label>TYP</label>
                     <select id="extraType">
-                        <option value="VBP">🚒 VBP - Vattenbrandpost</option>
-                        <option value="VSP">💧 VSP - Vattenspolpost</option>
+                        <option value="VBP">🚒 VBP - Brandpost</option>
+                        <option value="VSP">💧 VSP - Spolpost</option>
                         <option value="SV">🚰 SV - Serviceventil</option>
                         <option value="Brunn">🕳️ Brunn</option>
-                        <option value="Övrigt">📌 Övrigt</option>
                     </select>
                 </div>
                 <div class="form-group" style="flex:0.5;">
-                    <label>NUMMER</label>
-                    <input type="text" id="extraNumber" placeholder="VBP29381">
+                    <input type="text" id="extraNumber" placeholder="Nummer (VBP29381)">
                 </div>
                 <div class="form-group" style="flex:1.5;">
-                    <label>📍 PLATS</label>
-                    <input type="text" id="extraLocation" placeholder="Gatuadress">
+                    <input type="text" id="extraLocation" placeholder="Plats / adress">
                 </div>
                 <div class="form-group" style="flex:1.5;">
-                    <label>📝 NOTERING</label>
-                    <input type="text" id="extraDesc" placeholder="Vatten och skit, måste höjas...">
+                    <input type="text" id="extraDesc" placeholder="Notering / problem">
                 </div>
-                <div><button id="saveExtraBtn" style="background:#ff9800;">➕ Lägg till</button></div>
+                <div><button id="saveExtraBtn" style="background:#ff9800;">➕</button></div>
             </div>
         </div>
 
-        <!-- SKICKA / MARKERA -->
+        <!-- Skicka -->
         <div class="send-bar">
-            <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                 <span>📋 Markerade:</span>
                 <span id="selectedCount" class="selected-count">0 st</span>
                 <select id="recipientSelect">
@@ -450,24 +400,24 @@
                 </select>
                 <button id="addRecipientBtn" style="background:#6c757d;">➕ Ny</button>
             </div>
-            <button id="sendSelectedBtn" style="background:#ff9800;">📧 Skicka / Skapa insats</button>
+            <button id="sendSelectedBtn" style="background:#ff9800;">📧 Skicka insatsunderlag</button>
         </div>
 
-        <div class="stats" id="stats">Laddar...</div>
+        <div class="stats" id="stats"></div>
 
-        <!-- TABELL -->
+        <!-- Tabell -->
         <div class="table-wrapper">
-            <table>
+            <table id="ventilTable">
                 <thead>
-                    <th style="width:30px"><input type="checkbox" id="selectAllCheckbox"></th>
-                    <th>VAV</th><th>Status</th><th>Plats</th><th>Foto</th><th>Rapportör</th><th style="width:35px">✅</th><th></th>
+                    <th style="width:25px"><input type="checkbox" id="selectAllCheckbox"></th>
+                    <th>VAV</th><th>Status</th><th>Plats</th><th>Notering</th><th>Rapportör</th><th>✅</th><th></th>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
 
-        <!-- EXTRA IAKTTAGELSER LISTA -->
-        <div class="extra-section" style="margin-top:20px;">
+        <!-- Extra lista -->
+        <div class="extra-section" style="margin-top:16px;">
             <h3>📋 Registrerade extra iakttagelser</h3>
             <div class="table-wrapper">
                 <table id="extraTable">
@@ -479,95 +429,117 @@
     </div>
 
     <div id="brandpostContent" class="content" style="display:none;">
-        <div style="text-align:center; padding:60px 20px; background:#f8f9fa; border-radius:20px;">
-            <div style="font-size:3rem; margin-bottom:16px;">🔥</div>
+        <div style="text-align:center; padding:50px 20px; background:#f8f9fa; border-radius:20px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🔥</div>
             <h3>Brandpostrondering</h3>
-            <p style="color:#6c757d; margin-top:8px;">Kommer snart - här hanteras brandposter</p>
+            <p>Kommer snart</p>
         </div>
     </div>
     <div id="testContent" class="content" style="display:none;">
-        <div style="text-align:center; padding:60px 20px; background:#f8f9fa; border-radius:20px;">
-            <div style="font-size:3rem; margin-bottom:16px;">📋</div>
+        <div style="text-align:center; padding:50px 20px; background:#f8f9fa; border-radius:20px;">
+            <div style="font-size:3rem; margin-bottom:12px;">📋</div>
             <h3>Kommande funktion</h3>
-            <p style="color:#6c757d; margin-top:8px;">Här kommer nästa underhållsprogram</p>
         </div>
     </div>
 
-    <footer>📍 Klicka "Sätt nål" → klicka på kartan → fyller adress | Färger på kartan: 🔴Trasig 🟠Trög 🟡Övertäckt/Betäckning 🔵Distans ⚪Hittar ej</footer>
+    <footer>📍 Sätt nål → klicka på kartan → fyller adress | Färger: 🔴Trasig 🟠Trög 🟡Överasfalterad/Betäckning ⚪Hittar ej</footer>
 </div>
 
 <script>
+    // ALLA DINA ANTECKNINGAR INLADDADE
     let ventilData = [];
     let extraData = [];
     let recipients = [];
     let currentUser = "Fredrik";
-    let currentView = "active";
     let selectedIds = new Set();
-    let currentPhotoData = null;
-    
     let map, markersLayer, currentMarker;
     let isPinMode = false;
 
-    // Substatus alternativ
-    const subStatusOptions = {
-        "Trasig": ["Snurrar", "Saknar nyckelstång", "Läckljud"],
-        "Ej kontrollerad": ["Bil ivägen", "Bråte", "Snö", "Ej tillgänglig"],
-        "Trög": ["2 gubbar", "Kärvar", "Går tungt"],
-        "Övertäckt": ["Asfalt", "Jord", "Buskage", "Grus"],
-        "Betäckning defekt": ["Höjas", "Trasigt lock", "Byta hela betäckning", "Saknar lock"],
-        "Hittar ej": ["Måste mätas in", "Borttagen", "Fel inmätt"],
-        "Distanserad": ["Ja", "Nej", "Saknas helt"]
-    };
-
-    function updateSubStatus() {
-        const mainStatus = document.getElementById("mainStatusSelect").value;
-        const subGroup = document.getElementById("subStatusGroup");
-        const freeField = document.getElementById("freeTextField");
-        const subSelect = document.getElementById("subStatusSelect");
-        
-        if(mainStatus && subStatusOptions[mainStatus]) {
-            subGroup.style.display = "flex";
-            freeField.style.display = "none";
-            subSelect.innerHTML = '<option value="">-- Välj detalj --</option>';
-            subStatusOptions[mainStatus].forEach(opt => {
-                subSelect.innerHTML += `<option value="${opt}">${opt}</option>`;
-            });
-            subSelect.innerHTML += `<option value="__other__">✏️ Annan (skriv egen)</option>`;
-            subSelect.onchange = function() {
-                if(this.value === "__other__") {
-                    freeField.style.display = "flex";
-                } else {
-                    freeField.style.display = "none";
-                }
-            };
-        } else if(mainStatus === "") {
-            subGroup.style.display = "none";
-            freeField.style.display = "none";
-        }
-    }
-
-    function getFullStatus() {
-        const main = document.getElementById("mainStatusSelect").value;
-        if(!main) return "";
-        const sub = document.getElementById("subStatusSelect").value;
-        const freeText = document.getElementById("freeTextNote").value.trim();
-        if(sub === "__other__" && freeText) return `${main} - ${freeText}`;
-        if(sub && sub !== "__other__") return `${main} - ${sub}`;
-        return main;
-    }
-
-    const initialData = [
-        { id: "1", completed: false, ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - Snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { id: "2", completed: false, ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { id: "3", completed: false, ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan", fullStatus: "Betäckning defekt - Byta hela betäckning", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { id: "4", completed: false, ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej - Måste mätas in", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { id: "5", completed: false, ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { id: "6", completed: false, ventilNr: "VAV62105", area: "Tumba", location: "Korsning Tunavägen", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null }
+    // ALLA VENTILER FRÅN DINA ANTECKNINGAR
+    const allVentils = [
+        // TULLINGE
+        { ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning - byta lock", defectDesc: "Fel lock", reportedBy: "Fredrik" },
+        { ventilNr: "VAV81517", area: "Tullinge", location: "Skogshemsvägen", fullStatus: "Ej kontrollerad", defectDesc: "Snö", reportedBy: "Fredrik" },
+        { ventilNr: "VAV82003", area: "Tullinge", location: "Bergmovägen 1", fullStatus: "Ej kontrollerad", defectDesc: "Snö", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV82149", area: "Tullinge", location: "Korsning Flottiljvägen/Bergmovägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV71821", area: "Tullinge", location: "Korsning Adler Salvius väg/Liselundsvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV11", area: "Tullinge", location: "Solskensvägen 19", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94485", area: "Tullinge", location: "Korsning Skogsmulles väg/Strövarvägen", fullStatus: "Hittar ej", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97388", area: "Tullinge", location: "Friluftsvägen 101", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97646", area: "Tullinge", location: "Hanvedens alle 58", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV81438", area: "Tullinge", location: "Korsning Dalkärrsvägen/Skogshemsvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV82456", area: "Tullinge", location: "Korsning Plåtslagarvägen/smedvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV81307", area: "Tullinge", location: "Skogshemsvägen 7", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        // TUMBA
+        { ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV83972", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV83971", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV3016", area: "Tumba", location: "Korsning Kärrvägen/Kärrtuvevägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV92506", area: "Tumba", location: "Björkvägen 24", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV91658", area: "Tumba", location: "Björkvägen 40", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV93497", area: "Tumba", location: "Bäckvägen 21", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV91806", area: "Tumba", location: "Korsning Skäcklingegårdsväg/bäverstigen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV93062", area: "Tumba", location: "Korpvägen 9", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV93028", area: "Tumba", location: "Duvhöksvägen 7", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV92081", area: "Tumba", location: "Grytstigen 79", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV91437", area: "Tumba", location: "Bryggarvägen 9C", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV93486", area: "Tumba", location: "Korsning Svedjevägen/grytstigen", fullStatus: "Trasig - snurrar", defectDesc: "en ventil nära, ej inritad, ser ny ut", reportedBy: "Fredrik" },
+        { ventilNr: "VAV1481", area: "Tumba", location: "Parkbacken 9", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV92231", area: "Tumba", location: "Odlingsvägen Lekpark", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV91921", area: "Tumba", location: "Harbrovägen 42Y vid övergångsstället busshållsplats", fullStatus: "Betäckning - höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94384", area: "Tumba", location: "Engwallsväg 20", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV91763", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV91762", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning - höjas, Betäckning - saknar lock", defectDesc: "saknar lock", reportedBy: "Fredrik" },
+        { ventilNr: "VAV62105", area: "Tumba", location: "Korsning Tunavägen/Prästgårdsvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV2371", area: "Tumba", location: "Skrävstavägen 37", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV61893", area: "Tumba", location: "Trädgårdsvägen 10", fullStatus: "Hittar ej", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik" },
+        { ventilNr: "VAV61717", area: "Tumba", location: "Trädgårdsvägen 15", fullStatus: "Hittar ej", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik" },
+        { ventilNr: "VAV1470", area: "Tumba", location: "Korsning Parkbacken/Strandvägen", fullStatus: "Hittar ej", defectDesc: "inget utslag med metalldetektorn", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94302", area: "Tumba", location: "Enbacken 21", fullStatus: "Betäckning - byta lock", defectDesc: "nytt AV-Lock", reportedBy: "Fredrik" },
+        // VÅRSTA
+        { ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning - byta lock", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV31604", area: "Vårsta", location: "Ringvägen 30", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV31080", area: "Vårsta", location: "Bremoravägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94338", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94339", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV32283", area: "Vårsta", location: "Ringvägen", fullStatus: "Borttagen", defectDesc: "SKA TAS BORT FRÅN KARTAN", reportedBy: "Fredrik" },
+        { ventilNr: "VAV31685", area: "Vårsta", location: "Ringvägen", fullStatus: "Borttagen", defectDesc: "SKA TAS BORT FRÅN KARTAN", reportedBy: "Fredrik" },
+        // GRÖDINGE
+        { ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97534", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97515", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97650", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97580", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97648", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97649", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97656", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97647", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        // NORRA BOTKYRKA
+        { ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV52124", area: "Fittja/Alby/Norsborg/Slagsta", location: "Amalias väg 33", fullStatus: "Hittar ej", defectDesc: "Fel inmätt?", reportedBy: "Fredrik" },
+        { ventilNr: "VAV52467", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Hittar ej", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV51610", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV56471", area: "Fittja/Alby/Norsborg/Slagsta", location: "Värdshusvägen 40", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV56781", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittjavägen rondell", fullStatus: "Betäckning - höjas", defectDesc: "OK", reportedBy: "Fredrik" },
+        { ventilNr: "VAV56678", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittja dagvattenpark", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV21883", area: "Fittja/Alby/Norsborg/Slagsta", location: "Sjöbodavägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" }
     ];
 
-    const initialExtra = [
-        { id: "e1", completed: false, type: "VBP", number: "VBP29381", location: "Oxelvägen 12", description: "Vatten och skit, måste höjas och asfalteras om", reportedBy: "Fredrik" },
-        { id: "e2", completed: false, type: "VSP", number: "VSP456", location: "Centrumleden", description: "Spolpost saknar skylt", reportedBy: "Fredrik" }
+    // ALLA EXTRA IAKTTAGELSER
+    const allExtras = [
+        { type: "VBP", number: "VBP93823", location: "Mekanikervägen 1", description: "Vatten och skit, måste höjas och asfalteras", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV82455", location: "Korsning Plåtslagarvägen/smedvägen", description: "Överasfalterad", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV82416", location: "Korsning Smedvägen/Sliparvägen", description: "Överasfalterad", reportedBy: "Fredrik" },
+        { type: "SV", number: "", location: "Hökbursvägen 48", description: "Fixa asfalt", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV93113", location: "Storvretsvägen 91B", description: "Byta betäckning", reportedBy: "Fredrik" },
+        { type: "SV", number: "", location: "Olvonvägen 10", description: "Trasig", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV97463", location: "Fittja torg", description: "Saknar lock och behöver justera betäckning", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV56181", location: "Fittjastråket 29", description: "Sitter kork 'FÅR EJ RÖRAS'", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV31643", location: "Brosjöstråket", description: "STUM kan ej rubba", reportedBy: "Fredrik" }
     ];
 
     const defaultRecipients = [
@@ -576,15 +548,19 @@
     ];
 
     function loadData() {
-        const stored = localStorage.getItem("ventilprogram2026_final");
+        const stored = localStorage.getItem("ventilprogram2026_complete");
         if(stored) {
-            try { ventilData = JSON.parse(stored); } catch(e) { ventilData = JSON.parse(JSON.stringify(initialData)); }
-        } else { ventilData = JSON.parse(JSON.stringify(initialData)); }
+            try { ventilData = JSON.parse(stored); } catch(e) { ventilData = allVentils.map((v,idx) => ({ ...v, id: idx+1, completed: false, photo: null })); }
+        } else {
+            ventilData = allVentils.map((v,idx) => ({ ...v, id: idx+1, completed: false, photo: null, lastUpdated: new Date().toISOString() }));
+        }
         
-        const storedExtra = localStorage.getItem("ventilprogram2026_extra");
+        const storedExtra = localStorage.getItem("ventilprogram2026_extra_complete");
         if(storedExtra) {
-            try { extraData = JSON.parse(storedExtra); } catch(e) { extraData = JSON.parse(JSON.stringify(initialExtra)); }
-        } else { extraData = JSON.parse(JSON.stringify(initialExtra)); }
+            try { extraData = JSON.parse(storedExtra); } catch(e) { extraData = allExtras.map((ex,idx) => ({ ...ex, id: "e"+idx, completed: false })); }
+        } else {
+            extraData = allExtras.map((ex,idx) => ({ ...ex, id: "e"+idx, completed: false, lastUpdated: new Date().toISOString() }));
+        }
         
         const storedRecipients = localStorage.getItem("ventil_recipients");
         if(storedRecipients) {
@@ -602,8 +578,8 @@
     }
 
     function saveToStorage() {
-        localStorage.setItem("ventilprogram2026_final", JSON.stringify(ventilData));
-        localStorage.setItem("ventilprogram2026_extra", JSON.stringify(extraData));
+        localStorage.setItem("ventilprogram2026_complete", JSON.stringify(ventilData));
+        localStorage.setItem("ventilprogram2026_extra_complete", JSON.stringify(extraData));
         localStorage.setItem("ventil_recipients", JSON.stringify(recipients));
         if(currentUser) localStorage.setItem("ventil_current_user", currentUser);
     }
@@ -611,9 +587,7 @@
     function renderRecipients() {
         const select = document.getElementById("recipientSelect");
         select.innerHTML = '<option value="">Välj mottagare</option>';
-        recipients.forEach(r => {
-            select.innerHTML += `<option value="${r.email}">${r.name || r.email}</option>`;
-        });
+        recipients.forEach(r => { select.innerHTML += `<option value="${r.email}">${r.name || r.email}</option>`; });
     }
 
     function addRecipient() {
@@ -627,24 +601,23 @@
         }
     }
 
-    function getMarkerColor(status) {
-        if(status.includes("Trasig")) return "#e74c3c";
-        if(status.includes("Trög")) return "#e67e22";
-        if(status.includes("Övertäckt")) return "#f39c12";
-        if(status.includes("Betäckning")) return "#f39c12";
-        if(status.includes("Distanserad")) return "#3498db";
-        if(status.includes("Hittar ej")) return "#95a5a6";
-        return "#2ecc71";
-    }
-
     function getStatusColor(status) {
         if(status.includes("Trasig")) return "#ffcdd2";
         if(status.includes("Trög")) return "#ffecb3";
-        if(status.includes("Övertäckt")) return "#ffe0b2";
+        if(status.includes("Överasfalterad")) return "#ffe0b2";
         if(status.includes("Betäckning")) return "#ffe0b2";
-        if(status.includes("Distanserad")) return "#e3f2fd";
         if(status.includes("Hittar ej")) return "#e0e0e0";
+        if(status.includes("Borttagen")) return "#f5f5f5";
         return "#e3f2fd";
+    }
+
+    function getMarkerColor(status) {
+        if(status.includes("Trasig")) return "#e74c3c";
+        if(status.includes("Trög")) return "#e67e22";
+        if(status.includes("Överasfalterad")) return "#f39c12";
+        if(status.includes("Betäckning")) return "#f39c12";
+        if(status.includes("Hittar ej")) return "#95a5a6";
+        return "#2ecc71";
     }
 
     function renderTable() {
@@ -653,7 +626,7 @@
         filtered.sort((a,b) => (areaOrder[a.area]||99) - (areaOrder[b.area]||99) || a.ventilNr.localeCompare(b.ventilNr));
         
         const tbody = document.getElementById("tableBody");
-        if(filtered.length === 0) { tbody.innerHTML = '}<td colspan="8" style="text-align:center; padding:40px;">📭 Inga ventiler'; return; }
+        if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px;">📭 Inga ventiler att visa'; return; }
         
         tbody.innerHTML = "";
         let lastArea = "";
@@ -669,8 +642,8 @@
             row.insertCell(1).innerHTML = `<span class="ventil-nr">${escapeHtml(v.ventilNr)}</span>`;
             row.insertCell(2).innerHTML = `<span class="status-badge" style="background:${getStatusColor(v.fullStatus)}">${escapeHtml(v.fullStatus)}</span>`;
             row.insertCell(3).innerHTML = escapeHtml(v.location || '—');
-            row.insertCell(4).innerHTML = v.photo ? `<img src="${v.photo}" class="photo-thumb" onclick="showFullPhoto('${v.photo}')">` : '—';
-            row.insertCell(5).innerHTML = `<span style="font-size:0.65rem;">👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
+            row.insertCell(4).innerHTML = escapeHtml(v.defectDesc || '—');
+            row.insertCell(5).innerHTML = `<span style="font-size:0.6rem;">👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
             row.insertCell(6).innerHTML = `<input type="checkbox" class="complete-checkbox" data-id="${v.id}" ${v.completed ? "checked" : ""}>`;
             row.insertCell(7).innerHTML = `<button class="action-btn edit-btn" data-id="${v.id}">✏️</button> <button class="action-btn delete-btn" data-id="${v.id}">🗑️</button>`;
         });
@@ -685,7 +658,7 @@
 
     function renderExtraTable() {
         const tbody = document.getElementById("extraTableBody");
-        if(extraData.length === 0) { tbody.innerHTML = '}<td colspan="7" style="text-align:center;">📭 Inga extra iakttagelser'; return; }
+        if(extraData.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">📭 Inga extra iakttagelser'; return; }
         tbody.innerHTML = "";
         extraData.forEach(ex => {
             const row = tbody.insertRow();
@@ -693,7 +666,7 @@
             row.insertCell(1).innerHTML = `<span class="ventil-nr">${escapeHtml(ex.number || '—')}</span>`;
             row.insertCell(2).innerHTML = escapeHtml(ex.location || '—');
             row.insertCell(3).innerHTML = escapeHtml(ex.description || '—');
-            row.insertCell(4).innerHTML = `<span style="font-size:0.65rem;">👤 ${escapeHtml(ex.reportedBy || '—')}</span>`;
+            row.insertCell(4).innerHTML = `<span style="font-size:0.6rem;">👤 ${escapeHtml(ex.reportedBy || '—')}</span>`;
             row.insertCell(5).innerHTML = `<input type="checkbox" class="complete-extra-cb" data-id="${ex.id}" ${ex.completed ? "checked" : ""}>`;
             row.insertCell(6).innerHTML = `<button class="action-btn delete-extra-btn" data-id="${ex.id}">🗑️</button>`;
         });
@@ -723,13 +696,14 @@
 
     function sendSelected() {
         const email = document.getElementById("recipientSelect").value;
-        if(!email) { alert("Välj mottagare"); return; }
+        if(!email) { alert("Välj en mottagare"); return; }
         const selected = ventilData.filter(v => selectedIds.has(v.id) && !v.completed);
         if(selected.length === 0) { alert("Inga ventiler markerade"); return; }
         
-        let body = `Underhållsprogram Botkyrka Kommun\n\nRapport från: ${currentUser}\nDatum: ${new Date().toLocaleString()}\nAntal: ${selected.length}\n\n`;
+        let body = `Underhållsprogram Botkyrka Kommun\n\nRapport från: ${currentUser}\nDatum: ${new Date().toLocaleString()}\nAntal ventiler: ${selected.length}\n\n`;
+        body += `📋 MARKERADE VENTILER:\n----------------------------------------\n\n`;
         selected.forEach(v => {
-            body += `${v.ventilNr} | ${v.area}\n   Plats: ${v.location}\n   Status: ${v.fullStatus}\n   Notering: ${v.defectDesc || '-'}\n----------------------------------------\n`;
+            body += `${v.ventilNr} | ${v.area}\n   Plats: ${v.location}\n   Status: ${v.fullStatus}\n   Notering: ${v.defectDesc || '-'}\n   Rapportör: ${v.reportedBy}\n----------------------------------------\n\n`;
         });
         window.location.href = `mailto:${email}?subject=Insatsunderlag ${new Date().toLocaleDateString()}&body=${encodeURIComponent(body)}`;
         alert(`📧 Rapport skickad till ${recipients.find(r=>r.email===email)?.name || email}`);
@@ -743,7 +717,7 @@
 
     function toggleComplete(id) {
         const v = ventilData.find(v => v.id === id);
-        if(v) { v.completed = !v.completed; saveToStorage(); renderTable(); updateStats(); updateMapMarkers(); }
+        if(v) { v.completed = !v.completed; if(v.completed) v.completedBy = currentUser; saveToStorage(); renderTable(); updateStats(); updateMapMarkers(); }
     }
 
     function toggleExtraComplete(id) {
@@ -758,13 +732,13 @@
         const area = document.getElementById("areaSelect").value;
         const location = document.getElementById("ventilLocation").value.trim();
         if(!location) { alert("Ange plats"); return; }
-        const fullStatus = getFullStatus();
+        const fullStatus = document.getElementById("mainStatusSelect").value;
         if(!fullStatus) { alert("Välj status"); return; }
+        const defectDesc = document.getElementById("ventilNote").value.trim();
         
         ventilData.push({
-            id: Date.now()+'-'+Math.random().toString(36).substr(2,4),
-            completed: false, ventilNr: fullVav, area, location, fullStatus,
-            defectDesc: "", photo: currentPhotoData,
+            id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false,
+            ventilNr: fullVav, area, location, fullStatus, defectDesc,
             reportedBy: currentUser, completedBy: "",
             lastUpdated: new Date().toISOString()
         });
@@ -772,13 +746,7 @@
         document.getElementById("vavNumber").value = "";
         document.getElementById("ventilLocation").value = "";
         document.getElementById("mainStatusSelect").value = "";
-        document.getElementById("subStatusSelect").innerHTML = "";
-        document.getElementById("subStatusGroup").style.display = "none";
-        document.getElementById("freeTextField").style.display = "none";
-        document.getElementById("freeTextNote").value = "";
-        document.getElementById("photoPreview").innerHTML = "";
-        currentPhotoData = null;
-        
+        document.getElementById("ventilNote").value = "";
         saveToStorage();
         renderTable();
         updateStats();
@@ -793,8 +761,8 @@
         const description = document.getElementById("extraDesc").value.trim();
         if(!description) { alert("Skriv en notering"); return; }
         extraData.push({
-            id: Date.now()+'-'+Math.random().toString(36).substr(2,4),
-            completed: false, type, number, location, description,
+            id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false,
+            type, number, location, description,
             reportedBy: currentUser, lastUpdated: new Date().toISOString()
         });
         document.getElementById("extraNumber").value = "";
@@ -815,7 +783,9 @@
         document.getElementById("vavNumber").value = v.ventilNr.replace("VAV", "");
         document.getElementById("areaSelect").value = v.area;
         document.getElementById("ventilLocation").value = v.location || "";
-        alert(`✏️ Redigerar ${v.ventilNr}. Använd formuläret ovan.`);
+        document.getElementById("mainStatusSelect").value = v.fullStatus;
+        document.getElementById("ventilNote").value = v.defectDesc || "";
+        alert(`✏️ Redigerar ${v.ventilNr}. Ändra och spara.`);
     }
 
     function deleteVentil(id) {
@@ -882,9 +852,9 @@
                         if(data[0]) {
                             const color = getMarkerColor(v.fullStatus);
                             const markerHtml = L.divIcon({
-                                html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></div>`,
-                                iconSize: [14, 14],
-                                popupAnchor: [0, -7]
+                                html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></div>`,
+                                iconSize: [12, 12],
+                                popupAnchor: [0, -6]
                             });
                             L.marker([parseFloat(data[0].lat), parseFloat(data[0].lon)], { icon: markerHtml })
                                 .bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}`)
@@ -893,35 +863,6 @@
                     });
             }
         });
-    }
-
-    // FOTO
-    function takePhoto() {
-        const input = document.getElementById("photoFileInput");
-        input.setAttribute('capture', 'environment');
-        input.click();
-    }
-    function uploadPhoto() {
-        const input = document.getElementById("photoFileInput");
-        input.removeAttribute('capture');
-        input.click();
-    }
-    function handlePhotoFile(event) {
-        const file = event.target.files[0];
-        if(!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            currentPhotoData = e.target.result;
-            document.getElementById("photoPreview").innerHTML = `<img src="${currentPhotoData}" style="max-width:100px; border-radius:8px;">`;
-        };
-        reader.readAsDataURL(file);
-        event.target.value = '';
-    }
-    function showFullPhoto(photoData) {
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.innerHTML = `<div class="modal-content"><img src="${photoData}" style="max-width:100%; border-radius:16px;"><div class="modal-buttons" style="margin-top:16px;"><button onclick="this.closest('.modal').remove()">Stäng</button></div></div>`;
-        document.body.appendChild(modal);
     }
 
     function switchMenu(menu) {
@@ -946,12 +887,7 @@
     document.getElementById("sendSelectedBtn")?.addEventListener("click", sendSelected);
     document.getElementById("addRecipientBtn")?.addEventListener("click", addRecipient);
     document.getElementById("selectAllCheckbox")?.addEventListener("change", selectAll);
-    document.getElementById("takePhotoBtn")?.addEventListener("click", takePhoto);
-    document.getElementById("uploadPhotoBtn")?.addEventListener("click", uploadPhoto);
-    document.getElementById("photoFileInput")?.addEventListener("change", handlePhotoFile);
-    document.getElementById("mainStatusSelect")?.addEventListener("change", updateSubStatus);
     document.querySelectorAll('.menu-item').forEach(item => item.addEventListener('click', () => switchMenu(item.getAttribute('data-menu'))));
-    window.showFullPhoto = showFullPhoto;
 
     loadData();
     initMap();
