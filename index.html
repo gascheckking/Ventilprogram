@@ -131,22 +131,16 @@
             cursor: pointer;
             color: white;
         }
-        .status-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .status-group {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 12px;
             margin: 8px 0;
         }
-        .status-chip {
-            background: #f8f9fa;
-            border: 1px solid #e2e8f0;
-            border-radius: 40px;
-            padding: 8px 18px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
+        .status-group select {
+            width: 100%;
+            margin-top: 6px;
         }
-        .status-chip.selected { background: #ff9800; color: white; border-color: #ff9800; }
         .big-save-btn {
             background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
             width: 100%;
@@ -206,6 +200,26 @@
             border: 1px solid #ddd;
             background: white;
             font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .defect-filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .defect-btn {
+            padding: 6px 14px;
+            border-radius: 40px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+        .defect-btn.active {
+            background: #ff9800;
+            color: white;
+            border-color: #ff9800;
         }
         .stats {
             background: #eef3f0;
@@ -233,10 +247,7 @@
             background: #f8fafc;
             font-weight: 700;
             border-bottom: 1px solid #e9ecef;
-            cursor: pointer;
-            user-select: none;
         }
-        th:hover { background: #eef2f5; }
         td {
             padding: 8px 8px;
             border-bottom: 1px solid #f0f0f0;
@@ -311,6 +322,7 @@
             display: flex;
             gap: 8px;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
         .map-header input {
             flex: 1;
@@ -357,9 +369,8 @@
         }
         @media (max-width: 700px) {
             .content { padding: 14px; }
-            .status-buttons { gap: 6px; }
-            .status-chip { padding: 6px 12px; font-size: 0.7rem; }
             .form-row { flex-direction: column; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
@@ -374,7 +385,7 @@
         <div class="login-area">
             <input type="text" id="userNameInput" placeholder="Ditt namn" value="Fredrik">
             <button id="loginBtn">Logga in</button>
-            <div id="userDisplay" class="user-name">Fredrik</div>
+            <div id="userDisplay" class="user-name"></div>
         </div>
     </div>
 
@@ -414,28 +425,85 @@
                     <div class="form-group" style="flex:1.5;">
                         <label>📍 PLATS</label>
                         <div class="location-input">
-                            <input type="text" id="fieldLocation" placeholder="Klicka på kartnålen">
+                            <input type="text" id="fieldLocation" placeholder="Klicka på 📍 kartnålen">
                             <button id="fieldLocationPinBtn" class="btn-pin-small">📍</button>
                         </div>
                     </div>
                 </div>
 
-                <label>🔧 STATUS (klicka i de som gäller)</label>
-                <div class="status-buttons" id="fieldStatusGroup">
-                    <div class="status-chip" data-status="Trasig - snurrar">🔴 Trasig - snurrar</div>
-                    <div class="status-chip" data-status="Trasig - stum">🔴 Trasig - stum</div>
-                    <div class="status-chip" data-status="Trög - 2 gubbar">🟠 Trög - 2 gubbar</div>
-                    <div class="status-chip" data-status="Överasfalterad">🟡 Överasfalterad</div>
-                    <div class="status-chip" data-status="Betäckning - höjas">🟡 Betäckning - höjas</div>
-                    <div class="status-chip" data-status="Betäckning - byta lock">🟡 Betäckning - byta lock</div>
-                    <div class="status-chip" data-status="Hittar ej">⚪ Hittar ej</div>
-                    <div class="status-chip" data-status="Ej kontrollerad">⚪ Ej kontrollerad</div>
-                    <div class="status-chip" data-status="Distans saknas">🔵 Distans saknas</div>
+                <!-- STATUS MED RULLGARDINER -->
+                <div class="status-group">
+                    <label>🔧 TRASIG</label>
+                    <select id="statusTrasig">
+                        <option value="">-- Välj --</option>
+                        <option value="Trasig - snurrar">Snurrar</option>
+                        <option value="Trasig - sne">Sne</option>
+                        <option value="Trasig - stum">Stum</option>
+                    </select>
+                </div>
+
+                <div class="status-group">
+                    <label>🟡 BETÄCKNING</label>
+                    <select id="statusBetackning">
+                        <option value="">-- Välj --</option>
+                        <option value="Betäckning - trasig ram">Trasig ram</option>
+                        <option value="Betäckning - trasigt lock">Trasigt lock</option>
+                        <option value="Betäckning - höjas">Höjas</option>
+                    </select>
+                </div>
+
+                <div class="status-group">
+                    <label>🟠 TRÖG</label>
+                    <select id="statusTrog">
+                        <option value="">-- Välj --</option>
+                        <option value="Trög - 2 gubbar">2 gubbar</option>
+                        <option value="Trög - kärvar">Kärvar</option>
+                        <option value="Trög - går tungt">Går tungt</option>
+                    </select>
+                </div>
+
+                <div class="status-group">
+                    <label>🟡 ÖVERTÄCKT</label>
+                    <select id="statusOvertackt">
+                        <option value="">-- Välj --</option>
+                        <option value="Övertäckt - asfalt">Asfalt</option>
+                        <option value="Övertäckt - buskage">Buskage</option>
+                        <option value="Övertäckt - jord">Jord</option>
+                        <option value="Övertäckt - grus">Grus</option>
+                    </select>
+                </div>
+
+                <div class="status-group">
+                    <label>⚪ HITTAR EJ</label>
+                    <select id="statusHittar">
+                        <option value="">-- Välj --</option>
+                        <option value="Hittar ej - mätas in">Måste mätas in</option>
+                        <option value="Hittar ej - borttagen">Borttagen</option>
+                    </select>
+                </div>
+
+                <div class="status-group">
+                    <label>🔵 DISTANS</label>
+                    <select id="statusDistans">
+                        <option value="">-- Välj --</option>
+                        <option value="Distans saknas - ja">Ja</option>
+                        <option value="Distans saknas - nej">Nej</option>
+                    </select>
+                </div>
+
+                <div class="status-group">
+                    <label>⚪ EJ KONTROLLERAD</label>
+                    <select id="statusEjKontrollerad">
+                        <option value="">-- Välj --</option>
+                        <option value="Ej kontrollerad - bil ivägen">Bil ivägen</option>
+                        <option value="Ej kontrollerad - bråte">Bråte</option>
+                        <option value="Ej kontrollerad - snö">Snö</option>
+                    </select>
                 </div>
 
                 <div style="margin: 12px 0;">
-                    <label>📝 NOTERING</label>
-                    <input type="text" id="fieldNote" placeholder="Extra information..." style="width:100%;">
+                    <label>📝 EXTRA NOTERING</label>
+                    <input type="text" id="fieldNote" placeholder="Fritext...">
                 </div>
 
                 <div style="margin: 12px 0;">
@@ -484,19 +552,24 @@
                     </select>
                     <button id="adminRefreshBtn" style="background:#6c757d;">🔄 Uppdatera</button>
                 </div>
+                
+                <!-- SORTERA EFTER DEFEKT -->
+                <div class="defect-filter-buttons">
+                    <button class="defect-btn" data-defect="all">📋 Alla</button>
+                    <button class="defect-btn" data-defect="trasig">🔴 Trasig</button>
+                    <button class="defect-btn" data-defect="trog">🟠 Trög</button>
+                    <button class="defect-btn" data-defect="overtackt">🟡 Övertäckt</button>
+                    <button class="defect-btn" data-defect="betackning">🟡 Betäckning</button>
+                    <button class="defect-btn" data-defect="hittar">⚪ Hittar ej</button>
+                    <button class="defect-btn" data-defect="distans">🔵 Distans</button>
+                </div>
+                
                 <div class="stats" id="adminStats">Laddar...</div>
                 <div class="table-wrapper">
                     <table id="adminTable">
                         <thead>
                             <th style="width:30px"><input type="checkbox" id="adminSelectAll"></th>
-                            <th id="sortVav" style="cursor:pointer;">VAV</th>
-                            <th id="sortStatus" style="cursor:pointer;">Status ⬇️</th>
-                            <th id="sortPlats" style="cursor:pointer;">Plats</th>
-                            <th>Notering</th>
-                            <th>Foto</th>
-                            <th>Rapportör</th>
-                            <th>✅</th>
-                            <th></th>
+                            <th>VAV</th><th>Status</th><th>Plats</th><th>Notering</th><th>Foto</th><th>Rapportör</th><th>✅</th><th></th>
                         </thead>
                         <tbody id="adminTableBody"></tbody>
                     </table>
@@ -545,7 +618,7 @@
         </div>
     </div>
 
-    <footer>📍 Fältläge: välj typ (VAV/VBP/VSP/SV/Brunn) → klicka på 📍 för att fylla adress med kartnål | Adminläge: klicka på Status-kolumnen för att sortera efter defekt</footer>
+    <footer>📍 Klicka på 📍 NÅL → klicka på kartan → fyller adress | I ADMIN: klicka på defektknapparna för att filtrera</footer>
 </div>
 
 <script>
@@ -553,57 +626,44 @@
     let extraData = [];
     let recipients = [];
     let currentUser = "Fredrik";
+    let isLoggedIn = true;
     let currentAdminFilterArea = "all";
     let currentAdminFilterStatus = "active";
+    let currentDefectFilter = "all";
     let selectedAdminIds = new Set();
     let currentPhotoData = null;
-    let currentSortColumn = "status";
-    let currentSortOrder = "asc";
     let fieldMap, fieldMarker;
     let isFieldPinMode = false;
     let currentAdminView = "ventiler";
 
-    // Status sorteringsordning (prioritet)
-    const statusOrder = {
-        "Trög - 2 gubbar": 1,
-        "Trasig - snurrar": 2,
-        "Trasig - stum": 3,
-        "Överasfalterad": 4,
-        "Betäckning - höjas": 5,
-        "Betäckning - byta lock": 6,
-        "Distans saknas": 7,
-        "Ej kontrollerad": 8,
-        "Hittar ej": 9
-    };
-
-    // ALLA VENTILER (67 st från dina anteckningar)
+    // ALLA VENTILER (67 st)
     const allVentils = [
         { ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning - byta lock", defectDesc: "Fel lock", reportedBy: "Fredrik" },
-        { ventilNr: "VAV81517", area: "Tullinge", location: "Skogshemsvägen", fullStatus: "Ej kontrollerad", defectDesc: "Snö", reportedBy: "Fredrik" },
-        { ventilNr: "VAV82003", area: "Tullinge", location: "Bergmovägen 1", fullStatus: "Ej kontrollerad", defectDesc: "Snö", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning - trasigt lock", defectDesc: "Fel lock", reportedBy: "Fredrik" },
+        { ventilNr: "VAV81517", area: "Tullinge", location: "Skogshemsvägen", fullStatus: "Ej kontrollerad - snö", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV82003", area: "Tullinge", location: "Bergmovägen 1", fullStatus: "Ej kontrollerad - snö", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV82149", area: "Tullinge", location: "Korsning Flottiljvägen/Bergmovägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV71821", area: "Tullinge", location: "Korsning Adler Salvius väg/Liselundsvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV11", area: "Tullinge", location: "Solskensvägen 19", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { ventilNr: "VAV94485", area: "Tullinge", location: "Korsning Skogsmulles väg/Strövarvägen", fullStatus: "Hittar ej", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { ventilNr: "VAV97388", area: "Tullinge", location: "Friluftsvägen 101", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV97646", area: "Tullinge", location: "Hanvedens alle 58", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV81438", area: "Tullinge", location: "Korsning Dalkärrsvägen/Skogshemsvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV82456", area: "Tullinge", location: "Korsning Plåtslagarvägen/smedvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV81307", area: "Tullinge", location: "Skogshemsvägen 7", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV1470", area: "Tumba", location: "Korsning Parkbacken/Strandvägen", fullStatus: "Hittar ej", defectDesc: "inget utslag", reportedBy: "Fredrik" },
+        { ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej - mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94485", area: "Tullinge", location: "Korsning Skogsmulles väg/Strövarvägen", fullStatus: "Hittar ej - mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97388", area: "Tullinge", location: "Friluftsvägen 101", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV97646", area: "Tullinge", location: "Hanvedens alle 58", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV81438", area: "Tullinge", location: "Korsning Dalkärrsvägen/Skogshemsvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV82456", area: "Tullinge", location: "Korsning Plåtslagarvägen/smedvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV81307", area: "Tullinge", location: "Skogshemsvägen 7", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV1470", area: "Tumba", location: "Korsning Parkbacken/Strandvägen", fullStatus: "Hittar ej - mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
         { ventilNr: "VAV1481", area: "Tumba", location: "Parkbacken 9", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV2371", area: "Tumba", location: "Skrävstavägen 37", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV2371", area: "Tumba", location: "Skrävstavägen 37", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV3016", area: "Tumba", location: "Korsning Kärrvägen/Kärrtuvevägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV61717", area: "Tumba", location: "Trädgårdsvägen 15", fullStatus: "Hittar ej", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { ventilNr: "VAV61893", area: "Tumba", location: "Trädgårdsvägen 10", fullStatus: "Hittar ej", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { ventilNr: "VAV62105", area: "Tumba", location: "Korsning Tunavägen/Prästgårdsvägen", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV61717", area: "Tumba", location: "Trädgårdsvägen 15", fullStatus: "Hittar ej - mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
+        { ventilNr: "VAV61893", area: "Tumba", location: "Trädgårdsvägen 10", fullStatus: "Hittar ej - mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
+        { ventilNr: "VAV62105", area: "Tumba", location: "Korsning Tunavägen/Prästgårdsvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV83971", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV83972", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV91437", area: "Tumba", location: "Bryggarvägen 9C", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV91437", area: "Tumba", location: "Bryggarvägen 9C", fullStatus: "Ej kontrollerad - bil ivägen", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV91658", area: "Tumba", location: "Björkvägen 40", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV92506", area: "Tumba", location: "Björkvägen 24", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV93028", area: "Tumba", location: "Duvhöksvägen 7", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
@@ -611,20 +671,20 @@
         { ventilNr: "VAV93486", area: "Tumba", location: "Korsning Svedjevägen/grytstigen", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV93497", area: "Tumba", location: "Bäckvägen 21", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV91806", area: "Tumba", location: "Korsning Skäcklingegårdsväg/bäverstigen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV92081", area: "Tumba", location: "Grytstigen 79", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV92081", area: "Tumba", location: "Grytstigen 79", fullStatus: "Ej kontrollerad - bil ivägen", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV92231", area: "Tumba", location: "Odlingsvägen Lekpark", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV91921", area: "Tumba", location: "Harbrovägen 42Y", fullStatus: "Betäckning - höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik" },
         { ventilNr: "VAV94384", area: "Tumba", location: "Engwallsväg 20", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV91763", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV91762", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning - höjas, Betäckning - byta lock", defectDesc: "saknar lock", reportedBy: "Fredrik" },
-        { ventilNr: "VAV94302", area: "Tumba", location: "Enbacken 21", fullStatus: "Betäckning - byta lock", defectDesc: "nytt AV-Lock", reportedBy: "Fredrik" },
-        { ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning - byta lock", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV91762", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning - höjas, Betäckning - trasigt lock", defectDesc: "saknar lock", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94302", area: "Tumba", location: "Enbacken 21", fullStatus: "Betäckning - trasigt lock", defectDesc: "nytt AV-Lock", reportedBy: "Fredrik" },
+        { ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning - trasigt lock", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV31604", area: "Vårsta", location: "Ringvägen 30", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV31080", area: "Vårsta", location: "Bremoravägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV94338", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV94339", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV32283", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik" },
-        { ventilNr: "VAV31685", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94338", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad - snö", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV94339", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad - snö", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV32283", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej - borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik" },
+        { ventilNr: "VAV31685", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej - borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik" },
         { ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV97534", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV97515", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
@@ -634,9 +694,9 @@
         { ventilNr: "VAV97649", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV97656", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV97647", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Överasfalterad", defectDesc: "", reportedBy: "Fredrik" },
-        { ventilNr: "VAV52124", area: "Fittja/Alby/Norsborg/Slagsta", location: "Amalias väg 33", fullStatus: "Hittar ej", defectDesc: "Fel inmätt?", reportedBy: "Fredrik" },
-        { ventilNr: "VAV52467", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Hittar ej", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
+        { ventilNr: "VAV52124", area: "Fittja/Alby/Norsborg/Slagsta", location: "Amalias väg 33", fullStatus: "Hittar ej - mätas in", defectDesc: "Fel inmätt?", reportedBy: "Fredrik" },
+        { ventilNr: "VAV52467", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Hittar ej - mätas in", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV51610", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
         { ventilNr: "VAV56471", area: "Fittja/Alby/Norsborg/Slagsta", location: "Värdshusvägen 40", fullStatus: "Trasig - snurrar", defectDesc: "", reportedBy: "Fredrik" },
@@ -647,14 +707,14 @@
 
     const allExtras = [
         { type: "VBP", number: "VBP93823", location: "Mekanikervägen 1", description: "Vatten och skit, måste höjas och asfalteras", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV82455", location: "Korsning Plåtslagarvägen/smedvägen", description: "Överasfalterad", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV82416", location: "Korsning Smedvägen/Sliparvägen", description: "Överasfalterad", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV82455", location: "Korsning Plåtslagarvägen/smedvägen", description: "Övertäckt - asfalt", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV82416", location: "Korsning Smedvägen/Sliparvägen", description: "Övertäckt - asfalt", reportedBy: "Fredrik" },
         { type: "SV", number: "", location: "Hökbursvägen 48", description: "Fixa asfalt", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV93113", location: "Storvretsvägen 91B", description: "Byta betäckning", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV93113", location: "Storvretsvägen 91B", description: "Betäckning - trasigt lock", reportedBy: "Fredrik" },
         { type: "SV", number: "", location: "Olvonvägen 10", description: "Trasig", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV97463", location: "Fittja torg", description: "Saknar lock och behöver justera betäckning", reportedBy: "Fredrik" },
+        { type: "VAV", number: "VAV97463", location: "Fittja torg", description: "Betäckning - trasigt lock, behöver justeras", reportedBy: "Fredrik" },
         { type: "VAV", number: "VAV56181", location: "Fittjastråket 29", description: "Sitter kork 'FÅR EJ RÖRAS'", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV31643", location: "Brosjöstråket", description: "STUM kan ej rubba", reportedBy: "Fredrik" }
+        { type: "VAV", number: "VAV31643", location: "Brosjöstråket", description: "Trasig - stum", reportedBy: "Fredrik" }
     ];
 
     const defaultRecipients = [
@@ -663,11 +723,11 @@
     ];
 
     function loadData() {
-        const stored = localStorage.getItem("ventilprogram2026_final_gps");
+        const stored = localStorage.getItem("ventilprogram2026_final_v2");
         if(stored) { try { ventilData = JSON.parse(stored); } catch(e) { ventilData = allVentils.map((v,i) => ({ ...v, id: i+1, completed: false })); } }
         else { ventilData = allVentils.map((v,i) => ({ ...v, id: i+1, completed: false, lastUpdated: new Date().toISOString() })); }
         
-        const storedExtra = localStorage.getItem("ventilprogram2026_extra_gps");
+        const storedExtra = localStorage.getItem("ventilprogram2026_extra_v2");
         if(storedExtra) { try { extraData = JSON.parse(storedExtra); } catch(e) { extraData = allExtras.map((ex,i) => ({ ...ex, id: "e"+i, completed: false })); } }
         else { extraData = allExtras.map((ex,i) => ({ ...ex, id: "e"+i, completed: false })); }
         
@@ -676,7 +736,8 @@
         else { recipients = [...defaultRecipients]; }
         
         const savedUser = localStorage.getItem("ventil_current_user");
-        if(savedUser) { currentUser = savedUser; document.getElementById("userDisplay").innerHTML = currentUser; }
+        if(savedUser) { currentUser = savedUser; isLoggedIn = true; updateLoginUI(); }
+        else { isLoggedIn = false; updateLoginUI(); }
         
         renderRecipients();
         renderAdminTable();
@@ -686,11 +747,27 @@
         updateFieldMapMarkers();
     }
 
+    function updateLoginUI() {
+        const displayDiv = document.getElementById("userDisplay");
+        const loginBtn = document.getElementById("loginBtn");
+        if(isLoggedIn && currentUser) {
+            displayDiv.innerHTML = `👤 ${currentUser} <span id="logoutBtn" style="margin-left:8px; cursor:pointer; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:20px;">🚪</span>`;
+            loginBtn.style.display = "none";
+            document.getElementById("userNameInput").style.display = "none";
+            const logoutSpan = document.getElementById("logoutBtn");
+            if(logoutSpan) logoutSpan.onclick = () => { isLoggedIn = false; currentUser = ""; localStorage.removeItem("ventil_current_user"); updateLoginUI(); };
+        } else {
+            displayDiv.innerHTML = "";
+            loginBtn.style.display = "inline-block";
+            document.getElementById("userNameInput").style.display = "inline-block";
+        }
+    }
+
     function saveToStorage() {
-        localStorage.setItem("ventilprogram2026_final_gps", JSON.stringify(ventilData));
-        localStorage.setItem("ventilprogram2026_extra_gps", JSON.stringify(extraData));
+        localStorage.setItem("ventilprogram2026_final_v2", JSON.stringify(ventilData));
+        localStorage.setItem("ventilprogram2026_extra_v2", JSON.stringify(extraData));
         localStorage.setItem("ventil_recipients", JSON.stringify(recipients));
-        if(currentUser) localStorage.setItem("ventil_current_user", currentUser);
+        if(currentUser && isLoggedIn) localStorage.setItem("ventil_current_user", currentUser);
     }
 
     function renderRecipients() {
@@ -699,50 +776,56 @@
         recipients.forEach(r => { select.innerHTML += `<option value="${r.email}">${r.name || r.email}</option>`; });
     }
 
+    function getFullStatusFromSelects() {
+        let statuses = [];
+        const trasig = document.getElementById("statusTrasig").value;
+        const betackning = document.getElementById("statusBetackning").value;
+        const trog = document.getElementById("statusTrog").value;
+        const overtackt = document.getElementById("statusOvertackt").value;
+        const hittar = document.getElementById("statusHittar").value;
+        const distans = document.getElementById("statusDistans").value;
+        const ejKontrollerad = document.getElementById("statusEjKontrollerad").value;
+        
+        if(trasig) statuses.push(trasig);
+        if(betackning) statuses.push(betackning);
+        if(trog) statuses.push(trog);
+        if(overtackt) statuses.push(overtackt);
+        if(hittar) statuses.push(hittar);
+        if(distans) statuses.push(distans);
+        if(ejKontrollerad) statuses.push(ejKontrollerad);
+        
+        return statuses.join(", ");
+    }
+
     function getFilteredVentils() {
         let filtered = ventilData;
         if(currentAdminFilterStatus === "active") filtered = ventilData.filter(v => !v.completed);
         else if(currentAdminFilterStatus === "completed") filtered = ventilData.filter(v => v.completed);
         if(currentAdminFilterArea !== "all") filtered = filtered.filter(v => v.area === currentAdminFilterArea);
         
-        // Sortering
-        filtered.sort((a, b) => {
-            let valA, valB;
-            if(currentSortColumn === "vav") { valA = a.ventilNr; valB = b.ventilNr; }
-            else if(currentSortColumn === "status") {
-                valA = statusOrder[a.fullStatus] || 99;
-                valB = statusOrder[b.fullStatus] || 99;
-                if(valA === valB) return a.ventilNr.localeCompare(b.ventilNr);
-                return currentSortOrder === "asc" ? valA - valB : valB - valA;
-            }
-            else if(currentSortColumn === "plats") { valA = a.location || ""; valB = b.location || ""; }
-            else { return 0; }
-            if(typeof valA === "string") {
-                return currentSortOrder === "asc" ? valA.localeCompare(valB, 'sv') : valB.localeCompare(valA, 'sv');
-            }
-            return currentSortOrder === "asc" ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
-        });
-        
-        // Gruppera per område
-        const areaOrder = { "Tullinge":1, "Tumba":2, "Vårsta":3, "Grödinge":4, "Fittja/Alby/Norsborg/Slagsta":5 };
-        filtered.sort((a,b) => (areaOrder[a.area]||99) - (areaOrder[b.area]||99));
-        return filtered;
-    }
-
-    function setSort(column) {
-        if(currentSortColumn === column) {
-            currentSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
-        } else {
-            currentSortColumn = column;
-            currentSortOrder = "asc";
+        // Filtrera på defekt
+        if(currentDefectFilter !== "all") {
+            filtered = filtered.filter(v => {
+                const status = v.fullStatus.toLowerCase();
+                if(currentDefectFilter === "trasig") return status.includes("trasig");
+                if(currentDefectFilter === "trog") return status.includes("trög");
+                if(currentDefectFilter === "overtackt") return status.includes("övertäckt");
+                if(currentDefectFilter === "betackning") return status.includes("betäckning");
+                if(currentDefectFilter === "hittar") return status.includes("hittar ej");
+                if(currentDefectFilter === "distans") return status.includes("distans");
+                return true;
+            });
         }
-        renderAdminTable();
+        
+        const areaOrder = { "Tullinge":1, "Tumba":2, "Vårsta":3, "Grödinge":4, "Fittja/Alby/Norsborg/Slagsta":5 };
+        filtered.sort((a,b) => (areaOrder[a.area]||99) - (areaOrder[b.area]||99) || a.ventilNr.localeCompare(b.ventilNr));
+        return filtered;
     }
 
     function getStatusColor(status) {
         if(status.includes("Trasig")) return "#ffcdd2";
         if(status.includes("Trög")) return "#ffecb3";
-        if(status.includes("Överasfalterad")) return "#ffe0b2";
+        if(status.includes("Övertäckt")) return "#ffe0b2";
         if(status.includes("Betäckning")) return "#ffe0b2";
         if(status.includes("Hittar ej")) return "#e0e0e0";
         if(status.includes("Distans")) return "#e3f2fd";
@@ -752,7 +835,7 @@
     function getMarkerColor(status) {
         if(status.includes("Trasig")) return "#e74c3c";
         if(status.includes("Trög")) return "#e67e22";
-        if(status.includes("Överasfalterad")) return "#f39c12";
+        if(status.includes("Övertäckt")) return "#f39c12";
         if(status.includes("Betäckning")) return "#f39c12";
         if(status.includes("Hittar ej")) return "#95a5a6";
         if(status.includes("Distans")) return "#3498db";
@@ -762,7 +845,7 @@
     function renderAdminTable() {
         const filtered = getFilteredVentils();
         const tbody = document.getElementById("adminTableBody");
-        if(filtered.length === 0) { tbody.innerHTML = '<td><td colspan="9" style="text-align:center; padding:30px;">📭 Inga ventiler att visa'; return; }
+        if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:30px;">📭 Inga ventiler att visa'; return; }
         
         tbody.innerHTML = "";
         let lastArea = "";
@@ -832,7 +915,7 @@
 
     function renderExtraTable() {
         const tbody = document.getElementById("extraTableBody");
-        if(extraData.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">📭 Inga extra fynd'; return; }
+        if(extraData.length === 0) { tbody.innerHTML = '}<td colspan="7" style="text-align:center;">📭 Inga extra fynd'; return; }
         tbody.innerHTML = "";
         extraData.forEach(ex => {
             const row = tbody.insertRow();
@@ -883,6 +966,7 @@
     }
 
     function saveFieldVentil() {
+        if(!isLoggedIn || !currentUser) { alert("Logga in först!"); return; }
         const type = document.getElementById("fieldType").value;
         const number = document.getElementById("fieldNumber").value.trim();
         if(!number) { alert("Ange nummer (t.ex. 92323 eller VBP293)"); return; }
@@ -891,9 +975,8 @@
         const location = document.getElementById("fieldLocation").value.trim();
         if(!location) { alert("Ange plats (klicka på 📍 kartnålen)"); return; }
         
-        const selectedStatuses = Array.from(document.querySelectorAll("#fieldStatusGroup .status-chip.selected")).map(chip => chip.getAttribute("data-status"));
-        if(selectedStatuses.length === 0) { alert("Välj minst en status"); return; }
-        const fullStatus = selectedStatuses.join(", ");
+        const fullStatus = getFullStatusFromSelects();
+        if(!fullStatus) { alert("Välj minst en status från rullgardinerna"); return; }
         const defectDesc = document.getElementById("fieldNote").value.trim();
         const photo = currentPhotoData;
         
@@ -908,7 +991,13 @@
         document.getElementById("fieldLocation").value = "";
         document.getElementById("fieldNote").value = "";
         document.getElementById("fieldPhotoPreview").innerHTML = "";
-        document.querySelectorAll("#fieldStatusGroup .status-chip").forEach(chip => chip.classList.remove("selected"));
+        document.getElementById("statusTrasig").value = "";
+        document.getElementById("statusBetackning").value = "";
+        document.getElementById("statusTrog").value = "";
+        document.getElementById("statusOvertackt").value = "";
+        document.getElementById("statusHittar").value = "";
+        document.getElementById("statusDistans").value = "";
+        document.getElementById("statusEjKontrollerad").value = "";
         currentPhotoData = null;
         
         saveToStorage();
@@ -947,6 +1036,7 @@
     }
 
     function sendReport() {
+        if(!isLoggedIn || !currentUser) { alert("Logga in först!"); return; }
         const email = document.getElementById("recipientSelect").value;
         if(!email) { alert("Välj en mottagare"); return; }
         const selected = ventilData.filter(v => selectedAdminIds.has(v.id));
@@ -984,6 +1074,8 @@
     function initFieldMap() {
         fieldMap = L.map('fieldMap').setView([59.2, 17.82], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(fieldMap);
+        
+        // Hantera klick direkt på kartan (fungerar på telefon)
         fieldMap.on('click', async function(e) {
             if(!isFieldPinMode) return;
             const lat = e.latlng.lat, lng = e.latlng.lng;
@@ -998,7 +1090,7 @@
                 if(fieldMarker) fieldMap.removeLayer(fieldMarker);
                 fieldMarker = L.marker([lat, lng]).bindPopup(`📍 ${address}`).addTo(fieldMap);
                 fieldMap.setView([lat, lng], 15);
-            } catch(e) {}
+            } catch(e) { console.log("Fel vid adresshämtning"); }
         });
         updateFieldMapMarkers();
     }
@@ -1015,7 +1107,6 @@
         const btn = document.getElementById("fieldLocationPinBtn");
         if(isFieldPinMode) { btn.style.background = "#1e6f5c"; btn.innerHTML = "📍 Klicka..."; }
         else { btn.style.background = "#ff9800"; btn.innerHTML = "📍"; }
-        // Återställ efter 10 sek
         setTimeout(() => {
             if(isFieldPinMode) {
                 isFieldPinMode = false;
@@ -1023,7 +1114,7 @@
                 btn.innerHTML = "📍";
                 document.getElementById("fieldPinBtn").classList.remove("active");
             }
-        }, 10000);
+        }, 15000);
     }
 
     function getFieldPosition() {
@@ -1042,7 +1133,7 @@
                 document.getElementById("fieldLocation").value = address;
             } catch(e) {}
             btn.innerHTML = "📍 GPS";
-        }, () => { btn.innerHTML = "📍 GPS"; });
+        }, () => { btn.innerHTML = "📍 GPS"; alert("Kunde inte hitta GPS-position"); });
     }
 
     function updateFieldMapMarkers() {
@@ -1069,11 +1160,12 @@
         });
     }
 
-    // STATUS CHIP KLICK
-    function initStatusChips() {
-        document.querySelectorAll("#fieldStatusGroup .status-chip").forEach(chip => {
-            chip.addEventListener("click", () => chip.classList.toggle("selected"));
-        });
+    // ADMIN DEFEKT FILTER
+    function setDefectFilter(defect) {
+        currentDefectFilter = defect;
+        document.querySelectorAll(".defect-btn").forEach(btn => btn.classList.remove("active"));
+        document.querySelector(`.defect-btn[data-defect="${defect}"]`).classList.add("active");
+        renderAdminTable();
     }
 
     // ADMIN FLIKAR
@@ -1108,7 +1200,7 @@
     // Event listeners
     document.getElementById("loginBtn")?.addEventListener("click", () => {
         const name = document.getElementById("userNameInput").value.trim();
-        if(name) { currentUser = name; document.getElementById("userDisplay").innerHTML = name; saveToStorage(); }
+        if(name) { currentUser = name; isLoggedIn = true; updateLoginUI(); saveToStorage(); }
     });
     document.getElementById("fieldSaveBtn")?.addEventListener("click", saveFieldVentil);
     document.getElementById("fieldPinBtn")?.addEventListener("click", enableFieldPin);
@@ -1141,13 +1233,10 @@
     document.getElementById("addRecipientBtn")?.addEventListener("click", addRecipient);
     document.getElementById("sendReportBtn")?.addEventListener("click", sendReport);
     document.querySelectorAll(".tab-btn").forEach(btn => btn.addEventListener("click", () => switchAdminTab(btn.getAttribute("data-tab"))));
-    document.getElementById("sortVav")?.addEventListener("click", () => setSort("vav"));
-    document.getElementById("sortStatus")?.addEventListener("click", () => setSort("status"));
-    document.getElementById("sortPlats")?.addEventListener("click", () => setSort("plats"));
+    document.querySelectorAll(".defect-btn").forEach(btn => btn.addEventListener("click", () => setDefectFilter(btn.getAttribute("data-defect"))));
 
     loadData();
     initFieldMap();
-    initStatusChips();
     setMode("field");
     window.showFullPhoto = showFullPhoto;
 </script>
