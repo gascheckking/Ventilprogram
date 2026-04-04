@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Underhållsprogram - Botkyrka Kommun</title>
+    <title>Ventilprogram 2026 - Botkyrka Kommun</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
@@ -20,6 +20,7 @@
             min-height: 100vh;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
+        /* Header */
         .header {
             background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
             color: white;
@@ -101,6 +102,7 @@
         }
         .menu-item.active { color: #1e6f5c; border-bottom-color: #1e6f5c; }
         .content { padding: 16px; background: #fafcfd; }
+        /* Karta */
         .map-card {
             background: white;
             border-radius: 20px;
@@ -136,12 +138,40 @@
             gap: 5px;
         }
         .btn-pin { background: #ff9800; color: white; }
-        .btn-pin.active { background: #1e6f5c; box-shadow: 0 0 0 2px #ff9800; }
+        .btn-pin.active { background: #1e6f5c; box-shadow: 0 0 0 2px #ff9800; cursor: crosshair; }
         .btn-gps { background: #2196f3; color: white; }
         .btn-filter { background: #6c757d; color: white; }
         .btn-filter.active { background: #ff9800; }
-        .map-container { height: 250px; border-radius: 16px; background: #e9ecef; }
-        /* Fältläge - enkelt */
+        .map-container { height: 280px; border-radius: 16px; background: #e9ecef; }
+        /* Popup-formulär på kartan */
+        .map-popup-form {
+            min-width: 260px;
+        }
+        .map-popup-form h4 {
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            color: #1e6f5c;
+        }
+        .map-popup-form input, .map-popup-form select, .map-popup-form textarea {
+            width: 100%;
+            padding: 6px 10px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 0.7rem;
+        }
+        .map-popup-form button {
+            padding: 6px 12px;
+            margin-right: 6px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .map-popup-form .save-btn { background: #ff9800; color: white; }
+        .map-popup-form .cancel-btn { background: #e9ecef; color: #495057; }
+        /* Fältläge */
         .field-mode {
             background: #f8f9fa;
             border-radius: 20px;
@@ -307,7 +337,9 @@
             font-weight: 700;
             color: #2c5a74;
             border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
         }
+        th:hover { background: #eef2f5; }
         td {
             padding: 6px 6px;
             border-bottom: 1px solid #f0f0f0;
@@ -350,10 +382,11 @@
             padding: 3px 5px;
             border-radius: 30px;
         }
+        .action-btn:hover { background: #f0f0f0; }
         .complete-toggle {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
         .complete-toggle label {
             display: flex;
@@ -406,10 +439,28 @@
         .modal-content {
             background: white;
             border-radius: 16px;
-            padding: 12px;
+            padding: 20px;
             max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
         }
-        .modal-content img { max-width: 100%; border-radius: 8px; }
+        .modal-content h3 { margin-bottom: 16px; font-size: 1rem; }
+        .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+        .modal-buttons button { padding: 8px 16px; border-radius: 30px; border: none; cursor: pointer; }
+        .modal-buttons button:first-child { background: #e9ecef; }
+        .modal-buttons button:last-child { background: #ff9800; color: white; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 </head>
@@ -425,13 +476,12 @@
         </div>
     </div>
 
-    <!-- MODE SWITCH - FÄLTLÄGE / ADMINLÄGE -->
     <div class="mode-switch">
-        <button id="fieldModeBtn" class="mode-btn active">📱 Fältläge (enkel)</button>
-        <button id="adminModeBtn" class="mode-btn">📊 Adminläge (översikt)</button>
+        <button id="fieldModeBtn" class="mode-btn active">📱 Fältläge</button>
+        <button id="adminModeBtn" class="mode-btn">📊 Adminläge</button>
     </div>
 
-    <!-- FÄLTLÄGE - ENKEL VY -->
+    <!-- FÄLTLÄGE -->
     <div id="fieldMode" class="content">
         <div class="map-card">
             <div class="map-header">
@@ -455,10 +505,8 @@
                 <div class="field-group">
                     <label>OMRÅDE</label>
                     <select id="fieldArea">
-                        <option value="Tullinge">Tullinge</option>
-                        <option value="Tumba">Tumba</option>
-                        <option value="Vårsta">Vårsta</option>
-                        <option value="Grödinge">Grödinge</option>
+                        <option value="Tullinge">Tullinge</option><option value="Tumba">Tumba</option>
+                        <option value="Vårsta">Vårsta</option><option value="Grödinge">Grödinge</option>
                         <option value="Fittja/Alby/Norsborg/Slagsta">Norra Botkyrka</option>
                     </select>
                 </div>
@@ -467,22 +515,22 @@
                     <input type="text" id="fieldLocation" placeholder="Fylls i från kartan">
                 </div>
             </div>
-            
-            <!-- Enkla kryssrutor för status -->
             <div class="field-group">
                 <label>🔧 STATUS (klicka i de som gäller)</label>
                 <div class="checkbox-group" id="fieldStatusGroup">
-                    <label><input type="checkbox" value="Trasig - snurrar"> 🔴 Trasig - snurrar</label>
-                    <label><input type="checkbox" value="Trasig - stum"> 🔴 Trasig - stum</label>
-                    <label><input type="checkbox" value="Trög - 2 gubbar"> 🟠 Trög - 2 gubbar</label>
-                    <label><input type="checkbox" value="Övertäckt"> 🟡 Övertäckt</label>
-                    <label><input type="checkbox" value="Betäckning defekt"> 🟡 Betäckning defekt</label>
-                    <label><input type="checkbox" value="Hittar ej"> ⚪ Hittar ej</label>
-                    <label><input type="checkbox" value="Distanserad"> 🔵 Distanserad</label>
-                    <label><input type="checkbox" value="OK - fungerar"> 🟢 OK</label>
+                    <label><input type="checkbox" value="Trasig - snurrar bara"> 🔴 Trasig - snurrar bara</label>
+                    <label><input type="checkbox" value="Trasig - stum (kan ej rubba)"> 🔴 Trasig - stum (kan ej rubba)</label>
+                    <label><input type="checkbox" value="Trasig - saknar nyckelstång"> 🔴 Trasig - saknar nyckelstång</label>
+                    <label><input type="checkbox" value="Trög - kräver 2 gubbar"> 🟠 Trög - kräver 2 gubbar</label>
+                    <label><input type="checkbox" value="Övertäckt - asfalt"> 🟡 Övertäckt - asfalt</label>
+                    <label><input type="checkbox" value="Betäckning defekt - behöver höjas"> 🟡 Betäckning - behöver höjas</label>
+                    <label><input type="checkbox" value="Betäckning defekt - trasigt lock"> 🟡 Betäckning - trasigt lock</label>
+                    <label><input type="checkbox" value="Betäckning defekt - byta hela betäckning"> 🟡 Betäckning - byta hela</label>
+                    <label><input type="checkbox" value="Hittar ej - måste mätas in"> ⚪ Hittar ej - måste mätas in</label>
+                    <label><input type="checkbox" value="Distanserad - ja"> 🔵 Distanserad - ja</label>
+                    <label><input type="checkbox" value="OK - fungerar"> 🟢 OK - fungerar</label>
                 </div>
             </div>
-            
             <div class="field-row">
                 <div class="field-group" style="flex:2;">
                     <label>📝 NOTERING</label>
@@ -490,44 +538,24 @@
                 </div>
                 <div><button id="fieldSaveBtn" class="btn-save">💾 Spara</button></div>
             </div>
-            
-            <!-- Enkelt extra fynd -->
             <div style="margin-top:12px; padding-top:10px; border-top:1px dashed #ccc;">
                 <div class="field-row">
-                    <div class="field-group" style="flex:0.6;">
-                        <select id="fieldExtraType">
-                            <option value="VBP">🚒 VBP</option>
-                            <option value="VSP">💧 VSP</option>
-                            <option value="SV">🚰 SV</option>
-                            <option value="Brunn">🕳️ Brunn</option>
-                        </select>
-                    </div>
-                    <div class="field-group" style="flex:0.5;">
-                        <input type="text" id="fieldExtraNumber" placeholder="Nummer">
-                    </div>
-                    <div class="field-group" style="flex:1.5;">
-                        <input type="text" id="fieldExtraLocation" placeholder="📍 Plats">
-                    </div>
-                    <div class="field-group" style="flex:1.5;">
-                        <input type="text" id="fieldExtraDesc" placeholder="📝 Notering">
-                    </div>
+                    <div class="field-group" style="flex:0.6;"><select id="fieldExtraType"><option value="VBP">🚒 VBP</option><option value="VSP">💧 VSP</option><option value="SV">🚰 SV</option><option value="Brunn">🕳️ Brunn</option></select></div>
+                    <div class="field-group" style="flex:0.5;"><input type="text" id="fieldExtraNumber" placeholder="Nummer"></div>
+                    <div class="field-group" style="flex:1.5;"><input type="text" id="fieldExtraLocation" placeholder="📍 Plats"></div>
+                    <div class="field-group" style="flex:1.5;"><input type="text" id="fieldExtraDesc" placeholder="📝 Notering"></div>
                     <div><button id="fieldSaveExtraBtn" style="background:#ff9800; padding:6px 14px;">➕</button></div>
                 </div>
             </div>
         </div>
-        
         <div class="stats" id="fieldStats"></div>
-        
-        <!-- Enkel tabell i fältläge -->
         <div class="table-wrapper">
-            <table id="fieldTable">
-                <thead><th>VAV</th><th>Status</th><th>Plats</th><th>Notering</th><th>✅</th></thead>
-                <tbody id="fieldTableBody"></tbody>
-            </table>
+            <table id="fieldTable"><thead><th>VAV</th><th>Status</th><th>Plats</th><th>Notering</th><th>✅ Åtgärdad</th></thead>
+            <tbody id="fieldTableBody"></tbody></table>
         </div>
     </div>
 
-    <!-- ADMINLÄGE - FULL VY (samma som tidigare) -->
+    <!-- ADMINLÄGE -->
     <div id="adminMode" class="content" style="display:none;">
         <div class="map-card">
             <div class="map-header">
@@ -538,164 +566,77 @@
             <div id="adminMap" class="map-container"></div>
         </div>
 
-        <!-- Filter för admin -->
         <div class="filter-group">
-            <select id="filterDefectSelect">
-                <option value="all">🔍 Alla defekter</option>
-                <option value="Trasig">🔴 Trasig</option>
-                <option value="Trög">🟠 Trög</option>
-                <option value="Övertäckt">🟡 Övertäckt</option>
-                <option value="Betäckning">🟡 Betäckning</option>
-                <option value="Hittar ej">⚪ Hittar ej</option>
-            </select>
-            <select id="filterAreaSelect">
-                <option value="all">🌍 Alla områden</option>
-                <option value="Tullinge">Tullinge</option>
-                <option value="Tumba">Tumba</option>
-                <option value="Vårsta">Vårsta</option>
-                <option value="Grödinge">Grödinge</option>
-                <option value="Fittja/Alby/Norsborg/Slagsta">Norra</option>
-            </select>
+            <select id="filterDefectSelect"><option value="all">🔍 Alla defekter</option><option value="Trasig">🔴 Trasig</option><option value="Trög">🟠 Trög</option><option value="Övertäckt">🟡 Övertäckt</option><option value="Betäckning">🟡 Betäckning</option><option value="Hittar ej">⚪ Hittar ej</option><option value="Distanserad">🔵 Distanserad</option></select>
+            <select id="filterAreaSelect"><option value="all">🌍 Alla områden</option><option value="Tullinge">Tullinge</option><option value="Tumba">Tumba</option><option value="Vårsta">Vårsta</option><option value="Grödinge">Grödinge</option><option value="Fittja/Alby/Norsborg/Slagsta">Norra</option></select>
             <button id="applyFilterBtn" class="btn-filter" style="background:#ff9800;">🎯 Filtrera</button>
-            <button id="showMarkedOnMapBtn" class="btn-filter">📍 Visa markerade på kartan</button>
+            <button id="showMarkedOnMapBtn" class="btn-filter">📍 Visa markerade</button>
             <button id="showAllOnMapBtn" class="btn-filter">🗺️ Visa alla</button>
         </div>
 
-        <!-- Registrering admin -->
         <div class="form-card">
             <div class="form-row">
-                <div class="form-group" style="flex:0.5;">
-                    <label>VAV-NUMMER</label>
-                    <div class="vav-input">
-                        <span>VAV</span>
-                        <input type="text" id="adminVavNumber" placeholder="92323">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>OMRÅDE</label>
-                    <select id="adminArea">
-                        <option value="Tullinge">Tullinge</option>
-                        <option value="Tumba">Tumba</option>
-                        <option value="Vårsta">Vårsta</option>
-                        <option value="Grödinge">Grödinge</option>
-                        <option value="Fittja/Alby/Norsborg/Slagsta">Norra</option>
-                    </select>
-                </div>
-                <div class="form-group" style="flex:1.5;">
-                    <label>📍 PLATS</label>
-                    <input type="text" id="adminLocation" placeholder="Adress">
-                </div>
+                <div class="form-group" style="flex:0.5;"><label>VAV-NUMMER</label><div class="vav-input"><span>VAV</span><input type="text" id="adminVavNumber" placeholder="92323"></div></div>
+                <div class="form-group"><label>OMRÅDE</label><select id="adminArea"><option value="Tullinge">Tullinge</option><option value="Tumba">Tumba</option><option value="Vårsta">Vårsta</option><option value="Grödinge">Grödinge</option><option value="Fittja/Alby/Norsborg/Slagsta">Norra</option></select></div>
+                <div class="form-group" style="flex:1.5;"><label>📍 PLATS</label><input type="text" id="adminLocation" placeholder="Adress"></div>
             </div>
             <div class="form-row">
-                <div class="form-group">
-                    <label>🔧 STATUS</label>
-                    <select id="adminMainStatus">
-                        <option value="">-- Välj status --</option>
-                        <option value="Trasig">🔴 Trasig</option>
-                        <option value="Ej kontrollerad">⚪ Ej kontrollerad</option>
-                        <option value="Trög">🟠 Trög</option>
-                        <option value="Övertäckt">🟡 Övertäckt</option>
-                        <option value="Betäckning defekt">🟡 Betäckning defekt</option>
-                        <option value="Hittar ej">⚪ Hittar ej</option>
-                        <option value="Distanserad">🔵 Distanserad</option>
-                    </select>
-                </div>
-                <div class="form-group" id="adminSubGroup" style="display:none;">
-                    <label>DETALJ</label>
-                    <select id="adminSubStatus"></select>
-                </div>
-                <div class="form-group">
-                    <label>📝 NOTERING</label>
-                    <input type="text" id="adminNote" placeholder="Extra info">
-                </div>
+                <div class="form-group"><label>🔧 STATUS</label><select id="adminMainStatus"><option value="">-- Välj status --</option><option value="Trasig">🔴 Trasig</option><option value="Trög">🟠 Trög</option><option value="Övertäckt">🟡 Övertäckt</option><option value="Betäckning defekt">🟡 Betäckning defekt</option><option value="Hittar ej">⚪ Hittar ej</option><option value="Distanserad">🔵 Distanserad</option><option value="OK">🟢 OK</option></select></div>
+                <div class="form-group" id="adminSubGroup" style="display:none;"><label>DETALJ</label><select id="adminSubStatus"></select></div>
+                <div class="form-group"><label>📝 NOTERING</label><input type="text" id="adminNote" placeholder="Extra info"></div>
                 <div><button id="adminSaveBtn" class="btn-save">💾 Spara</button></div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>📸 FOTO</label>
-                    <button id="adminTakePhotoBtn" style="background:#2196f3; padding:6px 12px;">📷 Ta foto</button>
-                    <input type="file" id="adminPhotoInput" accept="image/*" style="display:none;">
-                    <div id="adminPhotoPreview" class="photo-preview"></div>
-                </div>
-            </div>
+            <div class="form-row"><div class="form-group"><label>📸 FOTO</label><button id="adminTakePhotoBtn" style="background:#2196f3; padding:6px 12px;">📷 Ta foto</button><input type="file" id="adminPhotoInput" accept="image/*" style="display:none;"><div id="adminPhotoPreview" class="photo-preview"></div></div></div>
         </div>
 
-        <!-- Extra iakttagelser admin -->
-        <div class="extra-section">
-            <h3>🪣 EXTRA IAKTTAGELSER</h3>
-            <div class="form-row">
-                <div class="form-group" style="flex:0.6;"><select id="adminExtraType"><option value="VBP">VBP</option><option value="VSP">VSP</option><option value="SV">SV</option><option value="Brunn">Brunn</option></select></div>
-                <div class="form-group" style="flex:0.5;"><input type="text" id="adminExtraNumber" placeholder="Nummer"></div>
-                <div class="form-group" style="flex:1.5;"><input type="text" id="adminExtraLocation" placeholder="Plats"></div>
-                <div class="form-group" style="flex:1.5;"><input type="text" id="adminExtraDesc" placeholder="Notering"></div>
-                <div><button id="adminSaveExtraBtn" style="background:#ff9800;">➕</button></div>
-            </div>
+        <div class="extra-section"><h3>🪣 EXTRA IAKTTAGELSER</h3>
+            <div class="form-row"><div class="form-group" style="flex:0.6;"><select id="adminExtraType"><option value="VBP">VBP</option><option value="VSP">VSP</option><option value="SV">SV</option><option value="Brunn">Brunn</option></select></div>
+            <div class="form-group" style="flex:0.5;"><input type="text" id="adminExtraNumber" placeholder="Nummer"></div>
+            <div class="form-group" style="flex:1.5;"><input type="text" id="adminExtraLocation" placeholder="Plats"></div>
+            <div class="form-group" style="flex:1.5;"><input type="text" id="adminExtraDesc" placeholder="Notering"></div>
+            <div><button id="adminSaveExtraBtn" style="background:#ff9800;">➕</button></div></div>
         </div>
 
-        <!-- Skicka -->
         <div class="send-bar">
-            <div style="display:flex; align-items:center; gap:8px;">
-                <span>📋 Markerade:</span>
-                <span id="adminSelectedCount" class="selected-count">0 st</span>
-                <select id="adminRecipientSelect"><option value="">Välj mottagare</option></select>
-                <button id="adminAddRecipientBtn" style="background:#6c757d;">➕ Ny</button>
-            </div>
+            <div style="display:flex; align-items:center; gap:8px;"><span>📋 Markerade:</span><span id="adminSelectedCount" class="selected-count">0 st</span>
+            <select id="adminRecipientSelect"><option value="">Välj mottagare</option></select>
+            <button id="adminAddRecipientBtn" style="background:#6c757d;">➕ Ny</button></div>
             <button id="adminSendSelectedBtn" style="background:#ff9800;">📧 Skicka insats</button>
         </div>
 
         <div class="stats" id="adminStats"></div>
-
-        <!-- Tabell admin -->
         <div class="table-wrapper">
-            <table id="adminTable">
-                <thead><th style="width:25px"><input type="checkbox" id="adminSelectAll"></th><th>VAV</th><th>Status</th><th>Plats</th><th>Notering</th><th>Foto</th><th>Rapportör</th><th>✅</th><th></th></thead>
-                <tbody id="adminTableBody"></tbody>
-            </table>
+            <table id="adminTable"><thead><th style="width:25px"><input type="checkbox" id="adminSelectAll"></th><th>VAV</th><th>Status</th><th>Plats</th><th>Notering</th><th>Foto</th><th>Rapportör</th><th>✅ Åtgärdad</th><th></th></thead>
+            <tbody id="adminTableBody"></tbody></table>
         </div>
-
-        <!-- Extra lista admin -->
         <div class="extra-section"><h3>📋 EXTRA IAKTTAGELSER</h3>
             <div class="table-wrapper"><table id="adminExtraTable"><thead><th>Typ</th><th>Nummer</th><th>Plats</th><th>Notering</th><th>Rapportör</th><th>✅</th><th></th></thead>
-            <tbody id="adminExtraTableBody"></tbody>}</div>
+            <tbody id="adminExtraTableBody"></tbody></table></div>
         </div>
     </div>
-
-    <footer>📍 Klicka "Sätt nål" → klicka på kartan → fyller adress | 🟢 Fältläge = enkel vy för fältarbete | 🔵 Adminläge = full översikt</footer>
+    <footer>📍 Klicka "Sätt nål" → klicka på kartan → popup med formulär | ✅ JA/NEJ för åtgärdad | 🔄 Ändra status-knapp</footer>
 </div>
 
 <script>
-    // GEMENSAM DATA
-    let ventilData = [];
-    let extraData = [];
-    let recipients = [];
-    let currentUser = "Fredrik";
-    let selectedIds = new Set();
-    let currentView = "active";
-    let currentAreaFilter = "all";
-    let currentDefectFilter = "all";
-    let showOnlyMarked = false;
-    let currentPhotoData = null;
-    
-    // Kartor (separata för field och admin)
+    let ventilData = [], extraData = [], recipients = [];
+    let currentUser = "Fredrik", selectedIds = new Set();
+    let currentView = "active", currentAreaFilter = "all", currentDefectFilter = "all", showOnlyMarked = false;
+    let currentPhotoData = null, currentPhotoGps = null;
     let fieldMap, adminMap, fieldMarkersLayer, adminMarkersLayer;
-    let isFieldPinMode = false;
-    let isAdminPinMode = false;
-    let currentFieldMarker = null;
-    let currentAdminMarker = null;
+    let isFieldPinMode = false, isAdminPinMode = false;
+    let currentFieldMarker = null, currentAdminMarker = null;
 
-    // Botkyrka gränser
     const BOTKYRKA_BOUNDS = [[59.1, 17.7], [59.3, 17.95]];
     const BOTKYRKA_CENTER = [59.2, 17.82];
 
-    // Substatus alternativ
     const subStatusOptions = {
-        "Trasig": ["Snurrar", "Saknar nyckelstång", "Läckljud"],
-        "Ej kontrollerad": ["Bil ivägen", "Bråte", "Snö", "Ej tillgänglig"],
-        "Trög": ["2 gubbar", "Kärvar", "Går tungt"],
-        "Övertäckt": ["Asfalt", "Jord", "Buskage", "Grus"],
-        "Betäckning defekt": ["Höjas", "Trasigt lock", "Byta hela betäckning", "Saknar lock"],
-        "Hittar ej": ["Måste mätas in", "Borttagen", "Fel inmätt"],
-        "Distanserad": ["Ja", "Nej", "Saknas helt"]
+        "Trasig": ["snurrar bara", "stum (kan ej rubba)", "saknar nyckelstång", "läckljud"],
+        "Trög": ["kräver 2 gubbar", "kärvar", "går tungt"],
+        "Övertäckt": ["asfalt", "jord", "buskage", "grus"],
+        "Betäckning defekt": ["behöver höjas", "trasigt lock", "byta hela betäckning", "saknar lock"],
+        "Hittar ej": ["måste mätas in", "borttagen", "fel inmätt"],
+        "Distanserad": ["ja", "nej", "saknas helt"],
+        "OK": ["fungerar"]
     };
 
     function updateAdminSubStatus() {
@@ -705,13 +646,10 @@
         if(main && subStatusOptions[main]) {
             subGroup.style.display = "flex";
             subSelect.innerHTML = '<option value="">-- Välj detalj --</option>';
-            subStatusOptions[main].forEach(opt => { subSelect.innerHTML += `<option value="${opt}">${opt}</option>`; });
+            subStatusOptions[main].forEach(opt => subSelect.innerHTML += `<option value="${opt}">${opt}</option>`);
             subSelect.innerHTML += `<option value="__other__">✏️ Annan</option>`;
-        } else {
-            subGroup.style.display = "none";
-        }
+        } else subGroup.style.display = "none";
     }
-
     function getAdminFullStatus() {
         const main = document.getElementById("adminMainStatus").value;
         if(!main) return "";
@@ -719,148 +657,133 @@
         if(sub && sub !== "__other__") return `${main} - ${sub}`;
         return main;
     }
-
     function getFieldStatus() {
         const checked = Array.from(document.querySelectorAll("#fieldStatusGroup input:checked")).map(cb => cb.value);
-        if(checked.length === 0) return "Ingen status vald";
-        return checked.join(", ");
+        return checked.length ? checked.join(", ") : "Ingen status vald";
     }
 
-    // ALLA VENTILER (67 st)
+    // ALLA 67 VENTILER
     const allVentils = [
-        { ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - Snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning defekt - Byta hela betäckning", defectDesc: "Fel lock", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV81517", area: "Tullinge", location: "Skogshemsvägen", fullStatus: "Ej kontrollerad - Snö", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV82003", area: "Tullinge", location: "Bergmovägen 1", fullStatus: "Ej kontrollerad - Snö", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV82149", area: "Tullinge", location: "Korsning Flottiljvägen/Bergmovägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV71821", area: "Tullinge", location: "Korsning Adler Salvius väg/Liselundsvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV11", area: "Tullinge", location: "Solskensvägen 19", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej - Måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV94485", area: "Tullinge", location: "Korsning Skogsmulles väg/Strövarvägen", fullStatus: "Hittar ej - Måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97388", area: "Tullinge", location: "Friluftsvägen 101", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97646", area: "Tullinge", location: "Hanvedens alle 58", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV81438", area: "Tullinge", location: "Korsning Dalkärrsvägen/Skogshemsvägen", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV82456", area: "Tullinge", location: "Korsning Plåtslagarvägen/smedvägen", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV81307", area: "Tullinge", location: "Skogshemsvägen 7", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV1470", area: "Tumba", location: "Korsning Parkbacken/Strandvägen", fullStatus: "Hittar ej - Måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV1481", area: "Tumba", location: "Parkbacken 9", fullStatus: "Trasig - Snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV2371", area: "Tumba", location: "Skrävstavägen 37", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV3016", area: "Tumba", location: "Korsning Kärrvägen/Kärrtuvevägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV61717", area: "Tumba", location: "Trädgårdsvägen 15", fullStatus: "Hittar ej - Måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV61893", area: "Tumba", location: "Trädgårdsvägen 10", fullStatus: "Hittar ej - Måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV62105", area: "Tumba", location: "Korsning Tunavägen/Prästgårdsvägen", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV83971", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV83972", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV91437", area: "Tumba", location: "Bryggarvägen 9C", fullStatus: "Ej kontrollerad - Ej tillgänglig", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV91658", area: "Tumba", location: "Björkvägen 40", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV92506", area: "Tumba", location: "Björkvägen 24", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV93028", area: "Tumba", location: "Duvhöksvägen 7", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV93062", area: "Tumba", location: "Korpvägen 9", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV93486", area: "Tumba", location: "Korsning Svedjevägen/grytstigen", fullStatus: "Trasig - Snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV93497", area: "Tumba", location: "Bäckvägen 21", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV91806", area: "Tumba", location: "Korsning Skäcklingegårdsväg/bäverstigen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV92081", area: "Tumba", location: "Grytstigen 79", fullStatus: "Ej kontrollerad - Bil ivägen", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV92231", area: "Tumba", location: "Odlingsvägen Lekpark", fullStatus: "Trasig - Snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV91921", area: "Tumba", location: "Harbrovägen 42Y", fullStatus: "Betäckning defekt - Höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV94384", area: "Tumba", location: "Engwallsväg 20", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV91763", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV91762", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning defekt - Höjas, Betäckning defekt - Byta hela betäckning", defectDesc: "saknar lock", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV94302", area: "Tumba", location: "Enbacken 21", fullStatus: "Betäckning defekt - Byta hela betäckning", defectDesc: "nytt AV-Lock", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning defekt - Byta hela betäckning", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV31604", area: "Vårsta", location: "Ringvägen 30", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV31080", area: "Vårsta", location: "Bremoravägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV94338", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad - Ej tillgänglig", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV94339", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad - Ej tillgänglig", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV32283", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej - Borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV31685", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej - Borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97534", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97515", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97650", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97580", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97648", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97649", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97656", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV97647", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV52124", area: "Fittja/Alby/Norsborg/Slagsta", location: "Amalias väg 33", fullStatus: "Hittar ej - Fel inmätt", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV52467", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Hittar ej - Måste mätas in", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - Snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV51610", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Trasig - Snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV56471", area: "Fittja/Alby/Norsborg/Slagsta", location: "Värdshusvägen 40", fullStatus: "Trasig - Snurrar", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV56781", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittjavägen rondell", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV56678", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittja dagvattenpark", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik", photo: null },
-        { ventilNr: "VAV21883", area: "Fittja/Alby/Norsborg/Slagsta", location: "Sjöbodavägen", fullStatus: "Trög - 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null }
+        { ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning defekt - byta hela betäckning", defectDesc: "Fel lock", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV81517", area: "Tullinge", location: "Skogshemsvägen", fullStatus: "Ej kontrollerad - Snö", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV82003", area: "Tullinge", location: "Bergmovägen 1", fullStatus: "Ej kontrollerad - Snö", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV82149", area: "Tullinge", location: "Korsning Flottiljvägen/Bergmovägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV71821", area: "Tullinge", location: "Korsning Adler Salvius väg/Liselundsvägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV11", area: "Tullinge", location: "Solskensvägen 19", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV94485", area: "Tullinge", location: "Korsning Skogsmulles väg/Strövarvägen", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97388", area: "Tullinge", location: "Friluftsvägen 101", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97646", area: "Tullinge", location: "Hanvedens alle 58", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV81438", area: "Tullinge", location: "Korsning Dalkärrsvägen/Skogshemsvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV82456", area: "Tullinge", location: "Korsning Plåtslagarvägen/smedvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV81307", area: "Tullinge", location: "Skogshemsvägen 7", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV1470", area: "Tumba", location: "Korsning Parkbacken/Strandvägen", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV1481", area: "Tumba", location: "Parkbacken 9", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV2371", area: "Tumba", location: "Skrävstavägen 37", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV3016", area: "Tumba", location: "Korsning Kärrvägen/Kärrtuvevägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV61717", area: "Tumba", location: "Trädgårdsvägen 15", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV61893", area: "Tumba", location: "Trädgårdsvägen 10", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV62105", area: "Tumba", location: "Korsning Tunavägen/Prästgårdsvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV83971", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV83972", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV91437", area: "Tumba", location: "Bryggarvägen 9C", fullStatus: "Ej kontrollerad - Ej tillgänglig", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV91658", area: "Tumba", location: "Björkvägen 40", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV92506", area: "Tumba", location: "Björkvägen 24", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV93028", area: "Tumba", location: "Duvhöksvägen 7", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV93062", area: "Tumba", location: "Korpvägen 9", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV93486", area: "Tumba", location: "Korsning Svedjevägen/grytstigen", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV93497", area: "Tumba", location: "Bäckvägen 21", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV91806", area: "Tumba", location: "Korsning Skäcklingegårdsväg/bäverstigen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV92081", area: "Tumba", location: "Grytstigen 79", fullStatus: "Ej kontrollerad - Bil ivägen", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV92231", area: "Tumba", location: "Odlingsvägen Lekpark", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV91921", area: "Tumba", location: "Harbrovägen 42Y", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV94384", area: "Tumba", location: "Engwallsväg 20", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV91763", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV91762", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning defekt - behöver höjas, Betäckning defekt - byta hela betäckning", defectDesc: "saknar lock", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV94302", area: "Tumba", location: "Enbacken 21", fullStatus: "Betäckning defekt - byta hela betäckning", defectDesc: "nytt AV-Lock", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning defekt - byta hela betäckning", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV31604", area: "Vårsta", location: "Ringvägen 30", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV31080", area: "Vårsta", location: "Bremoravägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV94338", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad - Ej tillgänglig", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV94339", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad - Ej tillgänglig", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV32283", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej - borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV31685", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej - borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97534", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97515", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97650", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97580", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97648", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97649", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97656", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV97647", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV52124", area: "Fittja/Alby/Norsborg/Slagsta", location: "Amalias väg 33", fullStatus: "Hittar ej - fel inmätt", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV52467", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Hittar ej - måste mätas in", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV51610", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV56471", area: "Fittja/Alby/Norsborg/Slagsta", location: "Värdshusvägen 40", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV56781", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittjavägen rondell", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV56678", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittja dagvattenpark", fullStatus: "Betäckning defekt - behöver höjas", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false },
+        { ventilNr: "VAV21883", area: "Fittja/Alby/Norsborg/Slagsta", location: "Sjöbodavägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik", photo: null, photoGps: null, completed: false }
     ];
 
     const allExtras = [
-        { type: "VBP", number: "VBP93823", location: "Mekanikervägen 1", description: "Vatten och skit, måste höjas och asfalteras", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV82455", location: "Korsning Plåtslagarvägen/smedvägen", description: "Övertäckt - Asfalt", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV82416", location: "Korsning Smedvägen/Sliparvägen", description: "Övertäckt - Asfalt", reportedBy: "Fredrik" },
-        { type: "SV", number: "", location: "Hökbursvägen 48", description: "Fixa asfalt", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV93113", location: "Storvretsvägen 91B", description: "Betäckning defekt - Byta hela betäckning", reportedBy: "Fredrik" },
-        { type: "SV", number: "", location: "Olvonvägen 10", description: "Trasig", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV97463", location: "Fittja torg", description: "Betäckning defekt - Saknar lock", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV56181", location: "Fittjastråket 29", description: "Sitter kork 'FÅR EJ RÖRAS'", reportedBy: "Fredrik" },
-        { type: "VAV", number: "VAV31643", location: "Brosjöstråket", description: "Trasig - Stum", reportedBy: "Fredrik" }
+        { type: "VBP", number: "VBP93823", location: "Mekanikervägen 1", description: "Vatten och skit, måste höjas och asfalteras", reportedBy: "Fredrik", completed: false },
+        { type: "VAV", number: "VAV82455", location: "Korsning Plåtslagarvägen/smedvägen", description: "Övertäckt - asfalt", reportedBy: "Fredrik", completed: false },
+        { type: "VAV", number: "VAV82416", location: "Korsning Smedvägen/Sliparvägen", description: "Övertäckt - asfalt", reportedBy: "Fredrik", completed: false },
+        { type: "SV", number: "", location: "Hökbursvägen 48", description: "Fixa asfalt", reportedBy: "Fredrik", completed: false },
+        { type: "VAV", number: "VAV93113", location: "Storvretsvägen 91B", description: "Betäckning defekt - byta hela betäckning", reportedBy: "Fredrik", completed: false },
+        { type: "SV", number: "", location: "Olvonvägen 10", description: "Trasig", reportedBy: "Fredrik", completed: false },
+        { type: "VAV", number: "VAV97463", location: "Fittja torg", description: "Betäckning defekt - saknar lock", reportedBy: "Fredrik", completed: false },
+        { type: "VAV", number: "VAV56181", location: "Fittjastråket 29", description: "Sitter kork 'FÅR EJ RÖRAS'", reportedBy: "Fredrik", completed: false },
+        { type: "VAV", number: "VAV31643", location: "Brosjöstråket", description: "Trasig - stum (kan ej rubba)", reportedBy: "Fredrik", completed: false }
     ];
-
     const defaultRecipients = [{ email: "henrik.singh@botkyrka.se", name: "Henrik Singh" }, { email: "insatser@botkyrka.se", name: "Insatsavdelningen" }];
 
     function loadData() {
-        const stored = localStorage.getItem("ventilprogram2026_final_v5");
-        if(stored) { try { ventilData = JSON.parse(stored); } catch(e) { ventilData = allVentils.map((v,i) => ({ ...v, id: i+1, completed: false })); } }
-        else { ventilData = allVentils.map((v,i) => ({ ...v, id: i+1, completed: false })); }
-        
-        const storedExtra = localStorage.getItem("ventilprogram2026_extra_v5");
-        if(storedExtra) { try { extraData = JSON.parse(storedExtra); } catch(e) { extraData = allExtras.map((ex,i) => ({ ...ex, id: "e"+i, completed: false })); } }
-        else { extraData = allExtras.map((ex,i) => ({ ...ex, id: "e"+i, completed: false })); }
-        
+        const stored = localStorage.getItem("ventilprogram2026_ultimate");
+        if(stored) try { ventilData = JSON.parse(stored); } catch(e) { ventilData = allVentils.map((v,i) => ({ ...v, id: i+1 })); }
+        else ventilData = allVentils.map((v,i) => ({ ...v, id: i+1 }));
+        const storedExtra = localStorage.getItem("ventilprogram2026_extra_ultimate");
+        if(storedExtra) try { extraData = JSON.parse(storedExtra); } catch(e) { extraData = allExtras.map((ex,i) => ({ ...ex, id: "e"+i })); }
+        else extraData = allExtras.map((ex,i) => ({ ...ex, id: "e"+i }));
         const storedRecipients = localStorage.getItem("ventil_recipients");
-        if(storedRecipients) { try { recipients = JSON.parse(storedRecipients); } catch(e) { recipients = [...defaultRecipients]; } }
-        else { recipients = [...defaultRecipients]; }
-        
+        if(storedRecipients) try { recipients = JSON.parse(storedRecipients); } catch(e) { recipients = [...defaultRecipients]; }
+        else recipients = [...defaultRecipients];
         const savedUser = localStorage.getItem("ventil_current_user");
         if(savedUser) { currentUser = savedUser; document.getElementById("userDisplay").innerHTML = currentUser; }
-        
         renderAdminRecipients();
-        renderFieldTable();
-        renderAdminTable();
-        renderAdminExtraTable();
-        updateFieldStats();
-        updateAdminStats();
+        renderFieldTable(); renderAdminTable(); renderAdminExtraTable();
+        updateFieldStats(); updateAdminStats();
         setTimeout(() => { updateFieldMapMarkers(); updateAdminMapMarkers(); }, 500);
     }
+    function saveToStorage() { localStorage.setItem("ventilprogram2026_ultimate", JSON.stringify(ventilData)); localStorage.setItem("ventilprogram2026_extra_ultimate", JSON.stringify(extraData)); localStorage.setItem("ventil_recipients", JSON.stringify(recipients)); if(currentUser) localStorage.setItem("ventil_current_user", currentUser); }
 
-    function saveToStorage() {
-        localStorage.setItem("ventilprogram2026_final_v5", JSON.stringify(ventilData));
-        localStorage.setItem("ventilprogram2026_extra_v5", JSON.stringify(extraData));
-        localStorage.setItem("ventil_recipients", JSON.stringify(recipients));
-        if(currentUser) localStorage.setItem("ventil_current_user", currentUser);
-    }
-
-    // RENDER FUNCTIONS
     function getStatusColor(status) {
         if(status.includes("Trasig")) return "#ffcdd2";
         if(status.includes("Trög")) return "#ffecb3";
         if(status.includes("Övertäckt")) return "#ffe0b2";
         if(status.includes("Betäckning")) return "#ffe0b2";
         if(status.includes("Hittar ej")) return "#e0e0e0";
+        if(status.includes("Distanserad")) return "#e3f2fd";
         return "#e3f2fd";
     }
-
     function getMarkerColor(status) {
         if(status.includes("Trasig")) return "#e74c3c";
         if(status.includes("Trög")) return "#e67e22";
         if(status.includes("Övertäckt")) return "#f39c12";
         if(status.includes("Betäckning")) return "#f39c12";
         if(status.includes("Hittar ej")) return "#95a5a6";
+        if(status.includes("Distanserad")) return "#3498db";
+        if(status.includes("OK") || status.includes("Åtgärdad")) return "#2ecc71";
         return "#2ecc71";
     }
 
-    // FÄLTLÄGE FUNKTIONER
+    // FÄLTLÄGE
     function renderFieldTable() {
         const filtered = ventilData.filter(v => !v.completed);
         const tbody = document.getElementById("fieldTableBody");
@@ -872,83 +795,44 @@
             row.insertCell(1).innerHTML = `<span class="status-badge" style="background:${getStatusColor(v.fullStatus)}">${escapeHtml(v.fullStatus)}</span>`;
             row.insertCell(2).innerHTML = escapeHtml(v.location || '—');
             row.insertCell(3).innerHTML = escapeHtml(v.defectDesc || '—');
-            row.insertCell(4).innerHTML = `<input type="checkbox" class="field-complete" data-id="${v.id}" ${v.completed ? "checked" : ""}>`;
+            row.insertCell(4).innerHTML = `<div class="complete-toggle"><label><input type="radio" name="field_complete_${v.id}" class="field-complete" data-id="${v.id}" value="true" ${v.completed ? "checked" : ""}> ✅ JA</label><label><input type="radio" name="field_complete_${v.id}" class="field-complete" data-id="${v.id}" value="false" ${!v.completed ? "checked" : ""}> ❌ NEJ</label></div>`;
         });
-        document.querySelectorAll('.field-complete').forEach(cb => cb.addEventListener('change', e => toggleCompleteField(cb.getAttribute('data-id'))));
+        document.querySelectorAll('.field-complete').forEach(rb => rb.addEventListener('change', e => toggleCompleteField(rb.getAttribute('data-id'), rb.value === "true")));
     }
-
-    function toggleCompleteField(id) {
-        const v = ventilData.find(v => v.id == id);
-        if(v) { v.completed = !v.completed; saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers(); }
-    }
-
-    function updateFieldStats() {
-        const active = ventilData.filter(v => !v.completed).length;
-        document.getElementById("fieldStats").innerHTML = `📊 Aktiva ventiler: ${active} | 📝 Totalt: ${ventilData.length}`;
-    }
-
+    function toggleCompleteField(id, completed) { const v = ventilData.find(v => v.id == id); if(v && v.completed !== completed) { v.completed = completed; if(completed) v.completedBy = currentUser; saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers(); } }
+    function updateFieldStats() { const active = ventilData.filter(v => !v.completed).length; document.getElementById("fieldStats").innerHTML = `📊 Aktiva ventiler: ${active} | 📝 Totalt: ${ventilData.length}`; }
     function saveFieldVentil() {
         const number = document.getElementById("fieldVavNumber").value.trim();
         if(!number) { alert("Ange VAV-nummer"); return; }
-        const fullVav = "VAV" + number;
-        const area = document.getElementById("fieldArea").value;
-        const location = document.getElementById("fieldLocation").value.trim();
+        const fullVav = "VAV" + number, area = document.getElementById("fieldArea").value, location = document.getElementById("fieldLocation").value.trim();
         if(!location) { alert("Ange plats (klicka på kartan)"); return; }
-        const fullStatus = getFieldStatus();
-        const defectDesc = document.getElementById("fieldNote").value.trim();
-        
-        ventilData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false,
-            ventilNr: fullVav, area, location, fullStatus, defectDesc, reportedBy: currentUser, photo: null });
-        
-        document.getElementById("fieldVavNumber").value = "";
-        document.getElementById("fieldLocation").value = "";
-        document.getElementById("fieldNote").value = "";
+        const fullStatus = getFieldStatus(), defectDesc = document.getElementById("fieldNote").value.trim();
+        ventilData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false, ventilNr: fullVav, area, location, fullStatus, defectDesc, reportedBy: currentUser, photo: null, photoGps: null });
+        document.getElementById("fieldVavNumber").value = ""; document.getElementById("fieldLocation").value = ""; document.getElementById("fieldNote").value = "";
         document.querySelectorAll("#fieldStatusGroup input").forEach(cb => cb.checked = false);
-        saveToStorage();
-        renderFieldTable();
-        renderAdminTable();
-        updateFieldStats();
-        updateAdminStats();
-        updateFieldMapMarkers();
-        updateAdminMapMarkers();
+        saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers();
         alert(`✅ VAV${number} sparad!`);
     }
-
     function saveFieldExtra() {
-        const type = document.getElementById("fieldExtraType").value;
-        const number = document.getElementById("fieldExtraNumber").value.trim();
-        const location = document.getElementById("fieldExtraLocation").value.trim();
-        const desc = document.getElementById("fieldExtraDesc").value.trim();
+        const type = document.getElementById("fieldExtraType").value, number = document.getElementById("fieldExtraNumber").value.trim(), location = document.getElementById("fieldExtraLocation").value.trim(), desc = document.getElementById("fieldExtraDesc").value.trim();
         if(!desc) { alert("Skriv notering"); return; }
-        extraData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false,
-            type, number, location, description: desc, reportedBy: currentUser });
-        document.getElementById("fieldExtraNumber").value = "";
-        document.getElementById("fieldExtraLocation").value = "";
-        document.getElementById("fieldExtraDesc").value = "";
-        saveToStorage();
-        renderAdminExtraTable();
-        alert("✅ Extra sparat!");
+        extraData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false, type, number, location, description: desc, reportedBy: currentUser });
+        document.getElementById("fieldExtraNumber").value = ""; document.getElementById("fieldExtraLocation").value = ""; document.getElementById("fieldExtraDesc").value = "";
+        saveToStorage(); renderAdminExtraTable(); alert("✅ Extra sparat!");
     }
 
-    // ADMIN FUNKTIONER
+    // ADMINLÄGE
     function renderAdminTable() {
         let filtered = ventilData;
         if(currentView === "active") filtered = ventilData.filter(v => !v.completed);
         else if(currentView === "completed") filtered = ventilData.filter(v => v.completed);
         if(currentAreaFilter !== "all") filtered = filtered.filter(v => v.area === currentAreaFilter);
         if(currentDefectFilter !== "all") filtered = filtered.filter(v => v.fullStatus.includes(currentDefectFilter));
-        
         const tbody = document.getElementById("adminTableBody");
         if(filtered.length === 0) { tbody.innerHTML = '}<td colspan="9" style="text-align:center;">📭 Inga ventiler'; return; }
-        tbody.innerHTML = "";
-        let lastArea = "";
+        tbody.innerHTML = ""; let lastArea = "";
         filtered.forEach(v => {
-            if(v.area !== lastArea) {
-                const row = tbody.insertRow(); row.className = "area-row";
-                row.insertCell(0).colSpan = 9;
-                row.cells[0].innerHTML = `📍 ${v.area} (${filtered.filter(x=>x.area===v.area).length} st)`;
-                lastArea = v.area;
-            }
+            if(v.area !== lastArea) { const row = tbody.insertRow(); row.className = "area-row"; row.insertCell(0).colSpan = 9; row.cells[0].innerHTML = `📍 ${v.area} (${filtered.filter(x=>x.area===v.area).length} st)`; lastArea = v.area; }
             const row = tbody.insertRow();
             row.insertCell(0).innerHTML = `<input type="checkbox" class="admin-select" data-id="${v.id}" ${selectedIds.has(v.id) ? "checked" : ""}>`;
             row.insertCell(1).innerHTML = `<span class="ventil-nr">${escapeHtml(v.ventilNr)}</span>`;
@@ -957,16 +841,34 @@
             row.insertCell(4).innerHTML = escapeHtml(v.defectDesc || '—');
             row.insertCell(5).innerHTML = v.photo ? `<img src="${v.photo}" class="photo-thumb" onclick="showFullPhoto('${v.photo}')">` : '—';
             row.insertCell(6).innerHTML = `<span>👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
-            row.insertCell(7).innerHTML = `<input type="checkbox" class="admin-complete" data-id="${v.id}" ${v.completed ? "checked" : ""}>`;
-            row.insertCell(8).innerHTML = `<button class="action-btn admin-edit" data-id="${v.id}">✏️</button> <button class="action-btn admin-delete" data-id="${v.id}">🗑️</button>`;
+            row.insertCell(7).innerHTML = `<div class="complete-toggle"><label><input type="radio" name="admin_complete_${v.id}" class="admin-complete" data-id="${v.id}" value="true" ${v.completed ? "checked" : ""}> ✅ JA</label><label><input type="radio" name="admin_complete_${v.id}" class="admin-complete" data-id="${v.id}" value="false" ${!v.completed ? "checked" : ""}> ❌ NEJ</label></div>`;
+            row.insertCell(8).innerHTML = `<button class="action-btn admin-edit" data-id="${v.id}">✏️</button> <button class="action-btn admin-change-status" data-id="${v.id}">🔄</button> <button class="action-btn admin-delete" data-id="${v.id}">🗑️</button>`;
         });
         document.querySelectorAll('.admin-select').forEach(cb => cb.addEventListener('change', e => toggleAdminSelect(cb.getAttribute('data-id'), cb.checked)));
-        document.querySelectorAll('.admin-complete').forEach(cb => cb.addEventListener('change', e => toggleCompleteAdmin(cb.getAttribute('data-id'))));
+        document.querySelectorAll('.admin-complete').forEach(rb => rb.addEventListener('change', e => toggleCompleteAdmin(rb.getAttribute('data-id'), rb.value === "true")));
         document.querySelectorAll('.admin-edit').forEach(btn => btn.addEventListener('click', e => editAdminVentil(btn.getAttribute('data-id'))));
+        document.querySelectorAll('.admin-change-status').forEach(btn => btn.addEventListener('click', e => showChangeStatusModal(btn.getAttribute('data-id'))));
         document.querySelectorAll('.admin-delete').forEach(btn => btn.addEventListener('click', e => deleteAdminVentil(btn.getAttribute('data-id'))));
         updateAdminSelectedCount();
     }
-
+    function toggleAdminSelect(id, checked) { if(checked) selectedIds.add(id); else selectedIds.delete(id); updateAdminSelectedCount(); }
+    function updateAdminSelectedCount() { document.getElementById("adminSelectedCount").innerHTML = `${selectedIds.size} st`; const selectAll = document.getElementById("adminSelectAll"); if(selectAll) selectAll.checked = selectedIds.size > 0; }
+    function toggleCompleteAdmin(id, completed) { const v = ventilData.find(v => v.id == id); if(v && v.completed !== completed) { v.completed = completed; if(completed) v.completedBy = currentUser; saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers(); } }
+    function editAdminVentil(id) { const v = ventilData.find(v => v.id == id); if(v) { document.getElementById("adminVavNumber").value = v.ventilNr.replace("VAV", ""); document.getElementById("adminArea").value = v.area; document.getElementById("adminLocation").value = v.location || ""; document.getElementById("adminNote").value = v.defectDesc || ""; alert(`✏️ Redigerar ${v.ventilNr}. Ändra och spara.`); } }
+    function deleteAdminVentil(id) { if(confirm("Ta bort?")) { ventilData = ventilData.filter(v => v.id != id); selectedIds.delete(id); saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers(); } }
+    function showChangeStatusModal(id) {
+        const v = ventilData.find(v => v.id == id);
+        if(!v) return;
+        const modal = document.createElement('div'); modal.className = 'modal';
+        modal.innerHTML = `<div class="modal-content"><h3>🔄 Ändra status för ${v.ventilNr}</h3><p style="margin-bottom:12px;">Nuvarande: ${v.fullStatus}</p><label>Ny status</label><select id="changeStatusSelect"><option value="">-- Välj status --</option><option value="Trasig - snurrar bara">🔴 Trasig - snurrar bara</option><option value="Trasig - stum (kan ej rubba)">🔴 Trasig - stum (kan ej rubba)</option><option value="Trasig - saknar nyckelstång">🔴 Trasig - saknar nyckelstång</option><option value="Trög - kräver 2 gubbar">🟠 Trög - kräver 2 gubbar</option><option value="Övertäckt - asfalt">🟡 Övertäckt - asfalt</option><option value="Betäckning defekt - behöver höjas">🟡 Betäckning - behöver höjas</option><option value="Betäckning defekt - trasigt lock">🟡 Betäckning - trasigt lock</option><option value="Betäckning defekt - byta hela betäckning">🟡 Betäckning - byta hela</option><option value="Hittar ej - måste mätas in">⚪ Hittar ej - måste mätas in</option><option value="Distanserad - ja">🔵 Distanserad - ja</option><option value="OK - fungerar">🟢 OK - fungerar</option><option value="Åtgärdad - OK">✅ Åtgärdad - OK</option></select><label>📝 Notering (valfritt)</label><textarea id="changeStatusNote" rows="2"></textarea><div class="modal-buttons"><button id="cancelModal">Avbryt</button><button id="confirmChange">Spara ändring</button></div></div>`;
+        document.body.appendChild(modal);
+        modal.querySelector('#confirmChange').onclick = () => {
+            const newStatus = modal.querySelector('#changeStatusSelect').value;
+            if(newStatus) { v.fullStatus = newStatus; const note = modal.querySelector('#changeStatusNote').value.trim(); if(note) v.defectDesc = v.defectDesc ? v.defectDesc + " | " + note : note; v.lastUpdated = new Date().toISOString(); saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldMapMarkers(); updateAdminMapMarkers(); alert(`✅ Status ändrad för ${v.ventilNr}`); }
+            modal.remove();
+        };
+        modal.querySelector('#cancelModal').onclick = () => modal.remove();
+    }
     function renderAdminExtraTable() {
         const tbody = document.getElementById("adminExtraTableBody");
         if(extraData.length === 0) { tbody.innerHTML = '}<td colspan="7" style="text-align:center;">📭 Inga extra'; return; }
@@ -978,138 +880,54 @@
             row.insertCell(2).innerHTML = escapeHtml(ex.location || '—');
             row.insertCell(3).innerHTML = escapeHtml(ex.description || '—');
             row.insertCell(4).innerHTML = `<span>👤 ${escapeHtml(ex.reportedBy || '—')}</span>`;
-            row.insertCell(5).innerHTML = `<input type="checkbox" class="admin-extra-complete" data-id="${ex.id}" ${ex.completed ? "checked" : ""}>`;
+            row.insertCell(5).innerHTML = `<div class="complete-toggle"><label><input type="radio" name="extra_complete_${ex.id}" class="admin-extra-complete" data-id="${ex.id}" value="true" ${ex.completed ? "checked" : ""}> ✅ JA</label><label><input type="radio" name="extra_complete_${ex.id}" class="admin-extra-complete" data-id="${ex.id}" value="false" ${!ex.completed ? "checked" : ""}> ❌ NEJ</label></div>`;
             row.insertCell(6).innerHTML = `<button class="action-btn admin-extra-delete" data-id="${ex.id}">🗑️</button>`;
         });
-        document.querySelectorAll('.admin-extra-complete').forEach(cb => cb.addEventListener('change', e => toggleExtraCompleteAdmin(cb.getAttribute('data-id'))));
+        document.querySelectorAll('.admin-extra-complete').forEach(rb => rb.addEventListener('change', e => toggleExtraCompleteAdmin(rb.getAttribute('data-id'), rb.value === "true")));
         document.querySelectorAll('.admin-extra-delete').forEach(btn => btn.addEventListener('click', e => deleteExtraAdmin(btn.getAttribute('data-id'))));
     }
-
-    function toggleAdminSelect(id, checked) {
-        if(checked) selectedIds.add(id);
-        else selectedIds.delete(id);
-        updateAdminSelectedCount();
-    }
-
-    function updateAdminSelectedCount() {
-        document.getElementById("adminSelectedCount").innerHTML = `${selectedIds.size} st`;
-        const selectAll = document.getElementById("adminSelectAll");
-        if(selectAll) selectAll.checked = selectedIds.size > 0;
-    }
-
-    function toggleCompleteAdmin(id) {
-        const v = ventilData.find(v => v.id == id);
-        if(v) { v.completed = !v.completed; saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers(); }
-    }
-
-    function toggleExtraCompleteAdmin(id) {
-        const ex = extraData.find(ex => ex.id == id);
-        if(ex) { ex.completed = !ex.completed; saveToStorage(); renderAdminExtraTable(); }
-    }
-
-    function deleteExtraAdmin(id) {
-        if(confirm("Ta bort?")) { extraData = extraData.filter(ex => ex.id !== id); saveToStorage(); renderAdminExtraTable(); }
-    }
-
-    function updateAdminStats() {
-        const active = ventilData.filter(v => !v.completed).length;
-        const completed = ventilData.filter(v => v.completed).length;
-        document.getElementById("adminStats").innerHTML = `📊 AKTIVA: ${active} | ✅ ÅTGÄRDADE: ${completed} | 🪣 EXTRA: ${extraData.length} | 📝 TOTALT: ${ventilData.length}`;
-    }
-
+    function toggleExtraCompleteAdmin(id, completed) { const ex = extraData.find(ex => ex.id == id); if(ex && ex.completed !== completed) { ex.completed = completed; if(completed) ex.completedBy = currentUser; saveToStorage(); renderAdminExtraTable(); } }
+    function deleteExtraAdmin(id) { if(confirm("Ta bort?")) { extraData = extraData.filter(ex => ex.id !== id); saveToStorage(); renderAdminExtraTable(); } }
+    function updateAdminStats() { const active = ventilData.filter(v => !v.completed).length, completed = ventilData.filter(v => v.completed).length; document.getElementById("adminStats").innerHTML = `📊 AKTIVA: ${active} | ✅ ÅTGÄRDADE: ${completed} | 🪣 EXTRA: ${extraData.length} | 📝 TOTALT: ${ventilData.length}`; }
     function saveAdminVentil() {
         const number = document.getElementById("adminVavNumber").value.trim();
         if(!number) { alert("Ange VAV-nummer"); return; }
-        const fullVav = "VAV" + number;
-        const area = document.getElementById("adminArea").value;
-        const location = document.getElementById("adminLocation").value.trim();
+        const fullVav = "VAV" + number, area = document.getElementById("adminArea").value, location = document.getElementById("adminLocation").value.trim();
         if(!location) { alert("Ange plats"); return; }
         const fullStatus = getAdminFullStatus();
         if(!fullStatus) { alert("Välj status"); return; }
         const defectDesc = document.getElementById("adminNote").value.trim();
-        
-        ventilData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false,
-            ventilNr: fullVav, area, location, fullStatus, defectDesc, reportedBy: currentUser, photo: currentPhotoData });
-        
-        document.getElementById("adminVavNumber").value = "";
-        document.getElementById("adminLocation").value = "";
-        document.getElementById("adminMainStatus").value = "";
-        document.getElementById("adminNote").value = "";
-        document.getElementById("adminPhotoPreview").innerHTML = "";
-        currentPhotoData = null;
-        saveToStorage();
-        renderFieldTable();
-        renderAdminTable();
-        updateFieldStats();
-        updateAdminStats();
-        updateFieldMapMarkers();
-        updateAdminMapMarkers();
+        ventilData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false, ventilNr: fullVav, area, location, fullStatus, defectDesc, reportedBy: currentUser, photo: currentPhotoData, photoGps: currentPhotoGps });
+        document.getElementById("adminVavNumber").value = ""; document.getElementById("adminLocation").value = ""; document.getElementById("adminMainStatus").value = ""; document.getElementById("adminNote").value = ""; document.getElementById("adminPhotoPreview").innerHTML = ""; currentPhotoData = null; currentPhotoGps = null;
+        saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers();
         alert(`✅ VAV${number} sparad!`);
     }
-
     function saveAdminExtra() {
-        const type = document.getElementById("adminExtraType").value;
-        const number = document.getElementById("adminExtraNumber").value.trim();
-        const location = document.getElementById("adminExtraLocation").value.trim();
-        const desc = document.getElementById("adminExtraDesc").value.trim();
+        const type = document.getElementById("adminExtraType").value, number = document.getElementById("adminExtraNumber").value.trim(), location = document.getElementById("adminExtraLocation").value.trim(), desc = document.getElementById("adminExtraDesc").value.trim();
         if(!desc) { alert("Skriv notering"); return; }
-        extraData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false,
-            type, number, location, description: desc, reportedBy: currentUser });
-        document.getElementById("adminExtraNumber").value = "";
-        document.getElementById("adminExtraLocation").value = "";
-        document.getElementById("adminExtraDesc").value = "";
-        saveToStorage();
-        renderAdminExtraTable();
-        alert("✅ Extra sparat!");
+        extraData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false, type, number, location, description: desc, reportedBy: currentUser });
+        document.getElementById("adminExtraNumber").value = ""; document.getElementById("adminExtraLocation").value = ""; document.getElementById("adminExtraDesc").value = "";
+        saveToStorage(); renderAdminExtraTable(); alert("✅ Extra sparat!");
     }
-
-    function editAdminVentil(id) {
-        const v = ventilData.find(v => v.id == id);
-        if(!v) return;
-        document.getElementById("adminVavNumber").value = v.ventilNr.replace("VAV", "");
-        document.getElementById("adminArea").value = v.area;
-        document.getElementById("adminLocation").value = v.location || "";
-        document.getElementById("adminNote").value = v.defectDesc || "";
-        alert(`✏️ Redigerar ${v.ventilNr}. Ändra och spara.`);
-    }
-
-    function deleteAdminVentil(id) {
-        if(confirm("Ta bort?")) { ventilData = ventilData.filter(v => v.id != id); selectedIds.delete(id); saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers(); }
-    }
-
+    function renderAdminRecipients() { const select = document.getElementById("adminRecipientSelect"); select.innerHTML = '<option value="">Välj mottagare</option>'; recipients.forEach(r => { select.innerHTML += `<option value="${r.email}">${r.name || r.email}</option>`; }); }
+    function addAdminRecipient() { const email = prompt("Ange mailadress:", ""); if(email && email.includes('@')) { recipients.push({ email, name: email.split('@')[0] }); saveToStorage(); renderAdminRecipients(); alert(`✅ ${email} tillagd`); } }
     function sendSelectedReport() {
         const email = document.getElementById("adminRecipientSelect").value;
         if(!email) { alert("Välj mottagare"); return; }
         const selected = ventilData.filter(v => selectedIds.has(v.id));
         if(selected.length === 0) { alert("Inga markerade"); return; }
-        let body = `🏛️ UNDERHÅLLSPROGRAM BOTKYRKA\n\nRapport från: ${currentUser}\nDatum: ${new Date().toLocaleString()}\nAntal: ${selected.length}\n\n`;
-        selected.forEach(v => { body += `${v.ventilNr} | ${v.area}\n   Plats: ${v.location}\n   Status: ${v.fullStatus}\n   Notering: ${v.defectDesc || '-'}\n----------------------------------------\n`; });
+        let body = `🏛️ UNDERHÅLLSPROGRAM BOTKYRKA KOMMUN\n\n📋 RAPPORT FRÅN: ${currentUser}\n📅 DATUM: ${new Date().toLocaleString()}\n📊 ANTAL MARKERADE: ${selected.length}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        selected.forEach(v => { body += `🔹 ${v.ventilNr} | ${v.area}\n   📍 Plats: ${v.location}\n   ⚠️ Status: ${v.fullStatus}\n   📝 Notering: ${v.defectDesc || '-'}\n   👤 Rapportör: ${v.reportedBy}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`; });
         window.location.href = `mailto:${email}?subject=Insatsunderlag&body=${encodeURIComponent(body)}`;
+        alert(`📧 Rapport skickad till ${recipients.find(r=>r.email===email)?.name || email}`);
     }
 
-    function renderAdminRecipients() {
-        const select = document.getElementById("adminRecipientSelect");
-        select.innerHTML = '<option value="">Välj mottagare</option>';
-        recipients.forEach(r => { select.innerHTML += `<option value="${r.email}">${r.name || r.email}</option>`; });
-    }
-
-    function addAdminRecipient() {
-        const email = prompt("Ange mailadress:", "");
-        if(email && email.includes('@')) {
-            recipients.push({ email, name: email.split('@')[0] });
-            saveToStorage();
-            renderAdminRecipients();
-            alert(`✅ ${email} tillagd`);
-        }
-    }
-
-    // KARTOR - Botkyrka begränsade
+    // KARTOR - BOTKYRKA BEGRÄNSADE
     function initFieldMap() {
         fieldMap = L.map('fieldMap').setView(BOTKYRKA_CENTER, 12);
         fieldMap.setMaxBounds(BOTKYRKA_BOUNDS);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(fieldMap);
         fieldMarkersLayer = L.layerGroup().addTo(fieldMap);
-        
         fieldMap.on('click', async function(e) {
             if(!isFieldPinMode) return;
             const lat = e.latlng.lat, lng = e.latlng.lng;
@@ -1117,24 +935,60 @@
                 const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=18`);
                 const data = await res.json();
                 let address = data.address?.road ? `${data.address.road}, ${data.address.suburb || ''}` : data.display_name?.split(',')[0] || "";
-                document.getElementById("fieldAddressInput").value = address;
-                document.getElementById("fieldLocation").value = address;
+                // Öppna popup med formulär
+                const popupContent = `
+                    <div class="map-popup-form">
+                        <h4>📍 Ny ventil</h4>
+                        <input type="text" id="popupVav" placeholder="VAV-nummer (t.ex. 92323)" style="width:100%; margin-bottom:6px;">
+                        <select id="popupStatus" style="width:100%; margin-bottom:6px;">
+                            <option value="">Välj status</option>
+                            <option value="Trasig - snurrar bara">🔴 Trasig - snurrar bara</option>
+                            <option value="Trasig - stum (kan ej rubba)">🔴 Trasig - stum (kan ej rubba)</option>
+                            <option value="Trög - kräver 2 gubbar">🟠 Trög - kräver 2 gubbar</option>
+                            <option value="Övertäckt - asfalt">🟡 Övertäckt - asfalt</option>
+                            <option value="Betäckning defekt - behöver höjas">🟡 Betäckning - behöver höjas</option>
+                            <option value="Hittar ej - måste mätas in">⚪ Hittar ej - måste mätas in</option>
+                            <option value="OK - fungerar">🟢 OK - fungerar</option>
+                        </select>
+                        <input type="text" id="popupNote" placeholder="Notering (valfritt)" style="width:100%; margin-bottom:6px;">
+                        <div style="display:flex; gap:6px; justify-content:flex-end;">
+                            <button class="cancel-btn" onclick="document.getElementById('fieldMapPopup').close()">Avbryt</button>
+                            <button class="save-btn" id="popupSaveBtn">Spara</button>
+                        </div>
+                    </div>
+                `;
+                const popup = L.popup().setLatLng([lat, lng]).setContent(popupContent).openOn(fieldMap);
+                // Vänta på att DOM är klar
+                setTimeout(() => {
+                    const saveBtn = document.getElementById('popupSaveBtn');
+                    if(saveBtn) {
+                        saveBtn.onclick = () => {
+                            const vavNumber = document.getElementById('popupVav').value.trim();
+                            const status = document.getElementById('popupStatus').value;
+                            const note = document.getElementById('popupNote').value.trim();
+                            if(!vavNumber) { alert("Ange VAV-nummer"); return; }
+                            if(!status) { alert("Välj status"); return; }
+                            const fullVav = "VAV" + vavNumber;
+                            const area = document.getElementById("fieldArea").value;
+                            ventilData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false, ventilNr: fullVav, area, location: address, fullStatus: status, defectDesc: note, reportedBy: currentUser, photo: null, photoGps: null });
+                            saveToStorage(); renderFieldTable(); renderAdminTable(); updateFieldStats(); updateAdminStats(); updateFieldMapMarkers(); updateAdminMapMarkers();
+                            alert(`✅ VAV${vavNumber} sparad!`);
+                            fieldMap.closePopup();
+                        };
+                    }
+                }, 50);
                 isFieldPinMode = false;
                 document.getElementById("fieldPinBtn").classList.remove("active");
-                if(currentFieldMarker) fieldMarkersLayer.removeLayer(currentFieldMarker);
-                currentFieldMarker = L.marker([lat, lng]).bindPopup(`📍 ${address}`).addTo(fieldMarkersLayer);
-                fieldMap.setView([lat, lng], 15);
+                document.getElementById("fieldPinBtn").innerHTML = "📍 Sätt nål";
             } catch(e) {}
         });
         updateFieldMapMarkers();
     }
-
     function initAdminMap() {
         adminMap = L.map('adminMap').setView(BOTKYRKA_CENTER, 12);
         adminMap.setMaxBounds(BOTKYRKA_BOUNDS);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(adminMap);
         adminMarkersLayer = L.layerGroup().addTo(adminMap);
-        
         adminMap.on('click', async function(e) {
             if(!isAdminPinMode) return;
             const lat = e.latlng.lat, lng = e.latlng.lng;
@@ -1153,97 +1007,16 @@
         });
         updateAdminMapMarkers();
     }
-
-    function enableFieldPin() { isFieldPinMode = !isFieldPinMode; const btn = document.getElementById("fieldPinBtn"); if(isFieldPinMode) { btn.classList.add("active"); btn.innerHTML = "📍 Klicka på kartan..."; } else { btn.classList.remove("active"); btn.innerHTML = "📍 Sätt nål"; } }
-    function enableAdminPin() { isAdminPinMode = !isAdminPinMode; const btn = document.getElementById("adminPinBtn"); if(isAdminPinMode) { btn.classList.add("active"); btn.innerHTML = "📍 Klicka på kartan..."; } else { btn.classList.remove("active"); btn.innerHTML = "📍 Sätt nål"; } }
-
-    function getFieldPosition() {
-        if(!navigator.geolocation) return;
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            fieldMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
-            if(currentFieldMarker) fieldMarkersLayer.removeLayer(currentFieldMarker);
-            currentFieldMarker = L.marker([pos.coords.latitude, pos.coords.longitude]).bindPopup("📍 Din position").addTo(fieldMarkersLayer);
-            try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&zoom=18`);
-                const data = await res.json();
-                let address = data.address?.road ? `${data.address.road}, ${data.address.suburb || ''}` : "";
-                document.getElementById("fieldAddressInput").value = address;
-                document.getElementById("fieldLocation").value = address;
-            } catch(e) {}
-        });
-    }
-
-    function getAdminPosition() {
-        if(!navigator.geolocation) return;
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            adminMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
-            if(currentAdminMarker) adminMarkersLayer.removeLayer(currentAdminMarker);
-            currentAdminMarker = L.marker([pos.coords.latitude, pos.coords.longitude]).bindPopup("📍 Din position").addTo(adminMarkersLayer);
-            try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&zoom=18`);
-                const data = await res.json();
-                let address = data.address?.road ? `${data.address.road}, ${data.address.suburb || ''}` : "";
-                document.getElementById("adminAddressInput").value = address;
-                document.getElementById("adminLocation").value = address;
-            } catch(e) {}
-        });
-    }
-
-    function updateFieldMapMarkers() {
-        if(!fieldMarkersLayer) return;
-        fieldMarkersLayer.clearLayers();
-        ventilData.filter(v => !v.completed).forEach(v => {
-            if(v.location && v.location.length > 5) {
-                fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v.location)} Botkyrka&format=json&limit=1`)
-                    .then(r => r.json()).then(data => {
-                        if(data && data[0]) {
-                            const color = getMarkerColor(v.fullStatus);
-                            L.marker([parseFloat(data[0].lat), parseFloat(data[0].lon)], {
-                                icon: L.divIcon({ html: `<div style="background-color:${color}; width:12px;height:12px;border-radius:50%;border:2px solid white;"></div>`, iconSize: [12,12] })
-                            }).bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}`).addTo(fieldMarkersLayer);
-                        }
-                    });
-            }
-        });
-    }
-
-    function updateAdminMapMarkers() {
-        if(!adminMarkersLayer) return;
-        adminMarkersLayer.clearLayers();
-        let toShow = ventilData.filter(v => !v.completed);
-        if(showOnlyMarked && selectedIds.size > 0) toShow = toShow.filter(v => selectedIds.has(v.id));
-        const defectFilter = document.getElementById("filterDefectSelect").value;
-        const areaFilter = document.getElementById("filterAreaSelect").value;
-        if(defectFilter !== "all") toShow = toShow.filter(v => v.fullStatus.includes(defectFilter));
-        if(areaFilter !== "all") toShow = toShow.filter(v => v.area === areaFilter);
-        
-        toShow.forEach(v => {
-            if(v.location && v.location.length > 5) {
-                fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v.location)} Botkyrka&format=json&limit=1`)
-                    .then(r => r.json()).then(data => {
-                        if(data && data[0]) {
-                            const color = getMarkerColor(v.fullStatus);
-                            L.marker([parseFloat(data[0].lat), parseFloat(data[0].lon)], {
-                                icon: L.divIcon({ html: `<div style="background-color:${color}; width:12px;height:12px;border-radius:50%;border:2px solid white;"></div>`, iconSize: [12,12] })
-                            }).bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}`).addTo(adminMarkersLayer);
-                        }
-                    });
-            }
-        });
-    }
-
+    function enableFieldPin() { isFieldPinMode = !isFieldPinMode; const btn = document.getElementById("fieldPinBtn"); if(isFieldPinMode) { btn.classList.add("active"); btn.innerHTML = "📍 Klicka på kartan..."; document.body.style.cursor = "crosshair"; } else { btn.classList.remove("active"); btn.innerHTML = "📍 Sätt nål"; document.body.style.cursor = "default"; } }
+    function enableAdminPin() { isAdminPinMode = !isAdminPinMode; const btn = document.getElementById("adminPinBtn"); if(isAdminPinMode) { btn.classList.add("active"); btn.innerHTML = "📍 Klicka på kartan..."; document.body.style.cursor = "crosshair"; } else { btn.classList.remove("active"); btn.innerHTML = "📍 Sätt nål"; document.body.style.cursor = "default"; } }
+    function getFieldPosition() { if(!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(async (pos) => { fieldMap.setView([pos.coords.latitude, pos.coords.longitude], 16); if(currentFieldMarker) fieldMarkersLayer.removeLayer(currentFieldMarker); currentFieldMarker = L.marker([pos.coords.latitude, pos.coords.longitude]).bindPopup("📍 Din position").addTo(fieldMarkersLayer); try { const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&zoom=18`); const data = await res.json(); let address = data.address?.road ? `${data.address.road}, ${data.address.suburb || ''}` : ""; document.getElementById("fieldAddressInput").value = address; document.getElementById("fieldLocation").value = address; } catch(e) {} }); }
+    function getAdminPosition() { if(!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(async (pos) => { adminMap.setView([pos.coords.latitude, pos.coords.longitude], 16); if(currentAdminMarker) adminMarkersLayer.removeLayer(currentAdminMarker); currentAdminMarker = L.marker([pos.coords.latitude, pos.coords.longitude]).bindPopup("📍 Din position").addTo(adminMarkersLayer); try { const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&zoom=18`); const data = await res.json(); let address = data.address?.road ? `${data.address.road}, ${data.address.suburb || ''}` : ""; document.getElementById("adminAddressInput").value = address; document.getElementById("adminLocation").value = address; } catch(e) {} }); }
+    function updateFieldMapMarkers() { if(!fieldMarkersLayer) return; fieldMarkersLayer.clearLayers(); ventilData.filter(v => !v.completed).forEach(v => { if(v.location && v.location.length > 5) { fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v.location)} Botkyrka&format=json&limit=1`).then(r => r.json()).then(data => { if(data && data[0]) { const color = getMarkerColor(v.fullStatus); L.marker([parseFloat(data[0].lat), parseFloat(data[0].lon)], { icon: L.divIcon({ html: `<div style="background-color:${color}; width:12px;height:12px;border-radius:50%;border:2px solid white;"></div>`, iconSize: [12,12] }) }).bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}`).addTo(fieldMarkersLayer); } }); } }); }
+    function updateAdminMapMarkers() { if(!adminMarkersLayer) return; adminMarkersLayer.clearLayers(); let toShow = ventilData.filter(v => !v.completed); if(showOnlyMarked && selectedIds.size > 0) toShow = toShow.filter(v => selectedIds.has(v.id)); const defectFilter = document.getElementById("filterDefectSelect").value, areaFilter = document.getElementById("filterAreaSelect").value; if(defectFilter !== "all") toShow = toShow.filter(v => v.fullStatus.includes(defectFilter)); if(areaFilter !== "all") toShow = toShow.filter(v => v.area === areaFilter); toShow.forEach(v => { if(v.location && v.location.length > 5) { fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v.location)} Botkyrka&format=json&limit=1`).then(r => r.json()).then(data => { if(data && data[0]) { const color = getMarkerColor(v.fullStatus); L.marker([parseFloat(data[0].lat), parseFloat(data[0].lon)], { icon: L.divIcon({ html: `<div style="background-color:${color}; width:12px;height:12px;border-radius:50%;border:2px solid white;"></div>`, iconSize: [12,12] }) }).bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}`).addTo(adminMarkersLayer); } }); } }); }
     function showMarkedOnMap() { showOnlyMarked = true; updateAdminMapMarkers(); alert(`📍 Visar ${selectedIds.size} markerade ventiler`); }
     function showAllOnMap() { showOnlyMarked = false; updateAdminMapMarkers(); alert("🗺️ Visar alla aktiva ventiler"); }
     function applyFilter() { showOnlyMarked = false; updateAdminMapMarkers(); alert("🗺️ Kartan uppdaterad"); }
-
-    function setMode(mode) {
-        document.getElementById("fieldMode").style.display = mode === "field" ? "block" : "none";
-        document.getElementById("adminMode").style.display = mode === "admin" ? "block" : "none";
-        document.getElementById("fieldModeBtn").classList.toggle("active", mode === "field");
-        document.getElementById("adminModeBtn").classList.toggle("active", mode === "admin");
-        if(mode === "admin") setTimeout(() => adminMap?.invalidateSize(), 100);
-    }
-
+    function setMode(mode) { document.getElementById("fieldMode").style.display = mode === "field" ? "block" : "none"; document.getElementById("adminMode").style.display = mode === "admin" ? "block" : "none"; document.getElementById("fieldModeBtn").classList.toggle("active", mode === "field"); document.getElementById("adminModeBtn").classList.toggle("active", mode === "admin"); if(mode === "admin") setTimeout(() => adminMap?.invalidateSize(), 100); }
     function escapeHtml(s) { if(!s) return ""; return s.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
     function showFullPhoto(photo) { const modal = document.createElement('div'); modal.className = 'modal'; modal.innerHTML = `<div class="modal-content"><img src="${photo}"><div style="margin-top:8px;text-align:center;"><button onclick="this.closest('.modal').remove()">Stäng</button></div></div>`; document.body.appendChild(modal); }
     function handleAdminPhoto(e) { const file = e.target.files[0]; if(file) { const reader = new FileReader(); reader.onload = function(ev) { currentPhotoData = ev.target.result; document.getElementById("adminPhotoPreview").innerHTML = `<img src="${currentPhotoData}" style="max-width:60px;">`; }; reader.readAsDataURL(file); } e.target.value = ''; }
