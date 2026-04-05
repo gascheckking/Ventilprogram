@@ -4,64 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Underhållsprogram - Botkyrka Kommun</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #e8eef4 0%, #dce3ec 100%);
-            min-height: 100vh;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #eef2f5;
+            font-family: 'Inter', system-ui, sans-serif;
         }
         .app-container {
             max-width: 1600px;
             margin: 0 auto;
             background: white;
             min-height: 100vh;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
         }
         /* Header */
         .header {
             background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
             color: white;
-            padding: 14px 24px;
-        }
-        .header h1 { font-size: 1.3rem; font-weight: 700; }
-        .header p { font-size: 0.65rem; opacity: 0.7; margin-top: 2px; }
-        .login-row {
+            padding: 16px 24px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin-top: 6px;
+            flex-wrap: wrap;
+            gap: 16px;
         }
-        .login-row input {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 5px 12px;
-            border-radius: 40px;
-            color: white;
-            font-size: 0.7rem;
-            width: 130px;
+        .header-left h1 { font-size: 1.3rem; font-weight: 700; }
+        .header-left p { font-size: 0.65rem; opacity: 0.7; margin-top: 2px; }
+        .login-area {
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            padding: 4px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .login-row button {
+        .login-area span { font-size: 0.8rem; }
+        .login-area button {
             background: rgba(255,255,255,0.2);
+            border: none;
             color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 5px 12px;
-            border-radius: 40px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .user-name {
-            background: rgba(255,255,255,0.15);
-            padding: 5px 14px;
+            padding: 6px 14px;
             border-radius: 40px;
             font-size: 0.7rem;
+            cursor: pointer;
             font-weight: 500;
         }
-        /* Main layout - kartan till höger */
+        .login-area button:hover { background: rgba(255,255,255,0.3); }
+        .user-name {
+            background: #ff9800;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        /* Main layout - karta till höger */
         .main-layout {
             display: flex;
             flex-wrap: wrap;
@@ -79,53 +78,68 @@
         .map-card {
             background: white;
             border-radius: 20px;
-            padding: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             border: 1px solid #e9ecef;
+        }
+        .map-search {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .map-search input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-size: 0.8rem;
+        }
+        .map-search button {
+            background: #ff9800;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
         }
         .map-container {
             height: 380px;
             border-radius: 16px;
             background: #e9ecef;
         }
-        .map-header {
+        .map-controls {
             display: flex;
             gap: 8px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
+            margin-top: 10px;
+            justify-content: center;
         }
-        .map-header input {
-            flex: 1;
-            padding: 8px 14px;
-            border: 1px solid #e2e8f0;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            background: #f8fafc;
-        }
-        .btn-pin, .btn-gps {
-            padding: 8px 16px;
-            border-radius: 40px;
+        .map-control-btn {
+            background: #ff9800;
             border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: white;
             font-weight: 600;
-            font-size: 0.7rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 6px;
         }
-        .btn-pin { background: #ff9800; color: white; }
-        .btn-pin.active { background: #1e6f5c; box-shadow: 0 0 0 2px #ff9800; cursor: crosshair; }
-        .btn-gps { background: #2196f3; color: white; }
+        .map-control-btn.active {
+            background: #1e6f5c;
+            box-shadow: 0 0 0 2px #ff9800;
+        }
         /* Formulär */
         .form-card {
             background: white;
             border-radius: 20px;
-            padding: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             border: 1px solid #e9ecef;
         }
         .form-card h3 {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-bottom: 16px;
             color: #1e6f5c;
             display: flex;
@@ -136,46 +150,44 @@
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
         .form-group {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
         }
         .form-group label {
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             font-weight: 700;
             color: #2c5a74;
             text-transform: uppercase;
         }
         .form-group input, .form-group select {
-            padding: 8px 14px;
+            padding: 10px 14px;
             border: 1px solid #e2e8f0;
-            border-radius: 40px;
-            font-size: 0.8rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
             background: #f8fafc;
         }
         .vav-input {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
-        .vav-input select {
+        .vav-input span {
             background: #1e6f5c;
             color: white;
+            padding: 10px 16px;
+            border-radius: 50px;
             font-weight: 700;
-            width: auto;
-            border: none;
         }
-        .vav-input input {
-            flex: 1;
-        }
+        .vav-input input { flex: 1; }
         .btn-save {
             background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-            padding: 10px 24px;
-            border-radius: 40px;
+            padding: 12px 24px;
+            border-radius: 50px;
             font-weight: 700;
             border: none;
             color: white;
@@ -183,44 +195,10 @@
             width: 100%;
             margin-top: 8px;
         }
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 6px 0;
-        }
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.7rem;
-            font-weight: normal;
-            cursor: pointer;
-        }
-        .extra-section {
-            background: #fff9ef;
-            border-radius: 20px;
-            padding: 14px;
-            margin-top: 16px;
-            border-left: 4px solid #ff9800;
-        }
-        .extra-section h4 {
-            font-size: 0.7rem;
-            margin-bottom: 10px;
-            color: #b45f06;
-        }
-        .stats {
-            background: #eef3f0;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.6rem;
-            font-weight: 600;
-            display: inline-block;
-            margin: 12px 0;
-        }
+        /* Tabell */
         .table-wrapper {
             overflow-x: auto;
-            border-radius: 16px;
+            border-radius: 20px;
             border: 1px solid #e9ecef;
             background: white;
             margin-top: 20px;
@@ -228,66 +206,76 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
         }
         th {
             text-align: left;
-            padding: 10px 8px;
+            padding: 12px 10px;
             background: #f8fafc;
             font-weight: 700;
             color: #2c5a74;
             border-bottom: 1px solid #e9ecef;
         }
         td {
-            padding: 8px 8px;
+            padding: 10px 10px;
             border-bottom: 1px solid #f0f0f0;
             vertical-align: middle;
         }
         .area-row td {
             background: #eef3f0;
             font-weight: 700;
-            padding: 5px 10px;
+            padding: 6px 12px;
         }
         .ventil-nr {
             font-family: monospace;
             font-weight: 700;
             background: #eef2fa;
-            padding: 2px 6px;
+            padding: 3px 8px;
             border-radius: 30px;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             display: inline-block;
         }
         .status-badge {
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 30px;
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             font-weight: 600;
             display: inline-block;
         }
         .complete-toggle {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
         .complete-toggle label {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             cursor: pointer;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
         }
         .action-btn {
             background: none;
             border: none;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            padding: 3px 5px;
+            padding: 4px 8px;
             border-radius: 30px;
         }
+        .action-btn:hover { background: #f0f0f0; }
+        .stats {
+            background: #eef3f0;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 16px 0;
+        }
         footer {
-            padding: 12px 20px;
+            padding: 16px 24px;
             text-align: center;
-            font-size: 0.5rem;
+            font-size: 0.55rem;
             color: #8aa0b5;
             border-top: 1px solid #e9ecef;
         }
@@ -295,36 +283,46 @@
             .main-layout { flex-direction: column; }
             .map-container { height: 280px; }
         }
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
+        /* Popup på kartan */
+        .leaflet-popup-content {
+            min-width: 280px;
         }
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 90%;
+        .popup-form {
+            padding: 8px;
         }
+        .popup-form .form-group {
+            margin-bottom: 10px;
+        }
+        .popup-form .form-group label {
+            font-size: 0.6rem;
+        }
+        .popup-form .form-group input, 
+        .popup-form .form-group select {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+        .popup-form button {
+            padding: 6px 12px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+        }
+        .popup-form .btn-save-popup { background: #ff9800; color: white; }
+        .popup-form .btn-cancel { background: #e9ecef; color: #495057; }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 <div class="app-container">
     <div class="header">
-        <h1>🏛️ Underhållsprogram</h1>
-        <p>Botkyrka Kommun · VA-enheten</p>
-        <div class="login-row">
-            <input type="text" id="userNameInput" placeholder="Ditt namn" value="Fredrik">
+        <div class="header-left">
+            <h1>🏛️ Underhållsprogram</h1>
+            <p>Botkyrka Kommun · VA-enheten</p>
+        </div>
+        <div class="login-area" id="loginArea">
+            <span>👤</span>
+            <span id="userNameDisplay">Inte inloggad</span>
             <button id="loginBtn">Logga in</button>
-            <div id="userDisplay" class="user-name">Fredrik</div>
         </div>
     </div>
 
@@ -334,213 +332,180 @@
             <div class="form-card">
                 <h3>⚡ Snabbregistrering</h3>
                 
-                <!-- Rullgardin för typ + nummer -->
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>TYP & NUMMER</label>
+                    <div class="form-group" style="flex:0.6;">
+                        <label>VAV-NUMMER</label>
                         <div class="vav-input">
-                            <select id="typeSelect">
-                                <option value="VAV">VAV</option>
-                                <option value="VBP">VBP</option>
-                                <option value="VSP">VSP</option>
-                                <option value="SV">SV</option>
-                                <option value="Brunn">Brunn</option>
-                            </select>
-                            <input type="text" id="numberInput" placeholder="92323 eller VBP29381">
+                            <span>VAV</span>
+                            <input type="text" id="vavNumber" placeholder="92323">
                         </div>
                     </div>
                     <div class="form-group">
                         <label>OMRÅDE</label>
                         <select id="areaSelect">
-                            <option value="Tullinge">Tullinge</option>
-                            <option value="Tumba">Tumba</option>
-                            <option value="Vårsta">Vårsta</option>
-                            <option value="Grödinge">Grödinge</option>
-                            <option value="Fittja/Alby/Norsborg/Slagsta">Norra Botkyrka</option>
+                            <option value="Tullinge">🏠 Tullinge</option>
+                            <option value="Tumba">🏠 Tumba</option>
+                            <option value="Vårsta">🏠 Vårsta</option>
+                            <option value="Grödinge">🏠 Grödinge</option>
+                            <option value="Fittja/Alby/Norsborg/Slagsta">🏠 Norra Botkyrka</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- STATUS - RULLGARDIN FÖR DEFEKT -->
+                <!-- STATUS - RULLGARDIN MED UNDERRUBRIKER -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label>🔧 STATUS / DEFEKT</label>
-                        <select id="defectSelect">
-                            <option value="">-- Välj defekt --</option>
-                            <option value="Trasig - snurrar bara">🔴 Trasig - snurrar bara</option>
-                            <option value="Trasig - stum (kan ej rubba)">🔴 Trasig - stum (kan ej rubba)</option>
-                            <option value="Trasig - saknar nyckelstång">🔴 Trasig - saknar nyckelstång</option>
-                            <option value="Trög - kräver 2 gubbar">🟠 Trög - kräver 2 gubbar</option>
-                            <option value="Övertäckt - asfalt">🟡 Övertäckt - asfalt</option>
-                            <option value="Övertäckt - jord/buskage">🟡 Övertäckt - jord/buskage</option>
-                            <option value="Betäckning defekt - höjas">🟡 Betäckning - höjas</option>
-                            <option value="Betäckning defekt - trasigt lock">🟡 Betäckning - trasigt lock</option>
-                            <option value="Betäckning defekt - byta hela">🟡 Betäckning - byta hela</option>
-                            <option value="Hittar ej - måste mätas in">⚪ Hittar ej - måste mätas in</option>
-                            <option value="Distanserad - ja/nej">🔵 Distanserad</option>
-                            <option value="OK - fungerar">🟢 OK - fungerar</option>
+                        <label>🔧 STATUS</label>
+                        <select id="mainStatusSelect">
+                            <option value="">-- Välj huvudstatus --</option>
+                            <option value="Trasig">🔴 Trasig</option>
+                            <option value="Trög">🟠 Trög</option>
+                            <option value="Övertäckt">🟡 Övertäckt</option>
+                            <option value="Betäckning defekt">🟡 Betäckning defekt</option>
+                            <option value="Hittar ej">⚪ Hittar ej</option>
+                            <option value="Distanserad">🔵 Distanserad</option>
+                            <option value="OK">🟢 OK</option>
                         </select>
+                    </div>
+                    <div class="form-group" id="subStatusGroup" style="display:none;">
+                        <label>DETALJ</label>
+                        <select id="subStatusSelect"></select>
                     </div>
                 </div>
 
-                <!-- NOTERING -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📍 PLATS</label>
+                        <input type="text" id="ventilLocation" placeholder="Klicka på kartan med nålen">
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>📝 NOTERING</label>
-                        <input type="text" id="noteInput" placeholder="Extra information...">
+                        <input type="text" id="ventilNote" placeholder="Extra information...">
                     </div>
                 </div>
 
-                <button id="saveBtn" class="btn-save">💾 Spara</button>
-
-                <!-- EXTRA FYND (enkelt) -->
-                <div class="extra-section">
-                    <h4>🪣 EXTRA IAKTTAGELSE</h4>
-                    <div class="form-row">
-                        <div class="form-group" style="flex:0.6;">
-                            <select id="extraType">
-                                <option value="VBP">VBP</option><option value="VSP">VSP</option>
-                                <option value="SV">SV</option><option value="Brunn">Brunn</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="flex:0.8;">
-                            <input type="text" id="extraNumber" placeholder="Nummer">
-                        </div>
-                        <div class="form-group" style="flex:1.5;">
-                            <input type="text" id="extraDesc" placeholder="Notering / problem">
-                        </div>
-                        <div><button id="saveExtraBtn" style="background:#ff9800; padding:6px 14px; border-radius:40px;">➕</button></div>
-                    </div>
-                </div>
+                <button id="saveBtn" class="btn-save">💾 Spara ventil</button>
             </div>
         </div>
 
-        <!-- HÖGER: KARTA MED NÅL -->
+        <!-- HÖGER: KARTA -->
         <div class="map-panel">
             <div class="map-card">
-                <div class="map-header">
-                    <input type="text" id="addressInput" placeholder="🔍 Adress (fylls i från kartan)">
-                    <button id="pinBtn" class="btn-pin">📍 Sätt nål</button>
-                    <button id="gpsBtn" class="btn-gps">📍 Min position</button>
+                <div class="map-search">
+                    <input type="text" id="searchAddress" placeholder="🔍 Sök adress (t.ex. Oxelvägen 2)" onkeypress="if(event.key==='Enter') searchAddress()">
+                    <button onclick="searchAddress()">Sök</button>
                 </div>
                 <div id="map" class="map-container"></div>
-                <div style="font-size:0.55rem; color:#666; margin-top:8px; text-align:center;">
-                    💡 Klicka på "📍 Sätt nål" → klicka på kartan → adressen fylls i automatiskt
+                <div class="map-controls">
+                    <button id="needleBtn" class="map-control-btn">📍 Sätt nål</button>
+                    <button id="gpsBtn" class="map-control-btn">🧭 Min position</button>
+                </div>
+                <div style="font-size:0.6rem; color:#666; margin-top:10px; text-align:center;">
+                    💡 Klicka på "📍 Sätt nål" → klicka på kartan → fyll i formulär i popupen
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- STATISTIK OCH TABELL -->
+    <!-- TABELL -->
     <div style="padding: 0 20px 20px 20px;">
         <div class="stats" id="statsCounter">Laddar...</div>
         <div class="table-wrapper">
             <table id="ventilTable">
                 <thead>
                     <th style="width:30px"><input type="checkbox" id="selectAllCheckbox"></th>
-                    <th>Typ/Nummer</th><th>Status</th><th>Plats</th><th>Notering</th><th>Rapportör</th><th>✅ Åtgärdad</th><th></th>
+                    <th>VAV</th><th>Status</th><th>Plats</th><th>Notering</th><th>Rapportör</th><th style="width:100px">Åtgärdad</th><th style="width:70px"></th>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
     </div>
-    <footer>📍 Klicka "Sätt nål" → klicka på kartan → fyller adress | ✅ JA/NEJ för åtgärdad | 🔄 Ändra status</footer>
+    <footer>📍 Klicka "Sätt nål" → klicka på kartan → popup med formulär | ✅ JA/NEJ för åtgärdad | 🔄 Redigera med ✏️</footer>
 </div>
 
 <script>
+    // DATA
     let ventilData = [];
-    let extraData = [];
-    let recipients = [];
-    let currentUser = "Fredrik";
+    let currentUser = null;
     let selectedIds = new Set();
     let map, markersLayer, currentMarker;
-    let isPinMode = false;
+    let isNeedleMode = false;
+    let currentEditId = null;
 
     // Botkyrka gränser
     const BOTKYRKA_BOUNDS = [[59.1, 17.7], [59.3, 17.95]];
     const BOTKYRKA_CENTER = [59.2, 17.82];
 
-    // ALLA 67 VENTILER
-    const allVentils = [
-        { id: "1", completed: false, ventilNr: "VAV74259", type: "VAV", number: "74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "2", completed: false, ventilNr: "VAV94388", type: "VAV", number: "94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning defekt - byta hela", defectDesc: "Fel lock", reportedBy: "Fredrik" },
-        { id: "3", completed: false, ventilNr: "VAV81517", type: "VAV", number: "81517", area: "Tullinge", location: "Skogshemsvägen", fullStatus: "Ej kontrollerad", defectDesc: "Snö", reportedBy: "Fredrik" },
-        { id: "4", completed: false, ventilNr: "VAV82003", type: "VAV", number: "82003", area: "Tullinge", location: "Bergmovägen 1", fullStatus: "Ej kontrollerad", defectDesc: "Snö", reportedBy: "Fredrik" },
-        { id: "5", completed: false, ventilNr: "VAV97298", type: "VAV", number: "97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "6", completed: false, ventilNr: "VAV82149", type: "VAV", number: "82149", area: "Tullinge", location: "Korsning Flottiljvägen/Bergmovägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "7", completed: false, ventilNr: "VAV71821", type: "VAV", number: "71821", area: "Tullinge", location: "Korsning Adler Salvius väg/Liselundsvägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "8", completed: false, ventilNr: "VAV11", type: "VAV", number: "11", area: "Tullinge", location: "Solskensvägen 19", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "9", completed: false, ventilNr: "VAV81793", type: "VAV", number: "81793", area: "Tullinge", location: "Flemings väg 23", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { id: "10", completed: false, ventilNr: "VAV94485", type: "VAV", number: "94485", area: "Tullinge", location: "Korsning Skogsmulles väg/Strövarvägen", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { id: "11", completed: false, ventilNr: "VAV97388", type: "VAV", number: "97388", area: "Tullinge", location: "Friluftsvägen 101", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "12", completed: false, ventilNr: "VAV97646", type: "VAV", number: "97646", area: "Tullinge", location: "Hanvedens alle 58", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "13", completed: false, ventilNr: "VAV81438", type: "VAV", number: "81438", area: "Tullinge", location: "Korsning Dalkärrsvägen/Skogshemsvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "14", completed: false, ventilNr: "VAV82456", type: "VAV", number: "82456", area: "Tullinge", location: "Korsning Plåtslagarvägen/smedvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "15", completed: false, ventilNr: "VAV81307", type: "VAV", number: "81307", area: "Tullinge", location: "Skogshemsvägen 7", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "16", completed: false, ventilNr: "VAV1470", type: "VAV", number: "1470", area: "Tumba", location: "Korsning Parkbacken/Strandvägen", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { id: "17", completed: false, ventilNr: "VAV1481", type: "VAV", number: "1481", area: "Tumba", location: "Parkbacken 9", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "18", completed: false, ventilNr: "VAV2371", type: "VAV", number: "2371", area: "Tumba", location: "Skrävstavägen 37", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "19", completed: false, ventilNr: "VAV3016", type: "VAV", number: "3016", area: "Tumba", location: "Korsning Kärrvägen/Kärrtuvevägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "20", completed: false, ventilNr: "VAV61717", type: "VAV", number: "61717", area: "Tumba", location: "Trädgårdsvägen 15", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { id: "21", completed: false, ventilNr: "VAV61893", type: "VAV", number: "61893", area: "Tumba", location: "Trädgårdsvägen 10", fullStatus: "Hittar ej - måste mätas in", defectDesc: "inget utslag", reportedBy: "Fredrik" },
-        { id: "22", completed: false, ventilNr: "VAV62105", type: "VAV", number: "62105", area: "Tumba", location: "Korsning Tunavägen/Prästgårdsvägen", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "23", completed: false, ventilNr: "VAV83971", type: "VAV", number: "83971", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "24", completed: false, ventilNr: "VAV83972", type: "VAV", number: "83972", area: "Tumba", location: "Skyttbrinksvägen 4", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "25", completed: false, ventilNr: "VAV83993", type: "VAV", number: "83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "26", completed: false, ventilNr: "VAV91437", type: "VAV", number: "91437", area: "Tumba", location: "Bryggarvägen 9C", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "27", completed: false, ventilNr: "VAV91658", type: "VAV", number: "91658", area: "Tumba", location: "Björkvägen 40", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "28", completed: false, ventilNr: "VAV92506", type: "VAV", number: "92506", area: "Tumba", location: "Björkvägen 24", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "29", completed: false, ventilNr: "VAV93028", type: "VAV", number: "93028", area: "Tumba", location: "Duvhöksvägen 7", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "30", completed: false, ventilNr: "VAV93062", type: "VAV", number: "93062", area: "Tumba", location: "Korpvägen 9", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "31", completed: false, ventilNr: "VAV93486", type: "VAV", number: "93486", area: "Tumba", location: "Korsning Svedjevägen/grytstigen", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "32", completed: false, ventilNr: "VAV93497", type: "VAV", number: "93497", area: "Tumba", location: "Bäckvägen 21", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "33", completed: false, ventilNr: "VAV91806", type: "VAV", number: "91806", area: "Tumba", location: "Korsning Skäcklingegårdsväg/bäverstigen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "34", completed: false, ventilNr: "VAV92081", type: "VAV", number: "92081", area: "Tumba", location: "Grytstigen 79", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "35", completed: false, ventilNr: "VAV92231", type: "VAV", number: "92231", area: "Tumba", location: "Odlingsvägen Lekpark", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "36", completed: false, ventilNr: "VAV91921", type: "VAV", number: "91921", area: "Tumba", location: "Harbrovägen 42Y", fullStatus: "Betäckning defekt - höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik" },
-        { id: "37", completed: false, ventilNr: "VAV94384", type: "VAV", number: "94384", area: "Tumba", location: "Engwallsväg 20", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "38", completed: false, ventilNr: "VAV91763", type: "VAV", number: "91763", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "39", completed: false, ventilNr: "VAV91762", type: "VAV", number: "91762", area: "Tumba", location: "Gångväg nära Bäverstigen 111", fullStatus: "Betäckning defekt - höjas, Betäckning defekt - byta hela", defectDesc: "saknar lock", reportedBy: "Fredrik" },
-        { id: "40", completed: false, ventilNr: "VAV94302", type: "VAV", number: "94302", area: "Tumba", location: "Enbacken 21", fullStatus: "Betäckning defekt - byta hela", defectDesc: "nytt AV-Lock", reportedBy: "Fredrik" },
-        { id: "41", completed: false, ventilNr: "VAV31785", type: "VAV", number: "31785", area: "Vårsta", location: "Korsning Sandavägen/Klockarevägen", fullStatus: "Betäckning defekt - byta hela", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "42", completed: false, ventilNr: "VAV31604", type: "VAV", number: "31604", area: "Vårsta", location: "Ringvägen 30", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "43", completed: false, ventilNr: "VAV31080", type: "VAV", number: "31080", area: "Vårsta", location: "Bremoravägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "44", completed: false, ventilNr: "VAV94338", type: "VAV", number: "94338", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "45", completed: false, ventilNr: "VAV94339", type: "VAV", number: "94339", area: "Vårsta", location: "Trastvägen 1", fullStatus: "Ej kontrollerad", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "46", completed: false, ventilNr: "VAV32283", type: "VAV", number: "32283", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej - borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik" },
-        { id: "47", completed: false, ventilNr: "VAV31685", type: "VAV", number: "31685", area: "Vårsta", location: "Ringvägen", fullStatus: "Hittar ej - borttagen", defectDesc: "SKA TAS BORT", reportedBy: "Fredrik" },
-        { id: "48", completed: false, ventilNr: "VAV97545", type: "VAV", number: "97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "49", completed: false, ventilNr: "VAV97534", type: "VAV", number: "97534", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "50", completed: false, ventilNr: "VAV97515", type: "VAV", number: "97515", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "51", completed: false, ventilNr: "VAV97650", type: "VAV", number: "97650", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "52", completed: false, ventilNr: "VAV97580", type: "VAV", number: "97580", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "53", completed: false, ventilNr: "VAV97648", type: "VAV", number: "97648", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "54", completed: false, ventilNr: "VAV97649", type: "VAV", number: "97649", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "55", completed: false, ventilNr: "VAV97656", type: "VAV", number: "97656", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "56", completed: false, ventilNr: "VAV97647", type: "VAV", number: "97647", area: "Grödinge", location: "Sibble", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "57", completed: false, ventilNr: "VAV51611", type: "VAV", number: "51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Övertäckt - asfalt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "58", completed: false, ventilNr: "VAV52124", type: "VAV", number: "52124", area: "Fittja/Alby/Norsborg/Slagsta", location: "Amalias väg 33", fullStatus: "Hittar ej - fel inmätt", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "59", completed: false, ventilNr: "VAV52467", type: "VAV", number: "52467", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Hittar ej - måste mätas in", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "60", completed: false, ventilNr: "VAV5265", type: "VAV", number: "5265", area: "Fittja/Alby/Norsborg/Slagsta", location: "Storskiftesvägen 56", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "61", completed: false, ventilNr: "VAV51610", type: "VAV", number: "51610", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "62", completed: false, ventilNr: "VAV56471", type: "VAV", number: "56471", area: "Fittja/Alby/Norsborg/Slagsta", location: "Värdshusvägen 40", fullStatus: "Trasig - snurrar bara", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "63", completed: false, ventilNr: "VAV56781", type: "VAV", number: "56781", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittjavägen rondell", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "64", completed: false, ventilNr: "VAV56678", type: "VAV", number: "56678", area: "Fittja/Alby/Norsborg/Slagsta", location: "Fittja dagvattenpark", fullStatus: "Betäckning defekt - höjas", defectDesc: "", reportedBy: "Fredrik" },
-        { id: "65", completed: false, ventilNr: "VAV21883", type: "VAV", number: "21883", area: "Fittja/Alby/Norsborg/Slagsta", location: "Sjöbodavägen", fullStatus: "Trög - kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" }
+    // Status detaljer
+    const statusDetails = {
+        "Trasig": ["Snurrar bara", "Stum (kan ej rubba)", "Saknar nyckelstång", "Läckljud"],
+        "Trög": ["Kräver 2 gubbar", "Kärvar", "Går tungt"],
+        "Övertäckt": ["Asfalt", "Jord", "Buskage", "Grus"],
+        "Betäckning defekt": ["Höjas", "Trasigt lock", "Byta hela betäckning", "Saknar lock"],
+        "Hittar ej": ["Måste mätas in", "Borttagen", "Fel inmätt"],
+        "Distanserad": ["Ja", "Nej", "Saknas helt"],
+        "OK": ["Fungerar"]
+    };
+
+    // TESTDATA (2-3 per område)
+    const testData = [
+        { id: "1", completed: false, ventilNr: "VAV74259", area: "Tullinge", location: "Korsning Oxelvägen/Askvägen", fullStatus: "Trasig - Snurrar bara", defectDesc: "", reportedBy: "Fredrik" },
+        { id: "2", completed: false, ventilNr: "VAV94388", area: "Tullinge", location: "Oxelvägen Förskolan bäverhyddan", fullStatus: "Betäckning defekt - Byta hela betäckning", defectDesc: "Fel lock", reportedBy: "Fredrik" },
+        { id: "3", completed: false, ventilNr: "VAV97298", area: "Tullinge", location: "Eklundhovsvägen 33/35", fullStatus: "Trög - Kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { id: "4", completed: false, ventilNr: "VAV83993", area: "Tumba", location: "Korsning Skyttbrinksvägen/Kompassvägen", fullStatus: "Trög - Kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { id: "5", completed: false, ventilNr: "VAV91921", area: "Tumba", location: "Harbrovägen 42Y", fullStatus: "Betäckning defekt - Höjas", defectDesc: "Justera betäckning", reportedBy: "Fredrik" },
+        { id: "6", completed: false, ventilNr: "VAV31604", area: "Vårsta", location: "Ringvägen 30", fullStatus: "Trög - Kräver 2 gubbar", defectDesc: "", reportedBy: "Fredrik" },
+        { id: "7", completed: false, ventilNr: "VAV97545", area: "Grödinge", location: "Skördevägen", fullStatus: "Betäckning defekt - Höjas", defectDesc: "", reportedBy: "Fredrik" },
+        { id: "8", completed: false, ventilNr: "VAV51611", area: "Fittja/Alby/Norsborg/Slagsta", location: "Korsning Rotmannavägen 28/29", fullStatus: "Övertäckt - Asfalt", defectDesc: "", reportedBy: "Fredrik" }
     ];
 
-    const defaultRecipients = [{ email: "henrik.singh@botkyrka.se", name: "Henrik Singh" }];
-
     function loadData() {
-        const stored = localStorage.getItem("ventilprogram2026_simple");
-        if(stored) try { ventilData = JSON.parse(stored); } catch(e) { ventilData = allVentils.map(v => ({ ...v })); }
-        else ventilData = allVentils.map(v => ({ ...v }));
+        const stored = localStorage.getItem("ventilprogram2026_final_working");
+        if(stored) {
+            try { ventilData = JSON.parse(stored); } catch(e) { ventilData = JSON.parse(JSON.stringify(testData)); }
+        } else {
+            ventilData = JSON.parse(JSON.stringify(testData));
+        }
+        const savedUser = localStorage.getItem("ventil_current_user");
+        if(savedUser) { 
+            currentUser = savedUser; 
+            document.getElementById("userNameDisplay").innerHTML = currentUser;
+            document.getElementById("loginBtn").innerHTML = "Byt användare/Logga ut";
+        }
         renderTable();
         updateStats();
         setTimeout(() => updateMapMarkers(), 500);
     }
 
-    function saveToStorage() { localStorage.setItem("ventilprogram2026_simple", JSON.stringify(ventilData)); }
+    function saveToStorage() {
+        localStorage.setItem("ventilprogram2026_final_working", JSON.stringify(ventilData));
+        if(currentUser) localStorage.setItem("ventil_current_user", currentUser);
+    }
+
+    function updateSubStatus() {
+        const main = document.getElementById("mainStatusSelect").value;
+        const subGroup = document.getElementById("subStatusGroup");
+        const subSelect = document.getElementById("subStatusSelect");
+        if(main && statusDetails[main]) {
+            subGroup.style.display = "flex";
+            subSelect.innerHTML = '<option value="">-- Välj detalj --</option>';
+            statusDetails[main].forEach(opt => {
+                subSelect.innerHTML += `<option value="${opt}">${opt}</option>`;
+            });
+        } else {
+            subGroup.style.display = "none";
+        }
+    }
+
+    function getFullStatus() {
+        const main = document.getElementById("mainStatusSelect").value;
+        if(!main) return "";
+        const sub = document.getElementById("subStatusSelect").value;
+        if(sub && sub !== "") return `${main} - ${sub}`;
+        return main;
+    }
 
     function getStatusColor(status) {
         if(status.includes("Trasig")) return "#ffcdd2";
@@ -548,7 +513,8 @@
         if(status.includes("Övertäckt")) return "#ffe0b2";
         if(status.includes("Betäckning")) return "#ffe0b2";
         if(status.includes("Hittar ej")) return "#e0e0e0";
-        return "#e3f2fd";
+        if(status.includes("Distanserad")) return "#e3f2fd";
+        return "#c8e6d9";
     }
 
     function getMarkerColor(status) {
@@ -582,7 +548,12 @@
             row.insertCell(3).innerHTML = escapeHtml(v.location || '—');
             row.insertCell(4).innerHTML = escapeHtml(v.defectDesc || '—');
             row.insertCell(5).innerHTML = `<span style="font-size:0.65rem;">👤 ${escapeHtml(v.reportedBy || '—')}</span>`;
-            row.insertCell(6).innerHTML = `<div class="complete-toggle"><label><input type="radio" name="complete_${v.id}" class="complete-radio" data-id="${v.id}" value="true" ${v.completed ? "checked" : ""}> ✅ JA</label><label><input type="radio" name="complete_${v.id}" class="complete-radio" data-id="${v.id}" value="false" ${!v.completed ? "checked" : ""}> ❌ NEJ</label></div>`;
+            row.insertCell(6).innerHTML = `
+                <div class="complete-toggle">
+                    <label><input type="radio" name="complete_${v.id}" class="complete-radio" data-id="${v.id}" value="true" ${v.completed ? "checked" : ""}> ✅ JA</label>
+                    <label><input type="radio" name="complete_${v.id}" class="complete-radio" data-id="${v.id}" value="false" ${!v.completed ? "checked" : ""}> ❌ NEJ</label>
+                </div>
+            `;
             row.insertCell(7).innerHTML = `<button class="action-btn edit-btn" data-id="${v.id}">✏️</button> <button class="action-btn delete-btn" data-id="${v.id}">🗑️</button>`;
         });
         document.querySelectorAll('.select-checkbox').forEach(cb => cb.addEventListener('change', e => toggleSelect(cb.getAttribute('data-id'), cb.checked)));
@@ -592,30 +563,95 @@
         updateSelectedCount();
     }
 
-    function toggleSelect(id, checked) { if(checked) selectedIds.add(id); else selectedIds.delete(id); updateSelectedCount(); }
-    function updateSelectedCount() { document.getElementById("selectAllCheckbox").checked = false; }
-    function toggleComplete(id, completed) { const v = ventilData.find(v => v.id == id); if(v && v.completed !== completed) { v.completed = completed; if(completed) v.completedBy = currentUser; saveToStorage(); renderTable(); updateStats(); updateMapMarkers(); } }
-    function updateStats() { const active = ventilData.filter(v => !v.completed).length; document.getElementById("statsCounter").innerHTML = `📊 AKTIVA VENTILER: ${active} | 📝 TOTALT: ${ventilData.length}`; }
+    function toggleSelect(id, checked) {
+        if(checked) selectedIds.add(id);
+        else selectedIds.delete(id);
+        updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+        const selectAll = document.getElementById("selectAllCheckbox");
+        if(selectAll) selectAll.checked = selectedIds.size > 0;
+    }
+
+    function toggleComplete(id, completed) {
+        const v = ventilData.find(v => v.id == id);
+        if(v && v.completed !== completed) {
+            v.completed = completed;
+            if(completed) v.completedBy = currentUser;
+            saveToStorage();
+            renderTable();
+            updateStats();
+            updateMapMarkers();
+        }
+    }
+
+    function updateStats() {
+        const active = ventilData.filter(v => !v.completed).length;
+        const completed = ventilData.filter(v => v.completed).length;
+        document.getElementById("statsCounter").innerHTML = `📊 AKTIVA: ${active} | ✅ ÅTGÄRDADE: ${completed} | 📝 TOTALT: ${ventilData.length}`;
+    }
 
     function saveVentil() {
-        const type = document.getElementById("typeSelect").value;
-        const number = document.getElementById("numberInput").value.trim();
-        if(!number) { alert("Ange nummer (t.ex. 92323)"); return; }
-        const fullVav = type === "VAV" ? `VAV${number}` : (type === "VBP" ? `VBP${number}` : (type === "VSP" ? `VSP${number}` : (type === "SV" ? `SV${number}` : number)));
+        const number = document.getElementById("vavNumber").value.trim();
+        if(!number) { alert("Ange VAV-nummer"); return; }
+        const fullVav = "VAV" + number;
         const area = document.getElementById("areaSelect").value;
-        const location = document.getElementById("addressInput").value.trim();
-        if(!location) { alert("Ange plats - klicka på kartan med nålen"); return; }
-        const fullStatus = document.getElementById("defectSelect").value;
-        if(!fullStatus) { alert("Välj status/defekt"); return; }
-        const defectDesc = document.getElementById("noteInput").value.trim();
-        ventilData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false, ventilNr: fullVav, type, number, area, location, fullStatus, defectDesc, reportedBy: currentUser });
-        document.getElementById("numberInput").value = ""; document.getElementById("addressInput").value = ""; document.getElementById("defectSelect").value = ""; document.getElementById("noteInput").value = "";
-        saveToStorage(); renderTable(); updateStats(); updateMapMarkers();
+        const location = document.getElementById("ventilLocation").value.trim();
+        if(!location) { alert("Ange plats (klicka på kartan med nålen)"); return; }
+        const fullStatus = getFullStatus();
+        if(!fullStatus) { alert("Välj status"); return; }
+        const defectDesc = document.getElementById("ventilNote").value.trim();
+        
+        ventilData.push({ id: Date.now()+'-'+Math.random().toString(36).substr(2,4), completed: false,
+            ventilNr: fullVav, area, location, fullStatus, defectDesc, reportedBy: currentUser || "Anonym" });
+        
+        document.getElementById("vavNumber").value = "";
+        document.getElementById("ventilLocation").value = "";
+        document.getElementById("mainStatusSelect").value = "";
+        document.getElementById("subStatusSelect").innerHTML = "";
+        document.getElementById("subStatusGroup").style.display = "none";
+        document.getElementById("ventilNote").value = "";
+        saveToStorage();
+        renderTable();
+        updateStats();
+        updateMapMarkers();
         alert(`✅ ${fullVav} sparad!`);
     }
 
-    function editVentil(id) { const v = ventilData.find(v => v.id == id); if(v) { document.getElementById("typeSelect").value = v.type || "VAV"; document.getElementById("numberInput").value = v.number || ""; document.getElementById("areaSelect").value = v.area; document.getElementById("addressInput").value = v.location || ""; document.getElementById("defectSelect").value = v.fullStatus; document.getElementById("noteInput").value = v.defectDesc || ""; alert(`✏️ Redigerar ${v.ventilNr}. Ändra och spara.`); } }
-    function deleteVentil(id) { if(confirm("Ta bort?")) { ventilData = ventilData.filter(v => v.id != id); selectedIds.delete(id); saveToStorage(); renderTable(); updateStats(); updateMapMarkers(); } }
+    function editVentil(id) {
+        const v = ventilData.find(v => v.id == id);
+        if(!v) return;
+        document.getElementById("vavNumber").value = v.ventilNr.replace("VAV", "");
+        document.getElementById("areaSelect").value = v.area;
+        document.getElementById("ventilLocation").value = v.location || "";
+        document.getElementById("ventilNote").value = v.defectDesc || "";
+        const mainPart = v.fullStatus.split(" - ")[0];
+        const mainSelect = document.getElementById("mainStatusSelect");
+        if([...mainSelect.options].some(opt => opt.value === mainPart)) {
+            mainSelect.value = mainPart;
+            updateSubStatus();
+            const subPart = v.fullStatus.includes(" - ") ? v.fullStatus.split(" - ")[1] : "";
+            setTimeout(() => {
+                const subSelect = document.getElementById("subStatusSelect");
+                if(subPart && [...subSelect.options].some(opt => opt.value === subPart)) {
+                    subSelect.value = subPart;
+                }
+            }, 50);
+        }
+        alert(`✏️ Redigerar ${v.ventilNr}. Ändra och spara.`);
+    }
+
+    function deleteVentil(id) {
+        if(confirm("Ta bort ventilen?")) {
+            ventilData = ventilData.filter(v => v.id != id);
+            selectedIds.delete(id);
+            saveToStorage();
+            renderTable();
+            updateStats();
+            updateMapMarkers();
+        }
+    }
 
     // KARTA FUNKTIONER
     function initMap() {
@@ -623,49 +659,169 @@
         map.setMaxBounds(BOTKYRKA_BOUNDS);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
         markersLayer = L.layerGroup().addTo(map);
+        
         map.on('click', async function(e) {
-            if(!isPinMode) return;
+            if(!isNeedleMode) return;
             const lat = e.latlng.lat, lng = e.latlng.lng;
             try {
                 const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=18`);
                 const data = await res.json();
                 let address = data.address?.road ? `${data.address.road}, ${data.address.suburb || ''}` : data.display_name?.split(',')[0] || "";
-                document.getElementById("addressInput").value = address;
-                isPinMode = false;
-                const pinBtn = document.getElementById("pinBtn");
-                pinBtn.classList.remove("active");
-                pinBtn.innerHTML = "📍 Sätt nål";
-                if(currentMarker) markersLayer.removeLayer(currentMarker);
-                currentMarker = L.marker([lat, lng]).bindPopup(`📍 ${address}`).addTo(markersLayer);
-                map.setView([lat, lng], 15);
-            } catch(e) {}
+                
+                // Öppna popup med formulär
+                const popupContent = `
+                    <div class="popup-form">
+                        <div class="form-group">
+                            <label>VAV-NUMMER</label>
+                            <input type="text" id="popupVav" placeholder="92323" style="width:100%;">
+                        </div>
+                        <div class="form-group">
+                            <label>STATUS</label>
+                            <select id="popupMainStatus" style="width:100%;">
+                                <option value="">Välj status</option>
+                                <option value="Trasig">🔴 Trasig</option>
+                                <option value="Trög">🟠 Trög</option>
+                                <option value="Övertäckt">🟡 Övertäckt</option>
+                                <option value="Betäckning defekt">🟡 Betäckning defekt</option>
+                                <option value="Hittar ej">⚪ Hittar ej</option>
+                                <option value="Distanserad">🔵 Distanserad</option>
+                                <option value="OK">🟢 OK</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="popupSubGroup" style="display:none;">
+                            <label>DETALJ</label>
+                            <select id="popupSubStatus" style="width:100%;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>PLATS</label>
+                            <input type="text" id="popupLocation" value="${address}" style="width:100%;">
+                        </div>
+                        <div class="form-group">
+                            <label>NOTERING</label>
+                            <input type="text" id="popupNote" placeholder="Extra info" style="width:100%;">
+                        </div>
+                        <div style="display:flex; gap:8px; margin-top:12px;">
+                            <button class="btn-cancel" onclick="map.closePopup()">Avbryt</button>
+                            <button class="btn-save-popup" id="popupSaveBtn">Spara</button>
+                        </div>
+                    </div>
+                `;
+                const popup = L.popup().setLatLng([lat, lng]).setContent(popupContent).openOn(map);
+                
+                // Setup popup event listeners
+                setTimeout(() => {
+                    const popupMainStatus = document.getElementById("popupMainStatus");
+                    const popupSubGroup = document.getElementById("popupSubGroup");
+                    const popupSubStatus = document.getElementById("popupSubStatus");
+                    
+                    if(popupMainStatus) {
+                        popupMainStatus.onchange = function() {
+                            const main = this.value;
+                            if(main && statusDetails[main]) {
+                                popupSubGroup.style.display = "block";
+                                popupSubStatus.innerHTML = '<option value="">-- Välj detalj --</option>';
+                                statusDetails[main].forEach(opt => {
+                                    popupSubStatus.innerHTML += `<option value="${opt}">${opt}</option>`;
+                                });
+                            } else {
+                                popupSubGroup.style.display = "none";
+                            }
+                        };
+                    }
+                    
+                    const saveBtn = document.getElementById("popupSaveBtn");
+                    if(saveBtn) {
+                        saveBtn.onclick = () => {
+                            const vavNumber = document.getElementById("popupVav").value.trim();
+                            const mainStatus = document.getElementById("popupMainStatus").value;
+                            const subStatus = document.getElementById("popupSubStatus")?.value || "";
+                            const location = document.getElementById("popupLocation").value;
+                            const note = document.getElementById("popupNote").value;
+                            
+                            if(!vavNumber) { alert("Ange VAV-nummer"); return; }
+                            if(!mainStatus) { alert("Välj status"); return; }
+                            
+                            const fullStatus = subStatus ? `${mainStatus} - ${subStatus}` : mainStatus;
+                            const fullVav = "VAV" + vavNumber;
+                            const area = document.getElementById("areaSelect").value;
+                            
+                            ventilData.push({ 
+                                id: Date.now()+'-'+Math.random().toString(36).substr(2,4), 
+                                completed: false,
+                                ventilNr: fullVav, area, location, fullStatus, 
+                                defectDesc: note, reportedBy: currentUser || "Anonym" 
+                            });
+                            
+                            saveToStorage();
+                            renderTable();
+                            updateStats();
+                            updateMapMarkers();
+                            map.closePopup();
+                            alert(`✅ ${fullVav} sparad!`);
+                        };
+                    }
+                }, 50);
+                
+                isNeedleMode = false;
+                document.getElementById("needleBtn").classList.remove("active");
+                document.getElementById("needleBtn").innerHTML = "📍 Sätt nål";
+            } catch(e) { console.log("Fel vid adresshämtning"); }
         });
         updateMapMarkers();
     }
 
-    function enablePinMode() {
-        isPinMode = !isPinMode;
-        const btn = document.getElementById("pinBtn");
-        if(isPinMode) { btn.classList.add("active"); btn.innerHTML = "📍 Klicka på kartan..."; document.body.style.cursor = "crosshair"; }
-        else { btn.classList.remove("active"); btn.innerHTML = "📍 Sätt nål"; document.body.style.cursor = "default"; }
+    function enableNeedleMode() {
+        isNeedleMode = !isNeedleMode;
+        const btn = document.getElementById("needleBtn");
+        if(isNeedleMode) {
+            btn.classList.add("active");
+            btn.innerHTML = "📍 Klicka på kartan...";
+            map.getContainer().style.cursor = "crosshair";
+        } else {
+            btn.classList.remove("active");
+            btn.innerHTML = "📍 Sätt nål";
+            map.getContainer().style.cursor = "";
+        }
     }
 
     function getCurrentPosition() {
         if(!navigator.geolocation) { alert("GPS stöds inte"); return; }
         const gpsBtn = document.getElementById("gpsBtn");
-        gpsBtn.innerHTML = "📍 SÖKER...";
+        gpsBtn.innerHTML = "🧭 SÖKER...";
         navigator.geolocation.getCurrentPosition(async (pos) => {
-            map.setView([pos.coords.latitude, pos.coords.longitude], 16);
+            const lat = pos.coords.latitude, lng = pos.coords.longitude;
+            map.setView([lat, lng], 16);
             if(currentMarker) markersLayer.removeLayer(currentMarker);
-            currentMarker = L.marker([pos.coords.latitude, pos.coords.longitude]).bindPopup("📍 Din position").addTo(markersLayer);
+            currentMarker = L.marker([lat, lng]).bindPopup("📍 Din position").addTo(markersLayer);
             try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&zoom=18`);
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=18`);
                 const data = await res.json();
                 let address = data.address?.road ? `${data.address.road}, ${data.address.suburb || ''}` : "";
-                document.getElementById("addressInput").value = address;
+                document.getElementById("searchAddress").value = address;
+                document.getElementById("ventilLocation").value = address;
             } catch(e) {}
-            gpsBtn.innerHTML = "📍 Min position";
-        }, () => { gpsBtn.innerHTML = "📍 Min position"; });
+            gpsBtn.innerHTML = "🧭 Min position";
+            alert("📍 Din position hittades och adressen är ifylld!");
+        }, () => { gpsBtn.innerHTML = "🧭 Min position"; alert("Kunde inte hitta position"); });
+    }
+
+    async function searchAddress() {
+        const query = document.getElementById("searchAddress").value.trim();
+        if(!query) { alert("Ange en adress att söka efter"); return; }
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)} Botkyrka&format=json&limit=1`);
+            const data = await res.json();
+            if(data && data[0]) {
+                const lat = parseFloat(data[0].lat);
+                const lng = parseFloat(data[0].lon);
+                map.setView([lat, lng], 16);
+                if(currentMarker) markersLayer.removeLayer(currentMarker);
+                currentMarker = L.marker([lat, lng]).bindPopup(`📍 ${query}`).addTo(markersLayer);
+                document.getElementById("ventilLocation").value = data[0].display_name.split(',')[0];
+            } else {
+                alert("Hittade ingen adress. Försök igen.");
+            }
+        } catch(e) { alert("Sökning misslyckades"); }
     }
 
     function updateMapMarkers() {
@@ -678,7 +834,11 @@
                         if(data && data[0]) {
                             const color = getMarkerColor(v.fullStatus);
                             L.marker([parseFloat(data[0].lat), parseFloat(data[0].lon)], {
-                                icon: L.divIcon({ html: `<div style="background-color:${color}; width:12px;height:12px;border-radius:50%;border:2px solid white;"></div>`, iconSize: [12,12] })
+                                icon: L.divIcon({ 
+                                    html: `<div style="background-color:${color}; width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>`,
+                                    iconSize: [12,12],
+                                    className: 'pulse-marker'
+                                })
                             }).bindPopup(`<b>${v.ventilNr}</b><br>${v.location}<br>${v.fullStatus}`).addTo(markersLayer);
                         }
                     });
@@ -686,13 +846,36 @@
         });
     }
 
+    // INLOGGNING
+    function showLoginModal() {
+        const name = prompt("Ange ditt namn för att logga in:", currentUser || "");
+        if(name && name.trim()) {
+            currentUser = name.trim();
+            document.getElementById("userNameDisplay").innerHTML = currentUser;
+            document.getElementById("loginBtn").innerHTML = "Byt användare/Logga ut";
+            saveToStorage();
+        } else if(currentUser) {
+            currentUser = null;
+            document.getElementById("userNameDisplay").innerHTML = "Inte inloggad";
+            document.getElementById("loginBtn").innerHTML = "Logga in";
+            saveToStorage();
+        }
+    }
+
     function escapeHtml(s) { if(!s) return ""; return s.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
 
-    document.getElementById("loginBtn")?.addEventListener("click", () => { const name = document.getElementById("userNameInput").value.trim(); if(name) { currentUser = name; document.getElementById("userDisplay").innerHTML = name; saveToStorage(); } });
+    // Event listeners
+    document.getElementById("loginBtn")?.addEventListener("click", showLoginModal);
     document.getElementById("saveBtn")?.addEventListener("click", saveVentil);
-    document.getElementById("pinBtn")?.addEventListener("click", enablePinMode);
+    document.getElementById("needleBtn")?.addEventListener("click", enableNeedleMode);
     document.getElementById("gpsBtn")?.addEventListener("click", getCurrentPosition);
-    document.getElementById("selectAllCheckbox")?.addEventListener("change", (e) => { const filtered = ventilData.filter(v => !v.completed); if(e.target.checked) filtered.forEach(v => selectedIds.add(v.id)); else selectedIds.clear(); renderTable(); });
+    document.getElementById("mainStatusSelect")?.addEventListener("change", updateSubStatus);
+    document.getElementById("selectAllCheckbox")?.addEventListener("change", (e) => {
+        const filtered = ventilData.filter(v => !v.completed);
+        if(e.target.checked) filtered.forEach(v => selectedIds.add(v.id));
+        else selectedIds.clear();
+        renderTable();
+    });
 
     loadData();
     initMap();
